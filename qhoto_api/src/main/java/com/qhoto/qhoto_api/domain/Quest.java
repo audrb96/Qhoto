@@ -6,6 +6,10 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.EnumType.*;
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,28 +18,28 @@ import javax.persistence.*;
 public class Quest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "quest_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String questName;
+    @Column(name = "quest_name",nullable = false)
+    private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private QuestDuration questDuration;
+    @Enumerated(STRING)
+    @Column(name = "quest_duration",nullable = false)
+    private QuestDuration duration;
 
-    @Column(nullable = false)
-    private Integer questScore;
+    @Column(name = "quest_score",nullable = false)
+    private Integer score;
 
-    @Column(nullable = false)
-    private Integer questDifficulty;
+    @Column(name = "quest_difficulty",nullable = false)
+    private Integer difficulty;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private QuestStatus questStatus;
+    @Enumerated(STRING)
+    @Column(name = "quest_status",nullable = false)
+    private QuestStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "type_code", nullable = false)
     private QuestType questType;
 }

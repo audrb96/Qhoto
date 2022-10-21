@@ -6,6 +6,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+import static javax.persistence.EnumType.*;
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,19 +18,19 @@ import java.time.LocalDate;
 public class ActiveWeekly {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "active_weekly_id")
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDate DailyQuestDate;
+    @Column(name = "weekly_quest_date",nullable = false)
+    private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "quest_id", nullable = false)
     private Quest quest;
 
     @Column(name = "weekly_quest_status",nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private QuestStatus questStatus;
 
 
