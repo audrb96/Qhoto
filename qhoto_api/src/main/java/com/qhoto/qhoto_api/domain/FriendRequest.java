@@ -6,6 +6,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static javax.persistence.EnumType.*;
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,23 +18,23 @@ import java.time.LocalDateTime;
 public class FriendRequest {
     @Id
     @Column(name = "friend_request_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "request_user", nullable = false)
     private User requestUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "response_user", nullable = false)
     private User responseUser;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RequestStatus requestStatus;
+    @Enumerated(STRING)
+    @Column(name = "request_status",nullable = false)
+    private RequestStatus status;
 
-    @Column(nullable = false)
-    private LocalDateTime requestTime;
+    @Column(name = "request_time",nullable = false)
+    private LocalDateTime time;
 
 
 

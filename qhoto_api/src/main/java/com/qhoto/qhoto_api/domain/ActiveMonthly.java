@@ -6,6 +6,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+import static javax.persistence.EnumType.*;
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,20 +18,20 @@ import java.time.LocalDate;
 public class ActiveMonthly {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "active_monthly_id")
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDate DailyQuestDate;
+    @Column(name = "monthly_quest_date",nullable = false)
+    private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "quest_id", nullable = false)
     private Quest quest;
 
     @Column(name = "monthly_quest_status",nullable = false)
-    @Enumerated(EnumType.STRING)
-    private QuestStatus questStatus;
+    @Enumerated(STRING)
+    private QuestStatus status;
 
 
 

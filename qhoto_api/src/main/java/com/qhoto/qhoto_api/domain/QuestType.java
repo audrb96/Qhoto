@@ -12,9 +12,10 @@ import javax.persistence.*;
 public class QuestType {
 
     @Id
-    private String typeCode;
+    @Column(name = "type_code")
+    private String code;
 
-    @Column(nullable = false)
-    private String typeName;
+    @Column(name = "type_name",nullable = false)
+    private String name;
 
 }
