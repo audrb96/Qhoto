@@ -1,0 +1,21 @@
+server:
+  port: 7070
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://qhoto-db.c2k2xt6qu8x0.ap-northeast-2.rds.amazonaws.com/qhoto?serverTimezone=Asia/Seoul
+    username: qhoto_admin
+    password: ssafyA707
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+    open-in-view: false
