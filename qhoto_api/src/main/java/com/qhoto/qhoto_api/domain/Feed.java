@@ -7,6 +7,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,26 +18,27 @@ import java.time.LocalDateTime;
 public class Feed {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "feed_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "quest_id", nullable = false)
     private Quest quest;
 
     @Column(name = "feed_image", nullable = false)
     private String image;
 
-    @Column(nullable = false)
-    private LocalDateTime FeedTime;
+    @Column(name = "feed_time",nullable = false)
+    private LocalDateTime time;
 
     @Enumerated(EnumType.STRING)
-    private feedStatus feedStatus;
+    @Column(name = "feed_status", nullable = false)
+    private feedStatus status;
 
     @Column(nullable = false)
     private String location;
@@ -42,12 +46,12 @@ public class Feed {
     @Column(nullable = false)
     private String typeCode;
 
-    @Column(nullable = false)
-    private Integer questScore;
+    @Column(name = "quest_score",nullable = false)
+    private Integer score;
 
-    @Column(nullable = false)
-    private Integer questDifficulty;
+    @Column(name = "quest_dfficulty",nullable = false)
+    private Integer difficulty;
 
-    @Column(nullable = false)
-    private QuestDuration questDuration;
+    @Column(name = "quest_duration",nullable = false)
+    private QuestDuration duration;
 }

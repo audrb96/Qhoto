@@ -6,6 +6,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+import static javax.persistence.EnumType.*;
+import static javax.persistence.GenerationType.*;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,7 +18,7 @@ public class User {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -27,10 +30,14 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
+    @OneToOne(mappedBy = "user")
+    private Exp exp;
+
     @Column(name = "user_image")
     private String image;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
+    @Column(nullable = false)
     private UserRole userRole;
 
     @Column(nullable = false)
