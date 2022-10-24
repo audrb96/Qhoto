@@ -29,10 +29,7 @@ public class User {
 
     @Column(nullable = false)
     private String nickname;
-
-    @OneToOne(mappedBy = "user")
-    private Exp exp;
-
+    
     @Column(name = "user_image")
     private String image;
 

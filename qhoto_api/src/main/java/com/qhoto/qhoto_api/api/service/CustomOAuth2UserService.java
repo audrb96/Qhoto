@@ -1,10 +1,14 @@
 package com.qhoto.qhoto_api.api.service;
 
+import com.qhoto.qhoto_api.api.repository.ExpRepository;
+import com.qhoto.qhoto_api.api.repository.QuestTypeRepository;
 import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.domain.AuthProvider;
 import com.qhoto.qhoto_api.domain.Exp;
+import com.qhoto.qhoto_api.domain.QuestType;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.UserRole;
+import com.qhoto.qhoto_api.dto.layer.CustomUserDetails;
 import com.qhoto.qhoto_api.dto.layer.OAuth2UserInfo;
 import com.qhoto.qhoto_api.dto.layer.OAuth2UserInfoFactory;
 import com.qhoto.qhoto_api.exception.OAuthProcessingException;
@@ -18,7 +22,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,6 +32,8 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final QuestTypeRepository questTypeRepository;
+    private final ExpRepository expRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -49,8 +57,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 throw new OAuthProcessingException("Wrong Match Auth Provider");
             }
         } else {
-            createUser(userInfo,authProvider);
+            user = createUser(userInfo, authProvider);
         }
+
+        return CustomUserDetails.create(user,oAuth2User.getAttributes());
 
     }
 
@@ -65,7 +75,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .joinDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
                 .nickname(null)
                 .phone(null)
-                .
+                .profileOpen(true)
+                .name(userInfo.getName())
+                .build();
 
+        List<QuestType> questTypes = questTypeRepository.findAll();
+        questTypes.forEach((questType) -> expRepository.save(Exp.builder()
+                .user(user)
+                .point(0)
+                .questType(questType)
+                .build()));
+
+        return userRepository.save(user);
     }
 }

@@ -1,7 +1,12 @@
 package com.qhoto.qhoto_api.config;
 
+import com.qhoto.qhoto_api.api.controller.oauth2.OAuth2AuthenticationFailureHandler;
+import com.qhoto.qhoto_api.api.controller.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.qhoto.qhoto_api.api.repository.CookieAuthorizationRequestRepository;
 import com.qhoto.qhoto_api.api.service.CustomOAuth2UserService;
+import com.qhoto.qhoto_api.exception.handler.JwtAccessDeniedHandler;
+import com.qhoto.qhoto_api.exception.handler.JwtAuthenticationEntryPoint;
+import com.qhoto.qhoto_api.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin().disable()
                 .oauth2Login()
-                    .authorizationEndpoint()
+                .authorizationEndpoint()
                         .baseUri("/oauth2/authorize")
                         .authorizationRequestRepository(cookieAuthorizationRequestRepository)
                 .and()

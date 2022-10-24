@@ -31,7 +31,7 @@ spring:
 app:
   auth:
     token:
-      secret-key: "697505d57bb98c3258d71edcfddccb15"
+      secret-key: "c3NhZnlBNzA3"
       refresh-cookie-key: "refresh"
   oauth2:
     authorizedRedirectUri: "http://localhost:3000/oauth2/redirect"
