@@ -19,3 +19,19 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
     open-in-view: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1091823482731-f0375q139gm9me0a4v7cg50jiamjkcq4.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:8080/oauth2/callback/google
+app:
+  auth:
+    token:
+      secret-key: "697505d57bb98c3258d71edcfddccb15"
+      refresh-cookie-key: "refresh"
+  oauth2:
+    authorizedRedirectUri: "http://localhost:3000/oauth2/redirect"
