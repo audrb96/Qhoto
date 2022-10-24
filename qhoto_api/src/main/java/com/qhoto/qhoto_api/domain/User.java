@@ -50,9 +50,15 @@ public class User {
     private LocalDate joinDate;
 
     @Column(nullable = false)
-    private Boolean ContactAgree;
+    private Boolean contactAgree;
 
     @Column(nullable = false)
-    private LocalDate ContactAgreeDate;
+    private LocalDate contactAgreeDate;
+
+    @Enumerated(STRING)
+    private AuthProvider authProvider;
+
+    private String refreshToken;
+
 
 }

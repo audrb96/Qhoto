@@ -1,5 +1,7 @@
 package com.qhoto.qhoto_api.config;
 
+import com.qhoto.qhoto_api.api.repository.CookieAuthorizationRequestRepository;
+import com.qhoto.qhoto_api.api.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +9,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +29,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        
+        http.authorizeRequests()
+                .antMatchers("/api/**").permitAll()
+                .antMatchers("/ouath2/**").permitAll()
+                .anyRequest().authenticated();
+
+        http.cors()
+                .and()
+                .csrf().disable()
+                .httpBasic().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.formLogin().disable()
+                .oauth2Login()
+                    .authorizationEndpoint()
+                        .baseUri("/oauth2/authorize")
+                        .authorizationRequestRepository(cookieAuthorizationRequestRepository)
+                .and()
+                .redirectionEndpoint()
+                    .baseUri("/oauth2/callback/*")
+                .and()
+                .userInfoEndpoint()
+                    .userService(customOAuth2UserService)
+                .and()
+                    .successHandler(authenticationSuccessHandler)
+                    .failureHandler(authenticationFailureHandler);
+
+        http.exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler);
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 }
