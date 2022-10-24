@@ -32,10 +32,18 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(true);
+
   return (
     <NavigationContainer>
       {isLoggedIn ? (
-        <Tab.Navigator>
+        <Tab.Navigator
+          screenOptions={() => ({
+            tabBarStyle: {
+              height: 70,
+              backgroundColor: 'white',
+              borderTopWidth: 2,
+            },
+          })}>
           <Tab.Screen
             name="FriendsFeed"
             component={FriendsFeed}

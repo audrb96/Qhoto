@@ -3,8 +3,15 @@ import {Text, View} from 'react-native';
 
 function Orders() {
   return (
-    <View>
-      <Text>친구피드 화면</Text>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+      <View style={{alignItems: 'center'}}>
+        <Text style={{fontSize: 30, color: 'purple'}}>quoto</Text>
+      </View>
+      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+        <Text>DAY</Text>
+        <Text>WEEK</Text>
+        <Text>MONTH</Text>
+      </View>
     </View>
   );
 }
