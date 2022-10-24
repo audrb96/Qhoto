@@ -46,7 +46,7 @@ public class FeedController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/like")
+    @DeleteMapping("/like")
     public ResponseEntity<HttpStatus> removeLike(LikeReq likeReq){
         feedService.deleteLike(likeReq);
         return ResponseEntity.ok().build();
