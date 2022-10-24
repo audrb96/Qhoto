@@ -39,4 +39,10 @@ public class Comment {
     @Column(name = "comment_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private CommentStatus status;
+
+
+    public void changeCommentStatus(CommentStatus status){
+        this.status = status;
+    }
+
 }
