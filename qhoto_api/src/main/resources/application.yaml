@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -27,11 +27,12 @@ spring:
           google:
             client-id: 1091823482731-f0375q139gm9me0a4v7cg50jiamjkcq4.apps.googleusercontent.com
             client-secret: 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
-            redirect-uri: http://localhost:8080/oauth2/callback/google
+            redirect-uri: http://localhost:7070/oauth2/callback/google
+            scope: profile, email
 app:
   auth:
     token:
       secret-key: "c3NhZnlBNzA3"
       refresh-cookie-key: "refresh"
   oauth2:
-    authorizedRedirectUri: "http://localhost:3000/oauth2/redirect"
+    authorizedRedirectUri: "http://localhost:7070/temp.html"

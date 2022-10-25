@@ -6,6 +6,7 @@ import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,7 +40,7 @@ public class JwtTokenProvider {
     public String createAccessToken(Authentication authentication) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_LENGTH);
-
+        log.info("authentication.getPrincipal={}",authentication.getPrincipal());
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         String userId = user.getName();
         String role = authentication.getAuthorities().stream()
@@ -47,7 +48,7 @@ public class JwtTokenProvider {
                 .collect(Collectors.joining(","));
 
         return Jwts.builder()
-                .signWith(SignatureAlgorithm.ES512, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .setSubject(userId)
                 .claim(AUTHORITIES_KEY,role)
                 .setIssuer("Qhoto")
@@ -68,6 +69,16 @@ public class JwtTokenProvider {
                 .compact();
 
         saveRefreshToken(authentication, refreshToken);
+
+        ResponseCookie cookie = ResponseCookie.from(COOKIE_REFRESH_TOKEN_KEY, refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Lax")
+                .maxAge(REFRESH_TOKEN_EXPIRE_LENGTH/1000)
+                .path("/")
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 
     private void saveRefreshToken(Authentication authentication, String refreshToken) {

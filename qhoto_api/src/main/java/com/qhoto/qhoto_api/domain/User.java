@@ -49,7 +49,6 @@ public class User {
     @Column(nullable = false)
     private Boolean contactAgree;
 
-    @Column(nullable = false)
     private LocalDate contactAgreeDate;
 
     @Enumerated(STRING)

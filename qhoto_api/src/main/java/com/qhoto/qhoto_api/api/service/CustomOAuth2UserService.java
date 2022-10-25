@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -73,8 +74,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .contactAgreeDate(null)
                 .image(userInfo.getImageUrl())
                 .joinDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
-                .nickname(null)
-                .phone(null)
+                .nickname("tempUser")
+                .phone("010-0000-0000")
                 .profileOpen(true)
                 .name(userInfo.getName())
                 .build();

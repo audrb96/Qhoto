@@ -40,12 +40,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
         clearAuthenticationAttributes(request, response);
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        getRedirectStrategy().sendRedirect(request,response,targetUrl);
     }
 
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, "redirect_uri").map(Cookie::getValue);
+        log.info("redirectUri={}", redirectUri);
         if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())){
             throw new BadRequestException("redirect URIs are not matched");
         }
