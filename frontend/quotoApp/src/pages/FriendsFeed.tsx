@@ -1,7 +1,12 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+import {useEffect} from 'react';
+import SplashScreen from 'react-native-splash-screen';
 
 function Orders() {
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{alignItems: 'center'}}>
