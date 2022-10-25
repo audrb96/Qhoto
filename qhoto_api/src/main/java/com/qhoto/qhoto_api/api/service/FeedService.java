@@ -1,32 +1,62 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.CommentRepository;
-import com.qhoto.qhoto_api.api.repository.FeedLikeRepository;
-import com.qhoto.qhoto_api.api.repository.FeedRepository;
-import com.qhoto.qhoto_api.api.repository.UserRepository;
+import com.qhoto.qhoto_api.api.repository.*;
 import com.qhoto.qhoto_api.domain.Comment;
+import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.domain.FeedLike;
+import com.qhoto.qhoto_api.domain.Quest;
 import com.qhoto.qhoto_api.domain.type.CommentStatus;
+import com.qhoto.qhoto_api.domain.type.FeedLikePK;
+import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
+import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import com.qhoto.qhoto_api.dto.response.CommentRes;
+import com.qhoto.qhoto_api.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class FeedService {
 
+    private final S3Utils s3Utils;
     private final CommentRepository commentRepository;
     private final FeedRepository feedRepository;
     private final UserRepository userRepository;
     private final FeedLikeRepository feedLikeRepository;
+    private final QuestRepository questRepository;
+
+
+    public void postFeed(CreateFeedReq createFeedReq) throws IOException {
+        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
+        String uuid = UUID.randomUUID().toString();
+        String dirName = "feed/"+uuid;
+        s3Utils.upload(createFeedReq.getFeedImage(),dirName);
+
+        Feed feed = Feed.builder()
+                .user(userRepository.findUserById(createFeedReq.getUserId()))
+                .quest(quest)
+                .image(dirName+"/"+createFeedReq.getFeedImage().getOriginalFilename())
+                .time(LocalDateTime.now())
+                .status(FeedStatus.U)
+                .location(createFeedReq.getLocation())
+                .typeCode(quest.getQuestType().toString())
+                .score(quest.getScore())
+                .difficulty(quest.getDifficulty())
+                .duration(quest.getDuration())
+                .build();
+        feedRepository.save(feed);
+    }
 
     public void postComment(CreateCommentReq createCommentReq){
 
@@ -42,7 +72,7 @@ public class FeedService {
 
     public List<CommentRes> getComment(Long feedId){
 
-        List<Comment> commentList = feedRepository.findCommentById(feedId);
+        List<Comment> commentList = commentRepository.findListById(feedId);
         List<CommentRes> commentRes = new ArrayList<>();
         for (Comment comment : commentList) {
             commentRes.add(CommentRes.builder()
@@ -67,12 +97,13 @@ public class FeedService {
         feedLikeRepository.save(feedLike);
     }
 
+    @Modifying
     public void deleteLike(LikeReq likeReq){
-        FeedLike feedLike = FeedLike.builder()
+        FeedLikePK feedLikePK = FeedLikePK.builder()
                 .feed(feedRepository.findFeedById(likeReq.getFeedId()))
                 .user(userRepository.findUserById(likeReq.getUserId()))
                 .build();
-
+        feedLikeRepository.deleteById(feedLikePK);
     }
 
 

@@ -3,14 +3,16 @@ package com.qhoto.qhoto_api.api.controller;
 
 import com.qhoto.qhoto_api.api.service.FeedService;
 import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
+import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +22,18 @@ public class FeedController {
 
     private final FeedService feedService;
 
+
+    @PostMapping
+    public ResponseEntity<HttpStatus> createFeed(@Validated @RequestBody CreateFeedReq createFeedReq) throws IOException {
+        feedService.postFeed(createFeedReq);
+        return ResponseEntity.ok().build();
+    }
+
+
+
+
     @PostMapping("/comment")
-    public ResponseEntity<HttpStatus> createComment(CreateCommentReq createCommentReq){
+    public ResponseEntity<HttpStatus> createComment(@Validated @RequestBody CreateCommentReq createCommentReq){
         feedService.postComment(createCommentReq);
         return ResponseEntity.ok().build();
     }
@@ -39,15 +51,13 @@ public class FeedController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<HttpStatus> createLike(@Validated @RequestBody LikeReq likeReq, BindingResult bindingResult){
-        System.out.println("ddddd");
+    public ResponseEntity<HttpStatus> createLike(@Validated @RequestBody LikeReq likeReq){
         feedService.postLike(likeReq);
-        System.out.println(bindingResult);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/like")
-    public ResponseEntity<HttpStatus> removeLike(LikeReq likeReq){
+    public ResponseEntity<HttpStatus> removeLike(@Validated @RequestBody LikeReq likeReq){
         feedService.deleteLike(likeReq);
         return ResponseEntity.ok().build();
     }
