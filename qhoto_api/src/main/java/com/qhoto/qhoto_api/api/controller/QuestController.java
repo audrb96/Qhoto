@@ -16,40 +16,38 @@ import java.util.Map;
 @RequestMapping("/api/quest")
 public class QuestController {
 
-    private final QuestService qusetService;
+    private final QuestService questService;
 
     @GetMapping("")
     public ResponseEntity<?> getQuestList() {
 //        Long userId = jwt.getUserId(request);
-        Map<String, QuestListRes> result;
 //        Long userId;
 //        try {
 ////            userId = jwtService.getUserId(request);
 //        } catch (Exception e) {
 //            userId = -1L;
 //        }
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(, HttpStatus.OK);
     }
 
     @GetMapping("/isClear/daily")
     public ResponseEntity<?> getDailyIsClear() {
         Long userId;
-        Boolean isClear = QuestService.getDailyIsClear();
-        return new ResponseEntity<>(isClear, HttpStatus.OK);
+
+        return new ResponseEntity<>(questService.getDailyIsClear(), HttpStatus.OK);
     }
 
     @GetMapping("/isClear/weekly")
     public ResponseEntity<?> getWeeklyIsClear() {
         Long userId;
-        Boolean isClear = QuestService.getWeeklyIsClear();
-        return new ResponseEntity<>(isClear, HttpStatus.OK);
+
+        return new ResponseEntity<>(questService.getWeeklyIsClear(), HttpStatus.OK);
     }
 
     @GetMapping("/isClear/monthly")
     public ResponseEntity<?> getMonthlyIsClear() {
         Long userId;
-        Boolean isClear = QuestService.getMonthlyIsClear();
-        return new ResponseEntity<>(isClear, HttpStatus.OK);
+        return new ResponseEntity<>(questService.getMonthlyIsClear(), HttpStatus.OK);
     }
 
 

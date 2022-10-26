@@ -30,38 +30,33 @@ public class QuestService {
 
 
     @Transactional
-    public List<QuestListRes> getQuestList()  {
+    public Map<String, Object> getQuestList()  {
         List<Quest> dailyQuest = activeDailyRepository.findAllByIdAndStatus();
         List<Quest> weeklyQuest = activeWeeklyRepository.findAllByIdAndStatus();
         List<Quest> monthlyQuest = activeWeeklyRepository.findAllByIdAndStatus();
+//    Todo: api docs 수정함. 다시.
+        Map<String, Object> questList = new HashMap<>();
 
-        Map<String, Object> daily = new HashMap<>();
-        Map<String, Object> weekly = new HashMap<>();
-        Map<String, Object> monthly = new HashMap<>();
-
-        QuestListRes.questList questList = new QuestListRes.questList();
-        // 이렇게 넣는게 나은건지 아니면 그냥 어차피 껏해야 3개니까 for문 돌리는게 나을지 고민.
-        questList.addQuest(dailyQuest.stream().map(QuestListRes.Quest::new).collect(Collectors.toList()));
         feedRepository.findWithPagingByUserIdAndStatus(1L, (Pageable) PageRequest.of(0, 1));
 
         QuestListRes questListRes = new QuestListRes();
-        questListRes.getAttribute().put("daily", )
 
-        return
+
+        return questList;
     }
 
-    public static Boolean getDailyIsClear() {
+    public Boolean getDailyIsClear() {
 //        TODO: 이부분,, 고민 필요..
-//        Boolean isClear = feedRepository.findWithPagingByUserIdAndStatus(1L, PageRequest.of(0, 1))
-//                .size() == 1 ? true : false;
+        Boolean isClear = feedRepository.findWithPagingByUserIdAndStatus(1L, (Pageable) PageRequest.of(0, 1))
+                .isPresent();
         return isClear;
     }
 
-    public static Boolean getWeeklyIsClear() {
+    public Boolean getWeeklyIsClear() {
 
     }
 
-    public static Boolean getMonthlyIsClear() {
+    public Boolean getMonthlyIsClear() {
 
     }
 
