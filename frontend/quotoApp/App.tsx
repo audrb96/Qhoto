@@ -47,7 +47,7 @@ function App() {
           <Tab.Screen
             name="FriendsFeed"
             component={FriendsFeed}
-            options={{title: '친구 피드 목록'}}
+            options={{title: '친구 피드 목록', headerShown: false}}
           />
           <Tab.Screen
             name="AllFeed"
