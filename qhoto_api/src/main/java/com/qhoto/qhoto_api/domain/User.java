@@ -29,10 +29,7 @@ public class User {
 
     @Column(nullable = false)
     private String nickname;
-
-    @OneToOne(mappedBy = "user")
-    private Exp exp;
-
+    
     @Column(name = "user_image")
     private String image;
 
@@ -50,9 +47,14 @@ public class User {
     private LocalDate joinDate;
 
     @Column(nullable = false)
-    private Boolean ContactAgree;
+    private Boolean contactAgree;
 
-    @Column(nullable = false)
-    private LocalDate ContactAgreeDate;
+    private LocalDate contactAgreeDate;
+
+    @Enumerated(STRING)
+    private AuthProvider authProvider;
+
+    private String refreshToken;
+
 
 }

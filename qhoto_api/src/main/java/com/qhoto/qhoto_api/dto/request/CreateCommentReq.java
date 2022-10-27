@@ -5,18 +5,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
 @ToString
 public class CreateCommentReq {
 
+    @NotNull
     private final Long feedId;
 
+    @NotNull
     private final Long userId;
 
+    @NotNull
     private final String commentContext;
-
 
 
     @Builder

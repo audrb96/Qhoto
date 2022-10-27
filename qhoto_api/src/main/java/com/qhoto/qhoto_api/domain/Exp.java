@@ -19,7 +19,7 @@ public class Exp {
     @Column(name = "exp_id")
     private Long id;
 
-    @OneToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 

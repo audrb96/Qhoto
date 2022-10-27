@@ -2,20 +2,54 @@ server:
   port: 7070
 
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://qhoto-db.c2k2xt6qu8x0.ap-northeast-2.rds.amazonaws.com/qhoto?serverTimezone=Asia/Seoul
-    username: qhoto_admin
-    password: ssafyA707
+  profiles:
+    active: local
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1091823482731-f0375q139gm9me0a4v7cg50jiamjkcq4.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:7070/oauth2/callback/google
+            scope: profile, email
 
-    open-in-view: false
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://qhoto-db.c2k2xt6qu8x0.ap-northeast-2.rds.amazonaws.com/qhoto?serverTimezone=Asia/Seoul
+#    username: qhoto_admin
+#    password: ssafyA707
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+#        use_sql_comments: true
+#        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+#
+#    open-in-view: false
+
+cloud:
+  aws:
+    s3:
+      bucket: qhoto
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: AKIAVVSSTXJT4QWHBS7T
+      secretKey: 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
+    stack:
+      auto: false
+
+app:
+  auth:
+    token:
+      secret-key: "c3NhZnlBNzA3"
+      refresh-cookie-key: "refresh"
+  oauth2:
+    authorizedRedirectUri: "http://localhost:7070/temp.html"
