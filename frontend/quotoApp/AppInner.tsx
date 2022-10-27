@@ -11,6 +11,9 @@ import AllFeed from './src/pages/AllFeed';
 import FindFriend from './src/pages/FindFriend';
 import {useSelector} from 'react-redux';
 import {RootState} from './src/store/reducer';
+import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+// https://oblador.github.io/react-native-vector-icons/
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export type LoggedInParamList = {
@@ -34,7 +37,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppInner() {
   const isLoggedIn = useSelector((state: RootState) => state.user.loggedIn);
-
+  
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <NavigationContainer>
@@ -50,12 +53,18 @@ function AppInner() {
             <Tab.Screen
               name="FriendsFeed"
               component={FriendsFeed}
-              options={{title: '친구 피드 목록'}}
+              options={{
+                title: '친구 피드 목록', 
+                tabBarIcon: () => <Ionicons name="home-outline" size={20} />,
+              }}
             />
             <Tab.Screen
               name="AllFeed"
               component={AllFeed}
-              options={{title: '모든 피드 목록'}}
+              options={{
+                title: '모든 피드 목록',
+                tabBarIcon: () => <Ionicons name="globe-outline" size={20} />,
+            }}
             />
             <Tab.Screen
               name="MyQuest"
@@ -65,12 +74,18 @@ function AppInner() {
             <Tab.Screen
               name="FindFriend"
               component={FindFriend}
-              options={{title: '친구찾기'}}
+              options={{
+                title: '친구찾기',
+                tabBarIcon: () => <Feather name="users" size={20} />,
+              }}
             />
             <Tab.Screen
               name="MyPage"
               component={MyPage}
-              options={{title: '내 정보'}}
+              options={{
+                title: '내 정보',
+                tabBarIcon: () => <Ionicons name="person-circle-outline" size={25} />,
+              }}
             />
           </Tab.Navigator>
         ) : (
@@ -89,7 +104,7 @@ function AppInner() {
         )}
       </NavigationContainer>
     </GestureHandlerRootView>
-  );
+  )
 }
 
 export default AppInner;
