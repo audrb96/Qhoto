@@ -7,7 +7,7 @@ const initialState = {
   userImage: '',
   nickname: '',
   profileOpen: '',
-  loggedIn: false,
+  loggedIn: true,
 };
 const userSlice = createSlice({
   name: 'user',

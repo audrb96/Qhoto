@@ -6,14 +6,15 @@ import {
   Text,
   TextInput,
   View,
+  Button,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../AppInner';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import {
   GoogleSignin,
-  GoogleSigninButton,
   statusCodes,
+  GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
@@ -48,56 +49,29 @@ function SignIn({navigation}: SignInScreenProps) {
 
   const [user, setUser] = useState({});
 
-  useEffect(()=>{
+  const signInByGoogle = async () => {
     GoogleSignin.configure({
-      webClientId:'65781037761-c8fn0vap3sl71g7nefhr4v4fsgmek08p.apps.googleusercontent.com',
-      offlineAccess: true,
-      forceCodeForRefreshToken: true,
+      webClientId:
+        '1091823482731-f0375q139gm9me0a4v7cg50jiamjkcq4.apps.googleusercontent.com',
+      //     offlineAccess: true,
+      //     forceCodeForRefreshToken: true,
     });
-    isSignedIn()
-  }, [])
-
-  const signIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-      const userInfo = await GoogleSignin.signIn();
-      // setUser(userInfo);
-      console.log(userInfo)
-    } catch (error) {
-      console.log("0. MESSAGE", error.message, error.code);
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log("1. user cancelled the login flow")
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log("2. operation (e.g. sign in) is in progress already")
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log("3. play services not available or outdated")
-      } else {
-        console.log("4. some other error happened")
-      }
-    }
-  };
-  const isSignedIn = async () => {
-    const isSignedIn = await GoogleSignin.isSignedIn ();
-    if (!!isSignedIn) {
-      getCurrentUserInfo()
-    } else {
-      console.log('Please Login')
-    }
-  };
-  const getCurrentUserInfo =async () => {
-    try {
-      const userInfo = await GoogleSignin.signInSilently();
-      setUser(userInfo);
-    } catch (error) {
-      console.log("MESSAGE", error.message);
-      if (error.code === statusCodes.SIGN_IN_REQUIRED) {
-        Alert.alert('User has not signed in yet')
-        console.log('User Has not signed in yet')
-      } else {
-        Alert.alert('Something went wrong')
-        console.log('Something went wrong')
-      }
-    }
+    GoogleSignin.hasPlayServices()
+      .then(hasPlayService => {
+        if (hasPlayService) {
+          GoogleSignin.signIn()
+            .then(userInfo => {
+              console.log(JSON.stringify(userInfo));
+              setUser(userInfo);
+            })
+            .catch(e => {
+              console.log('ERROR IS: ' + JSON.stringify(e));
+            });
+        }
+      })
+      .catch(e => {
+        console.log('ERROR IS: ' + JSON.stringify(e));
+      });
   };
 
   return (
@@ -152,16 +126,13 @@ function SignIn({navigation}: SignInScreenProps) {
         <Pressable onPress={toSignUp}>
           <Text>회원가입하기</Text>
         </Pressable>
+
         <View style={styles.container}>
           <GoogleSigninButton
-            onPress={signIn}
             size={GoogleSigninButton.Size.Wide} // Standart or Wide
+            onPress={signInByGoogle}
           />
-          
         </View>
-        <Text>
-          {JSON.stringify(user)}
-        </Text>
       </View>
     </DismissKeyboardView>
   );
