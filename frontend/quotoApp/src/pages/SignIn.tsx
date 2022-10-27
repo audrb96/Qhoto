@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState, useEffect} from 'react';
 import {
   Alert,
   Pressable,
@@ -6,10 +6,16 @@ import {
   Text,
   TextInput,
   View,
+  Button,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../App';
+import {RootStackParamList} from '../../AppInner';
 import DismissKeyboardView from '../components/DismissKeyboardView';
+import {
+  GoogleSignin,
+  statusCodes,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -40,6 +46,34 @@ function SignIn({navigation}: SignInScreenProps) {
   }, [navigation]);
 
   const canGoNext = email && password;
+
+  const [user, setUser] = useState({});
+
+  const signInByGoogle = async () => {
+    GoogleSignin.configure({
+      webClientId:
+        '1091823482731-f0375q139gm9me0a4v7cg50jiamjkcq4.apps.googleusercontent.com',
+      //     offlineAccess: true,
+      //     forceCodeForRefreshToken: true,
+    });
+    GoogleSignin.hasPlayServices()
+      .then(hasPlayService => {
+        if (hasPlayService) {
+          GoogleSignin.signIn()
+            .then(userInfo => {
+              console.log(JSON.stringify(userInfo));
+              setUser(userInfo);
+            })
+            .catch(e => {
+              console.log('ERROR IS: ' + JSON.stringify(e));
+            });
+        }
+      })
+      .catch(e => {
+        console.log('ERROR IS: ' + JSON.stringify(e));
+      });
+  };
+
   return (
     <DismissKeyboardView>
       <View style={styles.inputWrapper}>
@@ -92,6 +126,13 @@ function SignIn({navigation}: SignInScreenProps) {
         <Pressable onPress={toSignUp}>
           <Text>회원가입하기</Text>
         </Pressable>
+
+        <View style={styles.container}>
+          <GoogleSigninButton
+            size={GoogleSigninButton.Size.Wide} // Standart or Wide
+            onPress={signInByGoogle}
+          />
+        </View>
       </View>
     </DismissKeyboardView>
   );
@@ -126,6 +167,12 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
