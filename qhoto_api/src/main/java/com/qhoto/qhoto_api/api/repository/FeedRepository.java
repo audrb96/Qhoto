@@ -6,11 +6,8 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface FeedRepository extends JpaRepository<Feed, Long> {
+public interface FeedRepository extends JpaRepository<Feed, Long>,FeedRepositoryCon {
 
     Feed findFeedById(Long feedId);
-
-
-
 
 }

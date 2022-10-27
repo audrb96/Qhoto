@@ -51,17 +51,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().disable()
                 .oauth2Login()
                 .authorizationEndpoint()
-                        .baseUri("/oauth2/authorize")
-                        .authorizationRequestRepository(cookieAuthorizationRequestRepository)
+                .baseUri("/oauth2/authorize")
+                .authorizationRequestRepository(cookieAuthorizationRequestRepository)
                 .and()
                 .redirectionEndpoint()
-                    .baseUri("/oauth2/callback/*")
+                .baseUri("/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
-                    .userService(customOAuth2UserService)
+                .userService(customOAuth2UserService)
                 .and()
-                    .successHandler(authenticationSuccessHandler)
-                    .failureHandler(authenticationFailureHandler);
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailureHandler);
 
         http.exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)

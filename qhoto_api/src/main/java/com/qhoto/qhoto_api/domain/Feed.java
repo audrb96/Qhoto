@@ -52,6 +52,7 @@ public class Feed {
     @Column(name = "quest_dfficulty",nullable = false)
     private Integer difficulty;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "quest_duration",nullable = false)
     private QuestDuration duration;
 }

@@ -10,8 +10,10 @@ import com.qhoto.qhoto_api.domain.type.FeedLikePK;
 import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
+import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import com.qhoto.qhoto_api.dto.response.CommentRes;
+import com.qhoto.qhoto_api.dto.response.FeedAllRes;
 import com.qhoto.qhoto_api.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -36,6 +38,12 @@ public class FeedService {
     private final FeedLikeRepository feedLikeRepository;
     private final QuestRepository questRepository;
 
+
+
+
+    public List<FeedAllRes> getAllFeed(FeedAllReq feedAllReq) {
+        return feedRepository.findByCondition(feedAllReq);
+    }
 
     public void postFeed(CreateFeedReq createFeedReq) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
@@ -105,6 +113,5 @@ public class FeedService {
                 .build();
         feedLikeRepository.deleteById(feedLikePK);
     }
-
 
 }

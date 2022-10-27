@@ -4,6 +4,7 @@ package com.qhoto.qhoto_api.api.controller;
 import com.qhoto.qhoto_api.api.service.FeedService;
 import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
+import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +24,16 @@ public class FeedController {
     private final FeedService feedService;
 
 
+    @GetMapping
+    public ResponseEntity<?> readAllFeed(@RequestBody FeedAllReq feedAllReq){
+        return new ResponseEntity<>(feedService.getAllFeed(feedAllReq),HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<HttpStatus> createFeed(@Validated @RequestBody CreateFeedReq createFeedReq) throws IOException {
         feedService.postFeed(createFeedReq);
         return ResponseEntity.ok().build();
     }
-
-
-
 
     @PostMapping("/comment")
     public ResponseEntity<HttpStatus> createComment(@Validated @RequestBody CreateCommentReq createCommentReq){
