@@ -46,12 +46,16 @@ public class Feed {
     @Column(nullable = false)
     private String typeCode;
 
+    @Column(nullable = false)
+    private String typeName;
+
     @Column(name = "quest_score",nullable = false)
     private Integer score;
 
     @Column(name = "quest_dfficulty",nullable = false)
     private Integer difficulty;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "quest_duration",nullable = false)
     private QuestDuration duration;
 }

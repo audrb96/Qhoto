@@ -1,15 +1,12 @@
 package com.qhoto.qhoto_api.api.controller;
 
 import com.qhoto.qhoto_api.api.service.QuestService;
-import com.qhoto.qhoto_api.dto.response.QuestListRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,7 +16,7 @@ public class QuestController {
     private final QuestService questService;
 
     @GetMapping("")
-    public ResponseEntity<?> getQuestList() {
+    public ResponseEntity<?> readAllQuestList() {
 //        Long userId = jwt.getUserId(request);
 //        Long userId;
 //        try {
@@ -27,26 +24,23 @@ public class QuestController {
 //        } catch (Exception e) {
 //            userId = -1L;
 //        }
-        return new ResponseEntity<>(, HttpStatus.OK);
+
+        return new ResponseEntity<>(questService.getQuestList(), HttpStatus.OK);
     }
 
     @GetMapping("/isClear/daily")
-    public ResponseEntity<?> getDailyIsClear() {
-        Long userId;
-
+    public ResponseEntity<?> readDailyIsClear() {
         return new ResponseEntity<>(questService.getDailyIsClear(), HttpStatus.OK);
     }
 
     @GetMapping("/isClear/weekly")
-    public ResponseEntity<?> getWeeklyIsClear() {
-        Long userId;
-
+    public ResponseEntity<?> readWeeklyIsClear() {
         return new ResponseEntity<>(questService.getWeeklyIsClear(), HttpStatus.OK);
     }
 
     @GetMapping("/isClear/monthly")
-    public ResponseEntity<?> getMonthlyIsClear() {
-        Long userId;
+    public ResponseEntity<?> readMonthlyIsClear() {
+        Long userId = 1L;
         return new ResponseEntity<>(questService.getMonthlyIsClear(), HttpStatus.OK);
     }
 
