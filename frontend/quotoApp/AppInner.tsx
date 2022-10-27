@@ -37,7 +37,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppInner() {
   const isLoggedIn = useSelector((state: RootState) => state.user.loggedIn);
-  
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <NavigationContainer>
@@ -54,7 +54,8 @@ function AppInner() {
               name="FriendsFeed"
               component={FriendsFeed}
               options={{
-                title: '친구 피드 목록', 
+                title: '친구 피드 목록',
+                headerShown: false,
                 tabBarIcon: () => <Ionicons name="home-outline" size={20} />,
               }}
             />
@@ -64,7 +65,7 @@ function AppInner() {
               options={{
                 title: '모든 피드 목록',
                 tabBarIcon: () => <Ionicons name="globe-outline" size={20} />,
-            }}
+              }}
             />
             <Tab.Screen
               name="MyQuest"
@@ -84,7 +85,9 @@ function AppInner() {
               component={MyPage}
               options={{
                 title: '내 정보',
-                tabBarIcon: () => <Ionicons name="person-circle-outline" size={25} />,
+                tabBarIcon: () => (
+                  <Ionicons name="person-circle-outline" size={25} />
+                ),
               }}
             />
           </Tab.Navigator>
@@ -104,7 +107,7 @@ function AppInner() {
         )}
       </NavigationContainer>
     </GestureHandlerRootView>
-  )
+  );
 }
 
 export default AppInner;
