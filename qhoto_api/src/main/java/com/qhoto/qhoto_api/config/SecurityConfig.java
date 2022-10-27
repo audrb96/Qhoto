@@ -1,20 +1,21 @@
 package com.qhoto.qhoto_api.config;
 
-import com.qhoto.qhoto_api.api.controller.oauth2.OAuth2AuthenticationFailureHandler;
-import com.qhoto.qhoto_api.api.controller.oauth2.OAuth2AuthenticationSuccessHandler;
-import com.qhoto.qhoto_api.api.repository.CookieAuthorizationRequestRepository;
-import com.qhoto.qhoto_api.api.service.CustomOAuth2UserService;
 import com.qhoto.qhoto_api.exception.handler.JwtAccessDeniedHandler;
 import com.qhoto.qhoto_api.exception.handler.JwtAuthenticationEntryPoint;
 import com.qhoto.qhoto_api.filter.JwtAuthenticationFilter;
+import com.qhoto.qhoto_api.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -22,52 +23,43 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig  {
 
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
-    private final OAuth2AuthenticationSuccessHandler authenticationSuccessHandler;
-    private final OAuth2AuthenticationFailureHandler authenticationFailureHandler;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/api/**").permitAll()
-                .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/oauth").permitAll()
-                .antMatchers("/").permitAll()
-                .antMatchers("/temp.html").permitAll()
-                .anyRequest().authenticated();
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @Bean
+    public WebSecurityCustomizer configure() {
+        return (web) -> web.ignoring().mvcMatchers(
+                "/api/login/google",
+                "/api/auth/reissue"
+        );
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http.csrf().disable();
 
         http.cors()
                 .and()
-                .csrf().disable()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.formLogin().disable()
-                .oauth2Login()
-                .authorizationEndpoint()
-                        .baseUri("/oauth2/authorize")
-                        .authorizationRequestRepository(cookieAuthorizationRequestRepository)
-                .and()
-                .redirectionEndpoint()
-                    .baseUri("/oauth2/callback/*")
-                .and()
-                .userInfoEndpoint()
-                    .userService(customOAuth2UserService)
-                .and()
-                    .successHandler(authenticationSuccessHandler)
-                    .failureHandler(authenticationFailureHandler);
+                .authorizeRequests()
+                .antMatchers("/api/login/google").permitAll()
+                .antMatchers("/api/auth/reissue").permitAll()
+                .anyRequest().authenticated();
 
         http.exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler);
 
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
+        return http.build();
     }
 }
