@@ -16,13 +16,15 @@ function Settings() {
           height={width}
           mode="parallax"
           modeConfig={{
-            parallaxScrollingScale: 0.9,
-            parallaxScrollingOffset: 50,
+            parallaxScrollingScale: 0.8,
+            parallaxScrollingOffset: 150,
           }}
           data={questTypes}
           scrollAnimationDuration={1000}
           onSnapToItem={index => console.log('current index:', index)}
-          renderItem={({index}) => <QuestCard questType={questTypes[index]} />}
+          renderItem={({index}) => (
+            <QuestCard questType={questTypes[index]} windowSize={width} />
+          )}
         />
       </View>
       <View style={styles.questButtonContainer}>
@@ -45,10 +47,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   questButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'purple',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#4B179F',
   },
 });
 
