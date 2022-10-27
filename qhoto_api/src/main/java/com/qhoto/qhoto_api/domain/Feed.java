@@ -1,7 +1,7 @@
 package com.qhoto.qhoto_api.domain;
 
 import com.qhoto.qhoto_api.domain.type.QuestDuration;
-import com.qhoto.qhoto_api.domain.type.feedStatus;
+import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,7 +38,7 @@ public class Feed {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "feed_status", nullable = false)
-    private feedStatus status;
+    private FeedStatus status;
 
     @Column(nullable = false)
     private String location;
@@ -52,6 +52,7 @@ public class Feed {
     @Column(name = "quest_dfficulty",nullable = false)
     private Integer difficulty;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "quest_duration",nullable = false)
     private QuestDuration duration;
 }

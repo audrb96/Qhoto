@@ -1,10 +1,16 @@
 package com.qhoto.qhoto_api.domain.type;
 
-public enum UserRole {
-    ROLE_USER("일반 사용자");
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    private String value;
-    UserRole(String value) {
-        this.value = value;
-    }
+@RequiredArgsConstructor
+@Getter
+public enum UserRole {
+    ADMIN("ROLE_ADMIN", "admin"),
+    USER("ROLE_USER", "user");
+
+    private final String value;
+    private final String name;
+
+
 }
