@@ -25,6 +25,7 @@ repositories {
 	mavenCentral()
 }
 
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -36,10 +37,15 @@ dependencies {
 	/* S3 */
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+<<<<<<< HEAD
+	implementation group: 'com.google.api-client', name: 'google-api-client-jackson2', version: '2.0.0'
+	implementation group: 'com.google.http-client', name: 'google-http-client-jackson2', version: '1.11.0-beta'
+=======
 	/* queryDsl */
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
+>>>>>>> 5f2c5f4ff302c914ba67ddf25d590285d0c16b68
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'mysql:mysql-connector-java'
