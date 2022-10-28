@@ -110,7 +110,7 @@ function Settings() {
           mode="parallax"
           modeConfig={{
             parallaxScrollingScale: 0.8,
-            parallaxScrollingOffset: 150,
+            parallaxScrollingOffset: 160,
           }}
           data={questTypes}
           scrollAnimationDuration={1000}
@@ -125,7 +125,7 @@ function Settings() {
       </View>
       <View style={styles.questButtonContainer}>
         <Pressable style={styles.questButton}>
-          <Icon name="camera" color="white" size={35}></Icon>
+          <Icon name="camera" color="white" size={45}></Icon>
         </Pressable>
       </View>
     </View>
@@ -135,7 +135,6 @@ function Settings() {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    backgroundColor: 'white',
   },
   questCardContainer: {
     flex: 3.5,
@@ -148,9 +147,9 @@ const styles = StyleSheet.create({
   questButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     backgroundColor: '#4B179F',
   },
 });

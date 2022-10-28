@@ -196,7 +196,19 @@ function FriendsFeed() {
         }}>
         <TouchableOpacity
           onPress={() => {
+<<<<<<< HEAD
             setSelectedIdx(0);
+=======
+            console.log('엑시오스');
+            axios
+              .get('https://picsum.photos/v2/list?page=2&limit=5')
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+>>>>>>> f9746f5f7ca3197341b8436e0e945a6d4143c7aa
           }}>
           <Text
             style={
