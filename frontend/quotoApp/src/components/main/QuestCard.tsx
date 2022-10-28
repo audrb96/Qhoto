@@ -1,6 +1,8 @@
 import React, {useState, useRef} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
+
 import GestureFlipView from 'react-native-gesture-flip-card';
+
 import CardTemplate from './CardTemplate';
 
 interface Props {

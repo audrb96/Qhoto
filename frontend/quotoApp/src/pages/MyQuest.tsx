@@ -1,7 +1,9 @@
 import React from 'react';
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+
 import QuestCard from '../components/main/QuestCard';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const questTypes = ['DAILY', 'WEEKLY', 'MONTHLY'];
