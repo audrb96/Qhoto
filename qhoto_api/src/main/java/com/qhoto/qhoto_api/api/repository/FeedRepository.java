@@ -9,13 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface FeedRepository extends JpaRepository<Feed, Long> {
+public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositoryCon {
 
-    @Query("select f from Feed f inner join fetch ActiveDaily a "
-            + "on f.activeDaily.id = a.id and f.user.id= :userId "
-            + "and f.activeDaily.id = a.id "
-            + "where f.status = 'U'"
-            + "and a.status='A'" )
+    @Query("select f from Feed f inner join fetch ActiveDaily a on f.activeDaily.id = a.id and f.user.id= :userId and f.activeDaily.id = a.id where f.status = 'U' and a.status='A'" )
     Optional<Feed> findClearDailyQuest(@Param("userId") Long userId);
     @Query(value = "select * from feed f inner join active_weekly a "
             +"on f.quest_id = a.quest_id and user_id = 1 "
@@ -30,5 +26,6 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
             + "where a.status='A'" )
     Optional<Feed> findClearMonthlyQuest(@Param("userId") Long userId);
 
+    Feed findFeedById(Long feedId);
 
 }
