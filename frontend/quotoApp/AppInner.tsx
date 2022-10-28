@@ -15,6 +15,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // https://oblador.github.io/react-native-vector-icons/
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {Button} from 'react-native-paper';
+import QhotoLevel from './src/pages/QhotoLevel';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
@@ -25,6 +27,7 @@ export type LoggedInParamList = {
   Delivery: undefined;
   MyPage: undefined;
   Complete: {orderId: string};
+  QhotoLevel: undefined;
 };
 
 export type RootStackParamList = {
