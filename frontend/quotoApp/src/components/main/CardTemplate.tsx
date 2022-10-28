@@ -1,7 +1,7 @@
 import React from 'react';
 import {Dimensions, StyleSheet, View, Text} from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface Props {
   questName: string;
@@ -12,11 +12,11 @@ interface Props {
 const windowSize = Dimensions.get('window').width;
 
 const questTypes: {[key: string]: {iconName: string; colorCode: string}} = {
-  건강: {iconName: '', colorCode: '#C25445'},
-  일상: {iconName: '', colorCode: '#ECB21D'},
-  환경: {iconName: '', colorCode: '#70A348'},
-  이색: {iconName: '', colorCode: '#2271CE'},
-  색깔: {iconName: '', colorCode: '#4B179F'},
+  건강: {iconName: 'running', colorCode: '#C25445'},
+  일상: {iconName: 'sun', colorCode: '#ECB21D'},
+  환경: {iconName: 'leaf', colorCode: '#70A348'},
+  이색: {iconName: 'star', colorCode: '#2271CE'},
+  색깔: {iconName: 'palette', colorCode: '#4B179F'},
 };
 
 const CardTemplate: React.FC<Props> = props => {
@@ -25,7 +25,7 @@ const CardTemplate: React.FC<Props> = props => {
   return (
     <View style={styles.card}>
       <Icon
-        name="refresh"
+        name="sync"
         style={styles.rerollIcon}
         onPress={handleRerollClick}></Icon>
       <View style={styles.labelContainer}>
@@ -36,7 +36,10 @@ const CardTemplate: React.FC<Props> = props => {
               backgroundColor: questTypes[questType].colorCode,
             },
           ]}>
-          <Text style={styles.labelContent}>{questType} 퀘스트</Text>
+          <Text style={styles.labelContent}>
+            <Icon name={questTypes[questType].iconName} size={15} />
+            &nbsp;&nbsp; {questType} 퀘스트
+          </Text>
         </View>
       </View>
       <View style={styles.questContentContainer}>
@@ -64,6 +67,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
     borderWidth: 1,
+    borderColor: 'gray',
   },
   rerollIcon: {
     color: '#C7C7C7',
