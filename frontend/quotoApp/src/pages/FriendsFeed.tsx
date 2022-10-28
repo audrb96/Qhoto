@@ -15,11 +15,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 
-function Orders() {
+function FriendsFeed() {
   const [selectedId, setSelectedId] = useState(null);
   const [isLike, setLike] = useState([true, false, true, false]);
   const [isSuccess, setSuccess] = useState(false);
-  const [isSelect, setSelect] = useState('DAY');
+  const [selectedIdx, setSelectedIdx] = useState(0);
 
   const DATA = [
     {
@@ -183,22 +183,42 @@ function Orders() {
         }}>
         <TouchableOpacity
           onPress={() => {
-            axios
-              .get('https://picsum.photos/v2/list?page=2&limit=5')
-              .then(function (response) {
-                console.log(response);
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+            setSelectedIdx(0);
           }}>
-          <Text style={{width: 80, textAlign: 'center'}}>DAY</Text>
+          <Text
+            style={
+              selectedIdx === 0
+                ? {width: 80, textAlign: 'center', color: 'purple'}
+                : {width: 80, textAlign: 'center'}
+            }>
+            DAY
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={{width: 80, textAlign: 'center'}}>WEEK</Text>
+        <TouchableOpacity
+          onPress={() => {
+            setSelectedIdx(1);
+          }}>
+          <Text
+            style={
+              selectedIdx === 1
+                ? {width: 80, textAlign: 'center', color: 'purple'}
+                : {width: 80, textAlign: 'center'}
+            }>
+            WEEK
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={{width: 80, textAlign: 'center'}}>MONTH</Text>
+        <TouchableOpacity
+          onPress={() => {
+            setSelectedIdx(2);
+          }}>
+          <Text
+            style={
+              selectedIdx === 2
+                ? {width: 80, textAlign: 'center', color: 'purple'}
+                : {width: 80, textAlign: 'center'}
+            }>
+            MONTH
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={{flex: 1}}>
@@ -229,4 +249,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Orders;
+export default FriendsFeed;
