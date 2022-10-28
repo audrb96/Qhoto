@@ -73,12 +73,14 @@ public class QuestService {
         return isClear;
     }
 
+
     public isClearRes getMonthlyIsClear() {
         isClearRes isClear = isClearRes.builder()
                 .isClear(feedRepository.findClearMonthlyQuest(1L).isPresent())
                 .build();
         return isClear;
     }
+
 
     public List<QuestListItemRes> buildQuestListWithClear(Feed feed) {
             List<QuestListItemRes> questList = new ArrayList<>();

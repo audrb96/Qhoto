@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface FeedRepository extends JpaRepository<Feed, Long> {
 
     @Query("select f from Feed f inner join fetch ActiveDaily a "
-            + "on f.quest.id=a.quest.id and f.user.id= :userId "
-            + "and f.status = 'U'"
-            + "and "
-            + "where a.status='A'" )
+            + "on f.activeDaily.id = a.id and f.user.id= :userId "
+            + "and f.activeDaily.id = a.id "
+            + "where f.status = 'U'"
+            + "and a.status='A'" )
     Optional<Feed> findClearDailyQuest(@Param("userId") Long userId);
     @Query(value = "select * from feed f inner join active_weekly a "
             +"on f.quest_id = a.quest_id and user_id = 1 "
