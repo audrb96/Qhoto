@@ -6,6 +6,8 @@ import {
   Text,
   TextInput,
   View,
+  Button,
+  Image,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../AppInner';
@@ -16,10 +18,20 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
+import {
+  KakaoOAuthToken,
+  KakaoProfile,
+  getProfile as getKakaoProfile,
+  login,
+  logout,
+  unlink,
+} from '@react-native-seoul/kakao-login';
+import kakao from '../assets/kakao_login_medium_wide.png';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
 function SignIn({navigation}: SignInScreenProps) {
+  //////////////////////////////
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,19 +54,30 @@ function SignIn({navigation}: SignInScreenProps) {
     Alert.alert('알림', '로그인 되었습니다.');
   }, [email, password]);
 
-  const toSignUp = useCallback(() => {
+  const toSignUp = () => {
     navigation.navigate('SignUp');
-  }, [navigation]);
-
-  // const goToFriendsFeed = useCallback(() => {
-  //   navigation.navigate('FriendsFeed');
-  // }, [navigation]);
+  };
 
   const canGoNext = email && password;
 
   const [user, setUser] = useState({});
 
-  const signInByGoogle = async () => {
+  const signInWithKakao = async (): Promise<void> => {
+    const token: KakaoOAuthToken = await login().then(token => {
+      if (token) {
+        dispatch(
+          userSlice.actions.setUser({
+            loggedIn: true,
+          }),
+        );
+      }
+    });
+    setUser(token);
+    console.log(JSON.stringify(token));
+    Alert.alert('알림', '로그인 되었습니다.');
+  };
+
+  const signInWithGoogle = async () => {
     GoogleSignin.configure({
       webClientId:
         '1091823482731-f0375q139gm9me0a4v7cg50jiamjkcq4.apps.googleusercontent.com',
@@ -144,9 +167,12 @@ function SignIn({navigation}: SignInScreenProps) {
         <View style={styles.container}>
           <GoogleSigninButton
             size={GoogleSigninButton.Size.Wide} // Standart or Wide
-            onPress={signInByGoogle}
+            onPress={signInWithGoogle}
           />
         </View>
+        <Pressable onPress={signInWithKakao}>
+          <Image source={kakao} />
+        </Pressable>
       </View>
     </DismissKeyboardView>
   );
