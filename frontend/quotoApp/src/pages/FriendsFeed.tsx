@@ -20,18 +20,23 @@ function FriendsFeed() {
   const [isLike, setLike] = useState([true, false, true, false]);
   const [isSuccess, setSuccess] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const category = {
+    environment: 'https://cdn-icons-png.flaticon.com/128/259/259345.png',
+    health: 'https://cdn-icons-png.flaticon.com/128/2262/2262878.png',
+    daily: 'https://cdn-icons-png.flaticon.com/128/4397/4397734.png',
+    special: 'https://cdn-icons-png.flaticon.com/128/2970/2970858.png',
+  };
 
   const DATA = [
     {
       id: '0',
       title: 'First',
       profile: 'https://reactjs.org/logo-og.png',
-      badge: 'red',
+      badge: 'https://reactjs.org/logo-og.png',
       nickname: '코린이1',
       profileId: 'hyungjin1asdfasdfasdf',
       feedtime: '오후02:00',
-      questtag:
-        'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
+      questtag: category.health,
       feedImage:
         'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
       like: isLike[0],
@@ -39,13 +44,12 @@ function FriendsFeed() {
     {
       id: '1',
       title: 'First',
-      profile: '사진 url2',
+      profile: 'https://reactjs.org/logo-og.png',
       badge: 'https://reactjs.org/logo-og.png',
       nickname: '코린이2',
       profileId: 'hyungjin2',
       feedtime: '오후02:14',
-      questtag:
-        'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
+      questtag: category.daily,
       feedImage:
         'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
       like: isLike[1],
@@ -54,12 +58,11 @@ function FriendsFeed() {
       id: '2',
       title: 'First',
       profile: 'https://reactjs.org/logo-og.png',
-      badge: 'green',
+      badge: 'https://reactjs.org/logo-og.png',
       nickname: '코린이3',
       profileId: 'hyungjin3',
       feedtime: '오후03:51',
-      questtag:
-        'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
+      questtag: category.environment,
       feedImage:
         'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
       like: isLike[2],
@@ -67,13 +70,12 @@ function FriendsFeed() {
     {
       id: '3',
       title: 'First',
-      profile: '사진 url4',
+      profile: 'https://reactjs.org/logo-og.png',
       badge: 'https://reactjs.org/logo-og.png',
       nickname: '코린이4',
       profileId: 'hyungjin4.',
       feedtime: '오후06:12',
-      questtag:
-        'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
+      questtag: category.special,
       feedImage:
         'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
       like: isLike[3],
@@ -95,7 +97,7 @@ function FriendsFeed() {
             <Text>{item.feedtime}</Text>
           </View>
         </View>
-        <View style={{flex: 0.15, backgroundColor: 'blue'}}>
+        <View style={{flex: 0.15}}>
           <Image
             style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
             source={{
@@ -107,17 +109,14 @@ function FriendsFeed() {
       <View style={{backgroundColor: 'green', height: 200, width: '100%'}}>
         {isSuccess ? (
           <Image
-            style={
-              isSuccess
-                ? {width: '100%', height: '100%', resizeMode: 'stretch'}
-                : {width: '100%', height: '100%', resizeMode: 'stretch'}
-            }
+            style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
             source={{uri: item.feedImage}}
           />
         ) : (
           <ImageBackground
             source={{uri: item.feedImage}}
-            style={{flex: 1, resizeMode: 'cover'}}
+            style={{flex: 1}}
+            resizeMode="stretch"
             blurRadius={10}>
             <View
               style={{
@@ -150,6 +149,20 @@ function FriendsFeed() {
             }}>
             <Ionicons name="chatbubble-outline" size={30} color={'black'} />
           </TouchableOpacity>
+        </View>
+      </View>
+      <View style={{flexDirection: 'row', flex: 1, marginVertical: 12}}>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Avatar.Image size={30} source={{uri: item.profile}} />
+        </View>
+        <View>
+          <View style={{flexDirection: 'row', flex: 1}}>
+            <Text>{item.profileId}</Text>
+            <Text>{item.feedtime}</Text>
+          </View>
+          <View>
+            <Text>댓글을 써주세요</Text>
+          </View>
         </View>
       </View>
     </View>
