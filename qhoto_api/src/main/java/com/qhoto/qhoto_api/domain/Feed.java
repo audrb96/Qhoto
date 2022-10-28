@@ -30,6 +30,18 @@ public class Feed {
     @JoinColumn(name = "quest_id", nullable = false)
     private Quest quest;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name="active_daily_id", nullable = false)
+    private ActiveDaily activeDaily;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name="active_weekly_id", nullable = false)
+    private ActiveDaily activeWeekly;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name="active_monthly_id", nullable = false)
+    private ActiveDaily activeMonthly;
+
     @Column(name = "feed_image", nullable = false)
     private String image;
 
@@ -45,6 +57,9 @@ public class Feed {
 
     @Column(nullable = false)
     private String typeCode;
+
+    @Column(nullable = false)
+    private String typeName;
 
     @Column(name = "quest_score",nullable = false)
     private Integer score;
