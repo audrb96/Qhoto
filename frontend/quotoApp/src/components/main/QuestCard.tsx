@@ -1,80 +1,69 @@
-import React, {useRef} from 'react';
-import {Dimensions, StyleSheet, View, Text, Pressable} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {StyleSheet, View, Text} from 'react-native';
+
 import GestureFlipView from 'react-native-gesture-flip-card';
 
+import CardTemplate from './CardTemplate';
+
 interface Props {
-  questTheme?: string;
-  questContent?: string;
-  questType?: string;
-  windowSize?: number;
+  questType: string;
+  questList: Quest[];
 }
 
-const windowSize = Dimensions.get('window').width;
+interface Quest {
+  questId: number;
+  questName: string;
+  questType: string;
+  questScore: number;
+  questDifficulty: number;
+  questImage: string;
+}
 
 const QuestCard: React.FC<Props> = props => {
-  const {questTheme, questContent, questType} = props;
-  const viewRef = useRef();
+  const viewRef: any = useRef();
 
-  const card = () => {};
+  const {questType, questList} = props;
+  const [nextQuestIdx, setNextQuestIdx] = useState(2);
+  const [frontCard, setFrontCard] = useState(questList[0]);
+  const [backCard, setBackCard] = useState(questList[1]);
+  const [isFront, setIsFront] = useState(true);
 
-  const renderFront = () => {
-    return (
-      <Pressable
-        style={styles.frontStyle}
-        onPress={() => viewRef.current.flipLeft()}>
-        <View style={styles.labelContainer}>
-          <View style={styles.frontLabel}>
-            <Text style={styles.labelContent}>건강 퀘스트</Text>
-          </View>
-        </View>
-        <View style={styles.questContentContainer}>
-          <Text style={styles.frontQuestContent}>3km 달리기</Text>
-        </View>
-      </Pressable>
-    );
+  const handleFlip = () => {
+    if (isFront) {
+      setFrontCard({...questList[nextQuestIdx]});
+    } else {
+      setBackCard({...questList[nextQuestIdx]});
+    }
+    setNextQuestIdx((nextQuestIdx + 1) % 3);
+    setIsFront(!isFront);
   };
 
-  const renderBack = () => {
-    return (
-      <Pressable
-        style={styles.backStyle}
-        onPress={() => viewRef.current.flipLeft()}>
-        <View style={styles.labelContainer}>
-          <View style={styles.label}>
-            <Text style={styles.labelContent}>그린 퀘스트</Text>
-          </View>
-        </View>
-        <View style={styles.questContentContainer}>
-          <Text style={styles.questContent}>텀블러 사용하기</Text>
-        </View>
-      </Pressable>
-    );
+  const handleRerollClick = () => {
+    viewRef.current.flipLeft();
   };
 
   return (
-    // <View style={{flex: 1}}>
-    //   <Text style={styles.questType}>{questType}</Text>
-    //   <View style={styles.card}>
-    //     <View style={styles.labelContainer}>
-    //       <View style={styles.label}>
-    //         <Text style={styles.labelContent}>이색 퀘스트</Text>
-    //       </View>
-    //     </View>
-    //     <View style={styles.questContentContainer}>
-    //       <Text style={styles.questContent}>고양이 사진찍기</Text>
-    //     </View>
-    //   </View>
-    // </View>
     <View style={styles.container}>
       <Text style={styles.questType}>{questType}</Text>
       <GestureFlipView
         width={300}
-        height={400}
+        height={350}
         gestureEnabled={false}
+        onFlipEnd={handleFlip}
         style={{flex: 1}}
-        ref={ref => (viewRef.current = ref)}>
-        {renderBack()}
-        {renderFront()}
+        ref={(ref: any) => (viewRef.current = ref)}>
+        {/* {renderFront()}
+        {renderBack()} */}
+        <CardTemplate
+          questName={frontCard.questName}
+          questType={frontCard.questType}
+          handleRerollClick={handleRerollClick}
+        />
+        <CardTemplate
+          questName={backCard.questName}
+          questType={backCard.questType}
+          handleRerollClick={handleRerollClick}
+        />
       </GestureFlipView>
     </View>
   );
@@ -86,75 +75,12 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     color: '#595959',
-  },
-  card: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    borderWidth: 1,
-    backgroundColor: 'white',
-    borderRadius: 20,
-  },
-  labelContainer: {
-    flex: 1,
-  },
-  label: {
-    width: 150,
-    height: 50,
-    backgroundColor: '#70A348',
-    alignItems: 'center',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-  },
-  frontLabel: {
-    width: 150,
-    height: 50,
-    backgroundColor: '#C25445',
-    alignItems: 'center',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-  },
-  labelContent: {
-    color: 'white',
-    textAlign: 'center',
-    lineHeight: 50,
-  },
-  questContentContainer: {
-    flex: 9,
-    justifyContent: 'center',
-  },
-  questContent: {
-    textAlign: 'center',
-    fontSize: 30,
-    color: '#70A348',
-  },
-  frontQuestContent: {
-    textAlign: 'center',
-    fontSize: 30,
-    color: '#C25445',
+    fontFamily: 'Happiness-Sans-Bold',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  frontStyle: {
-    width: (windowSize * 5) / 6,
-    height: 350,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    borderWidth: 1,
-    alignItems: 'center',
-    borderRadius: 20,
-  },
-  backStyle: {
-    width: (windowSize * 5) / 6,
-    height: 350,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    borderWidth: 1,
-    alignItems: 'center',
-    borderRadius: 20,
   },
 });
 
