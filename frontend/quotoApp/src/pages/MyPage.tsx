@@ -3,6 +3,7 @@ import {Text, TouchableOpacity, View, Image, TextInput} from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 function MyPage({navigation}: null) {
   const goToLevel = () => {
@@ -94,10 +95,22 @@ function MyPage({navigation}: null) {
       <View>
         <View style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <Image
-              source={{uri: userImage}}
-              style={{width: 75, height: 75, borderRadius: 37.5}}
-            />
+            <View style={{}}>
+              <Image
+                source={{uri: userImage}}
+                style={{
+                  width: 75,
+                  height: 75,
+                  borderRadius: 37.5,
+                }}
+              />
+              <AntDesign
+                name="camerao"
+                size={18}
+                color={'#3B28B1'}
+                style={{position: 'absolute'}}
+              />
+            </View>
             <Text style={{fontSize: 16}}>{emailId[0]}</Text>
 
             {editable === false ? (
