@@ -1,20 +1,22 @@
 package com.qhoto.qhoto_api.dto.response;
 
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 public class FeedAllRes {
 
-    private final Long feedId;
-    private final String feedImage;
+    private final List<FeedAllDto> dayQuestList;
+    private final List<FeedAllDto> weekQuestList;
+    private final List<FeedAllDto> monthQuestList;
 
-    @QueryProjection
+
     @Builder
-    public FeedAllRes(Long feedId, String feedImage){
-        this.feedId = feedId;
-        this.feedImage = feedImage;
+    public FeedAllRes(List<FeedAllDto> dayQuestList, List<FeedAllDto> weekQuestList, List<FeedAllDto> monthQuestList) {
+        this.dayQuestList = dayQuestList;
+        this.weekQuestList = weekQuestList;
+        this.monthQuestList = monthQuestList;
     }
-
 }

@@ -10,10 +10,11 @@ import com.qhoto.qhoto_api.domain.type.FeedLikePK;
 import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
-import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import com.qhoto.qhoto_api.dto.response.CommentRes;
 import com.qhoto.qhoto_api.dto.response.FeedAllRes;
+import com.qhoto.qhoto_api.dto.response.FeedDetailRes;
+import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.qhoto.qhoto_api.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -41,9 +42,27 @@ public class FeedService {
 
 
 
-    public List<FeedAllRes> getAllFeed(FeedAllReq feedAllReq) {
-        return feedRepository.findByCondition(feedAllReq);
+    public FeedAllRes getAllFeed(String condition) {
+        return feedRepository.findByCondition(condition);
     }
+
+    public FeedDetailRes getFeedDetail(Long userId, Long feedId){
+
+        Feed feed = feedRepository.findFeedById(feedId);
+        FeedDetailRes feedDetailRes = FeedDetailRes.builder()
+                .feedId(feedId)
+                .feedImage(feed.getImage())
+                .feedTime(feed.getTime())
+                .questName(feed.getQuest().getName())
+                .questType(feed.getQuest().getQuestType().toString())
+                .questPoint(feed.getQuest().getScore())
+                .likeCount(feedLikeRepository.countAllById(feedId))
+                .likeStatus((feedLikeRepository.findById(userId).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
+                .build();
+        return feedDetailRes;
+    }
+
+
 
     public void postFeed(CreateFeedReq createFeedReq) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
