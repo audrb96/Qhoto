@@ -5,12 +5,12 @@ import {RootState} from '../store/reducer';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 function MyPage({navigation}: null) {
-  const goToLevel = useCallback(() => {
+  const goToLevel = () => {
     navigation.navigate('QhotoLevel');
-  }, [navigation]);
-  const goToQuestLog = useCallback(() => {
+  };
+  const goToQuestLog = () => {
     navigation.navigate('QuestLog');
-  }, [navigation]);
+  };
   const userImage = useSelector((state: RootState) => state.user.userImage);
   // const userName = useSelector((state: RootState) => state.user.userName);
   const email = useSelector((state: RootState) => state.user.email);

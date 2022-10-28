@@ -54,13 +54,9 @@ function SignIn({navigation}: SignInScreenProps) {
     Alert.alert('알림', '로그인 되었습니다.');
   }, [email, password]);
 
-  const toSignUp = useCallback(() => {
+  const toSignUp = () => {
     navigation.navigate('SignUp');
-  }, [navigation]);
-
-  // const goToFriendsFeed = useCallback(() => {
-  //   navigation.navigate('FriendsFeed');
-  // }, [navigation]);
+  };
 
   const canGoNext = email && password;
 

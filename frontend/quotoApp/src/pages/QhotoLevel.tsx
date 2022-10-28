@@ -2,9 +2,9 @@ import React, {useEffect, useCallback} from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
 
 function QhotoLevel({navigation}) {
-  const goToMyPage = useCallback(() => {
+  const goToMyPage = () => {
     navigation.navigate('MyPage');
-  }, [navigation]);
+  };
   return (
     <View>
       <Text> QhotoLevel 화면</Text>
