@@ -17,6 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
 import QhotoLevel from './src/pages/QhotoLevel';
+import MyPageStackScreen from './src/pages/MyPageStackScreen';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
@@ -85,7 +86,7 @@ function AppInner() {
             />
             <Tab.Screen
               name="MyPage"
-              component={MyPage}
+              component={MyPageStackScreen}
               options={{
                 title: '내 정보',
                 tabBarIcon: () => (
