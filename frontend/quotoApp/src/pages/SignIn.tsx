@@ -6,20 +6,21 @@ import {
   Text,
   TextInput,
   View,
-  Button,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../AppInner';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import {
   GoogleSignin,
-  statusCodes,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
+import {useAppDispatch} from '../store';
+import userSlice from '../slices/user';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
 function SignIn({navigation}: SignInScreenProps) {
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const emailRef = useRef<TextInput | null>(null);
@@ -45,6 +46,10 @@ function SignIn({navigation}: SignInScreenProps) {
     navigation.navigate('SignUp');
   }, [navigation]);
 
+  // const goToFriendsFeed = useCallback(() => {
+  //   navigation.navigate('FriendsFeed');
+  // }, [navigation]);
+
   const canGoNext = email && password;
 
   const [user, setUser] = useState({});
@@ -63,6 +68,15 @@ function SignIn({navigation}: SignInScreenProps) {
             .then(userInfo => {
               console.log(JSON.stringify(userInfo));
               setUser(userInfo);
+              Alert.alert('알림', '로그인 되었습니다.');
+              dispatch(
+                userSlice.actions.setUser({
+                  email: userInfo.user.email,
+                  userName: userInfo.user.name,
+                  userImage: userInfo.user.photo,
+                  loggedIn: true,
+                }),
+              );
             })
             .catch(e => {
               console.log('ERROR IS: ' + JSON.stringify(e));
