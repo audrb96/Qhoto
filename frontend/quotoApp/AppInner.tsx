@@ -15,7 +15,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // https://oblador.github.io/react-native-vector-icons/
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {SafeAreaView} from 'react-native';
+import {Button} from 'react-native-paper';
+import QhotoLevel from './src/pages/QhotoLevel';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
@@ -26,6 +27,7 @@ export type LoggedInParamList = {
   Delivery: undefined;
   MyPage: undefined;
   Complete: {orderId: string};
+  QhotoLevel: undefined;
 };
 
 export type RootStackParamList = {
@@ -56,6 +58,7 @@ function AppInner() {
               component={FriendsFeed}
               options={{
                 title: '친구 피드 목록',
+                headerShown: false,
                 tabBarIcon: () => <Ionicons name="home-outline" size={20} />,
               }}
             />
