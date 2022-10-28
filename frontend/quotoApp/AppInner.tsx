@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useSelector} from 'react-redux';
+import {View, Image} from 'react-native';
+
 import SignIn from './src/pages/SignIn';
 import SignUp from './src/pages/SignUp';
 import MyQuest from './src/pages/MyQuest';
@@ -9,14 +9,19 @@ import MyPage from './src/pages/MyPage';
 import FriendsFeed from './src/pages/FriendsFeed';
 import AllFeed from './src/pages/AllFeed';
 import FindFriend from './src/pages/FindFriend';
-import {useSelector} from 'react-redux';
+import QhotoLevel from './src/pages/QhotoLevel';
 import {RootState} from './src/store/reducer';
-import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-// https://oblador.github.io/react-native-vector-icons/
+
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Button} from 'react-native-paper';
-import QhotoLevel from './src/pages/QhotoLevel';
+
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+// https://oblador.github.io/react-native-vector-icons/
+
+import {HEADER_LOGO} from './src/image';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
@@ -37,60 +42,105 @@ export type RootStackParamList = {
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const appTheme = DefaultTheme;
+appTheme.colors.background = 'white';
 
 function AppInner() {
   const isLoggedIn = useSelector((state: RootState) => state.user.loggedIn);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <NavigationContainer>
+    <GestureHandlerRootView style={{flex: 1, backgroundColor: 'white'}}>
+      <NavigationContainer theme={appTheme}>
         {isLoggedIn ? (
           <Tab.Navigator
-            screenOptions={() => ({
+            initialRouteName="MyQuest"
+            screenOptions={({route}) => ({
+              tabBarIcon: ({focused, color}) => {
+                let iconName = '';
+                let size = 25;
+
+                if (route.name === 'MyQuest') {
+                  iconName = 'exclamation-circle';
+                  size = 30;
+                } else if (route.name === 'FriendFeed') {
+                  iconName = 'house-user';
+                } else if (route.name === 'AllFeed') {
+                  iconName = 'search';
+                } else if (route.name === 'FindFriend') {
+                  iconName = 'users';
+                } else if (route.name === 'MyPage') {
+                  iconName = 'user-circle';
+                  size = 28;
+                }
+
+                // You can return any component that you like here!
+                return (
+                  <FontAwesome5 name={iconName} size={size} color={color} />
+                );
+              },
               tabBarStyle: {
                 height: 70,
                 backgroundColor: 'white',
                 borderTopWidth: 2,
+                paddingTop: 5,
+                paddingBottom: 10,
               },
+              tabBarLabelStyle: {fontFamily: 'Happiness-Sans-Regular'},
+              tabBarActiveTintColor: '#4B179F',
+              tabBarInactiveTintColor: 'gray',
+              headerShown: true,
+              header: () => (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'white',
+                  }}>
+                  <Image
+                    style={{
+                      height: 50,
+                      resizeMode: 'contain',
+                      marginTop: 15,
+                    }}
+                    source={HEADER_LOGO}
+                  />
+                </View>
+              ),
             })}>
             <Tab.Screen
-              name="FriendsFeed"
+              name="FriendFeed"
               component={FriendsFeed}
               options={{
-                title: '친구 피드 목록',
-                headerShown: false,
-                tabBarIcon: () => <Ionicons name="home-outline" size={20} />,
+                title: '친구 피드',
               }}
             />
             <Tab.Screen
               name="AllFeed"
               component={AllFeed}
               options={{
-                title: '모든 피드 목록',
-                tabBarIcon: () => <Ionicons name="globe-outline" size={20} />,
+                title: '전체 피드',
               }}
             />
             <Tab.Screen
               name="MyQuest"
               component={MyQuest}
-              options={{title: '퀘스트'}}
+              options={{
+                title: '퀘스트',
+              }}
             />
             <Tab.Screen
               name="FindFriend"
               component={FindFriend}
               options={{
-                title: '친구찾기',
-                tabBarIcon: () => <Feather name="users" size={20} />,
+                title: '친구 찾기',
               }}
             />
             <Tab.Screen
               name="MyPage"
               component={MyPage}
               options={{
-                title: '내 정보',
-                tabBarIcon: () => (
-                  <Ionicons name="person-circle-outline" size={25} />
-                ),
+                title: '마이페이지',
               }}
             />
           </Tab.Navigator>

@@ -183,6 +183,7 @@ function Orders() {
         }}>
         <TouchableOpacity
           onPress={() => {
+            console.log('엑시오스');
             axios
               .get('https://picsum.photos/v2/list?page=2&limit=5')
               .then(function (response) {
