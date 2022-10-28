@@ -32,7 +32,8 @@ public class SecurityConfig  {
     public WebSecurityCustomizer configure() {
         return (web) -> web.ignoring().mvcMatchers(
                 "/api/login/google",
-                "/api/auth/reissue"
+                "/api/auth/reissue",
+                "/api/login/kakao"
         );
     }
 
@@ -49,6 +50,7 @@ public class SecurityConfig  {
         http.formLogin().disable()
                 .authorizeRequests()
                 .antMatchers("/api/login/google").permitAll()
+                .antMatchers("/api/login/kakao").permitAll()
                 .antMatchers("/api/auth/reissue").permitAll()
                 .anyRequest().authenticated();
 
