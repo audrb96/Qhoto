@@ -53,3 +53,5 @@ app:
       refresh-cookie-key: "refresh"
   oauth2:
     authorizedRedirectUri: "http://localhost:7070/temp.html"
+
+
