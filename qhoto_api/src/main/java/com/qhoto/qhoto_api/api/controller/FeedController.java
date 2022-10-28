@@ -65,5 +65,10 @@ public class FeedController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/option")
+    public ResponseEntity<?> readOptionList(){
+        return new ResponseEntity<>(feedService.getQuestList(), HttpStatus.OK);
+    }
+
 
 }
