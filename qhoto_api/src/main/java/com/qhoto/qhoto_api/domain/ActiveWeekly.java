@@ -31,7 +31,7 @@ public class ActiveWeekly {
 
     @Column(name = "weekly_quest_status",nullable = false)
     @Enumerated(STRING)
-    private QuestStatus questStatus;
+    private QuestStatus status;
 
 
 
