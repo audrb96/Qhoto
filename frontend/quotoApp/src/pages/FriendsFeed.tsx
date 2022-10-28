@@ -8,15 +8,18 @@ import {
   StatusBar,
   Image,
   SafeAreaView,
-  ScrollView,
+  ImageBackground,
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import axios from 'axios';
 
 function Orders() {
   const [selectedId, setSelectedId] = useState(null);
   const [isLike, setLike] = useState([true, false, true, false]);
+  const [isSuccess, setSuccess] = useState(false);
+  const [isSelect, setSelect] = useState('DAY');
 
   const DATA = [
     {
@@ -102,10 +105,28 @@ function Orders() {
         </View>
       </View>
       <View style={{backgroundColor: 'green', height: 200, width: '100%'}}>
-        <Image
-          style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
-          source={{uri: item.feedImage}}
-        />
+        {isSuccess ? (
+          <Image
+            style={
+              isSuccess
+                ? {width: '100%', height: '100%', resizeMode: 'stretch'}
+                : {width: '100%', height: '100%', resizeMode: 'stretch'}
+            }
+            source={{uri: item.feedImage}}
+          />
+        ) : (
+          <ImageBackground
+            source={{uri: item.feedImage}}
+            style={{flex: 1, resizeMode: 'cover'}}
+            blurRadius={10}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              }}
+            />
+          </ImageBackground>
+        )}
       </View>
       <View style={{width: 70}}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -120,14 +141,14 @@ function Orders() {
             <AntDesign
               name={item.like ? 'heart' : 'hearto'}
               size={30}
-              color={item.like ? 'red' : 'blue'}
+              color={item.like ? 'red' : 'black'}
             />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              console.log(2);
+              console.log(1);
             }}>
-            <Ionicons name="chatbubble-outline" size={30} />
+            <Ionicons name="chatbubble-outline" size={30} color={'black'} />
           </TouchableOpacity>
         </View>
       </View>
@@ -157,12 +178,28 @@ function Orders() {
         style={{
           flexDirection: 'row',
           justifyContent: 'center',
-          flex: 0.2,
+          flex: 0.1,
           alignItems: 'center',
         }}>
-        <Text style={{width: 80, textAlign: 'center'}}>DAY</Text>
-        <Text style={{width: 80, textAlign: 'center'}}>WEEK</Text>
-        <Text style={{width: 80, textAlign: 'center'}}>MONTH</Text>
+        <TouchableOpacity
+          onPress={() => {
+            axios
+              .get('https://picsum.photos/v2/list?page=2&limit=5')
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }}>
+          <Text style={{width: 80, textAlign: 'center'}}>DAY</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={{width: 80, textAlign: 'center'}}>WEEK</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={{width: 80, textAlign: 'center'}}>MONTH</Text>
+        </TouchableOpacity>
       </View>
       <View style={{flex: 1}}>
         <FlatList
