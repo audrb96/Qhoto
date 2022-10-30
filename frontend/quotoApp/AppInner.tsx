@@ -21,6 +21,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 // https://oblador.github.io/react-native-vector-icons/
 import {HEADER_LOGO} from './src/image';
+import QhotoHeader from './src/components/QhotoHeader';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
@@ -88,30 +89,13 @@ function AppInner() {
               tabBarActiveTintColor: '#4B179F',
               tabBarInactiveTintColor: 'gray',
               headerShown: true,
-              header: () => (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: 'white',
-                  }}>
-                  <Image
-                    style={{
-                      height: 50,
-                      resizeMode: 'contain',
-                      marginTop: 15,
-                    }}
-                    source={HEADER_LOGO}
-                  />
-                </View>
-              ),
             })}>
             <Tab.Screen
               name="FriendFeed"
               component={FriendsFeed}
               options={{
                 title: '친구 피드',
+                header: () => <QhotoHeader leftIcon={false}></QhotoHeader>,
               }}
             />
             <Tab.Screen
@@ -119,6 +103,7 @@ function AppInner() {
               component={AllFeed}
               options={{
                 title: '전체 피드',
+                header: () => <QhotoHeader leftIcon={false}></QhotoHeader>,
               }}
             />
             <Tab.Screen
@@ -126,6 +111,7 @@ function AppInner() {
               component={MyQuest}
               options={{
                 title: '퀘스트',
+                header: () => <QhotoHeader leftIcon={false}></QhotoHeader>,
               }}
             />
             <Tab.Screen
@@ -133,6 +119,7 @@ function AppInner() {
               component={FindFriend}
               options={{
                 title: '친구 찾기',
+                header: () => <QhotoHeader leftIcon={false}></QhotoHeader>,
               }}
             />
             <Tab.Screen
@@ -140,6 +127,7 @@ function AppInner() {
               component={MyPageStackScreen}
               options={{
                 title: '마이페이지',
+                headerShown: false,
               }}
             />
           </Tab.Navigator>
