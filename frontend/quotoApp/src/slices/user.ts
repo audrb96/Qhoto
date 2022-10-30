@@ -5,6 +5,7 @@ const initialState = {
   email: '',
   userName: '',
   userImage: '',
+  userPoint: '',
   nickname: '',
   profileOpen: '',
   // loggedIn: true,
@@ -19,6 +20,7 @@ const userSlice = createSlice({
       state.email = action.payload.email;
       state.userName = action.payload.userName;
       state.userImage = action.payload.userImage;
+      state.userPoint = action.payload.userPoint;
       state.nickname = action.payload.nickname;
       state.profileOpen = action.payload.profileOpen;
       state.loggedIn = action.payload.loggedIn;
