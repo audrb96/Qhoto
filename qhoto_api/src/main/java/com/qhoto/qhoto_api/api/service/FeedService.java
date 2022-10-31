@@ -15,7 +15,7 @@ import com.qhoto.qhoto_api.dto.response.CommentRes;
 import com.qhoto.qhoto_api.dto.response.FeedAllRes;
 import com.qhoto.qhoto_api.dto.response.FeedDetailRes;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
-import com.qhoto.qhoto_api.utils.S3Utils;
+import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;

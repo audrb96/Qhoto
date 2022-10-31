@@ -2,6 +2,7 @@ package com.qhoto.qhoto_api.config;
 
 import com.qhoto.qhoto_api.exception.handler.JwtAccessDeniedHandler;
 import com.qhoto.qhoto_api.exception.handler.JwtAuthenticationEntryPoint;
+import com.qhoto.qhoto_api.filter.ExceptionHandlerFilter;
 import com.qhoto.qhoto_api.filter.JwtAuthenticationFilter;
 import com.qhoto.qhoto_api.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class SecurityConfig  {
                 .accessDeniedHandler(jwtAccessDeniedHandler);
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
+        http.addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class);
         return http.build();
     }
 }
