@@ -7,14 +7,19 @@ import {
   TextInput,
   Platform,
   SafeAreaView,
+  Modal,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
-import UploadModeModal from './UploadModeModal';
+// import ImageModal from 'react-native-image-modal';
+
 import QhotoHeader from '../components/QhotoHeader';
+import UploadModeModal from '../components/mypage/UploadModeModal';
+import ProfileImageModal from '../components/mypage/ProfileImageModal';
+import ImageModal from 'react-native-image-modal';
 
 function MyPage({navigation}: null) {
   const goToLevel = () => {
@@ -83,40 +88,14 @@ function MyPage({navigation}: null) {
   const [editable, setEditable] = useState(false);
   const [introduction, setIntroduction] = useState('Qhoto 짱이에요~~');
 
-  const imagePickerOption = {
-    mediaType: 'photo',
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === 'android',
-  };
-
-  // 선택 사진 또는 촬영된 사진 정보
-  const onPickImage = res => {
-    if (res.didCancel || !res) {
-      return;
-    }
-    console.log('PickImage', res);
-  };
-
-  // 카메라 촬영
-  const onLaunchCamera = () => {
-    launchCamera(imagePickerOption, onPickImage);
-  };
-
-  // 갤러리에서 사진 선택
-  const onLaunchImageLibrary = () => {
-    launchImageLibrary(imagePickerOption, onPickImage);
-  };
-
   // 안드로이드를 위한 모달 visible 상태값
-  const [modalVisible, setModalVisible] = useState(false);
+  const [changeModalVisible, setChangeModalVisible] = useState(false);
 
   // 선택 모달 오픈
   const modalOpen = () => {
-    console.log(1);
     if (Platform.OS === 'android') {
       // 안드로이드
-      setModalVisible(true); // visible = true
+      setChangeModalVisible(true); // visible = true
     } else {
       // iOS
     }
@@ -146,31 +125,35 @@ function MyPage({navigation}: null) {
           )}
         </TouchableOpacity>
       </View>
-      <UploadModeModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onLaunchCamera={onLaunchCamera}
-        onLaunchImageLibrary={onLaunchImageLibrary}
-      />
       <View // 프로필
       >
+        <UploadModeModal
+          visible={changeModalVisible}
+          onClose={() => setChangeModalVisible(false)}
+        />
         <View style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <TouchableOpacity style={{}}>
-              <Image
+            <View>
+              <ImageModal
                 source={{uri: userImage}}
+                resizeMode="contain"
+                modalImageResizeMode="contain"
                 style={{
                   width: 75,
                   height: 75,
                   borderRadius: 37.5,
                 }}
+                swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
+                overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
               />
+
               <TouchableOpacity
                 style={{position: 'absolute', top: 55, left: 55}}
                 onPress={modalOpen}>
                 <AntDesign name="camerao" size={18} color={'#3B28B1'} />
               </TouchableOpacity>
-            </TouchableOpacity>
+            </View>
+
             <Text style={{fontSize: 16}}>{emailId[0]}</Text>
             {editable === false ? (
               <Text style={{fontSize: 12}}>{introduction}</Text>
@@ -237,7 +220,7 @@ function MyPage({navigation}: null) {
                 {nextColorName} 레벨까지 {maxPoint - userPoint} Points 남음
               </Text>
             ) : (
-              <Text></Text>
+              <Text />
             )}
           </View>
         </View>

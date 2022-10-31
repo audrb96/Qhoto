@@ -12,15 +12,7 @@ function QhotoHeader({leftIcon}) {
         backgroundColor: 'white',
       }}>
       {leftIcon && (
-        <TouchableOpacity
-          style={styles.leftIcon}
-          // onPress={() => {
-          //   console.log('onPress');
-          // }}
-        >
-          {leftIcon}
-          {/* <Text>dddd</Text> */}
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.leftIcon}>{leftIcon}</TouchableOpacity>
       )}
       <Image
         style={{
@@ -36,10 +28,14 @@ function QhotoHeader({leftIcon}) {
 
 const styles = StyleSheet.create({
   leftIcon: {
-    position: 'absolute',
-    top: 10,
-    left: 5,
-    justifyContent: 'center',
+    // position: 'absolute',
+    // top: 10,
+    // left: 5,
+    // justifyContent: 'center',
+    // height: 100,
+    // width: 100,
+    // backgroundColor: 'blue',
+    zIndex: 3,
   },
 });
 

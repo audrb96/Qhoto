@@ -103,7 +103,14 @@ function QhotoLevel({navigation, route}) {
       size={30}
       color="#3B28B1"
       onPress={() => navigation.goBack()}
-      style={{position: 'absolute'}} // Todo: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
+      style={{
+        position: 'absolute',
+        width: 40,
+        height: 40,
+        top: -10,
+        left: 20,
+        // backgroundColor: 'black',
+      }} // Todo 해결!!!: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
     />
   );
 
@@ -170,12 +177,13 @@ function QhotoLevel({navigation, route}) {
               backgroundColor: 'rgba(255, 255, 255, 0.5)',
               position: 'absolute',
               zIndex: 3,
-            }}></View>
+            }}
+          />
         ) : (
           <></>
         )}
 
-        <Image source={item.badge}></Image>
+        <Image source={item.badge} />
         <View style={{flexDirection: 'column', marginTop: 10}}>
           <Text style={{color: '#000000'}}>{item.color}</Text>
           <Text style={{color: '#000000'}}>{item.description}</Text>
@@ -186,7 +194,7 @@ function QhotoLevel({navigation, route}) {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <QhotoHeader leftIcon={leftIcon}></QhotoHeader>
+      <QhotoHeader leftIcon={leftIcon} />
 
       <View style={{alignItems: 'center', flex: 0.3}}>
         <TouchableOpacity>
@@ -227,17 +235,18 @@ function QhotoLevel({navigation, route}) {
             {nextColorName} 레벨까지 {maxPoint - userPoint} Points 남음
           </Text>
         ) : (
-          <Text></Text>
+          <Text />
         )}
       </View>
       <View style={{flexDirection: 'column', flex: 0.7}}>
-        <View style={{alignItems: 'center', marginTop: 15}}>
+        <View style={{alignItems: 'center', marginTop: 25}}>
           <View
             style={{
               width: 320,
               height: 1,
               backgroundColor: 'black',
-            }}></View>
+            }}
+          />
         </View>
         <FlatList
           data={levelData}
