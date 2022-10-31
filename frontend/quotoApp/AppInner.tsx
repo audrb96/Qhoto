@@ -10,17 +10,16 @@ import FriendsFeed from './src/pages/FriendsFeed';
 import AllFeed from './src/pages/AllFeed';
 import FindFriend from './src/pages/FindFriend';
 import QhotoLevel from './src/pages/QhotoLevel';
+import MyPageStackScreen from './src/pages/MyPageStackScreen';
 import {RootState} from './src/store/reducer';
 
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {Button} from 'react-native-paper';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 // https://oblador.github.io/react-native-vector-icons/
-
 import {HEADER_LOGO} from './src/image';
 
 export type LoggedInParamList = {
@@ -138,7 +137,7 @@ function AppInner() {
             />
             <Tab.Screen
               name="MyPage"
-              component={MyPage}
+              component={MyPageStackScreen}
               options={{
                 title: '마이페이지',
               }}

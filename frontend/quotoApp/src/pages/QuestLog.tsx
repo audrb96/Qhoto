@@ -7,7 +7,7 @@ function QhotoLevel({navigation}) {
   };
   return (
     <View>
-      <Text> QhotoLevel 화면</Text>
+      <Text> 퀘스트로그 화면</Text>
       <View>
         <TouchableOpacity onPress={goToMyPage}>
           <Text style={{fontWeight: 'bold', color: '#3B28B1', fontSize: 40}}>
