@@ -103,7 +103,7 @@ function AppInner() {
               component={AllFeedStackScreen}
               options={{
                 title: '전체 피드',
-                header: () => <QhotoHeader leftIcon={false} />,
+                headerShown: false,
               }}
             />
             <Tab.Screen

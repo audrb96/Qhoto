@@ -12,12 +12,16 @@ function AllFeedStackScreen() {
       <AllFeedStack.Screen
         name="AllFeed"
         component={AllFeed}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+        }}
       />
       <AllFeedStack.Screen
         name="SelectedFeed"
         component={SelectedFeed}
-        options={{headerShown: false}}
+        options={{
+          header: () => <QhotoHeader leftIcon={false} />,
+        }}
       />
     </AllFeedStack.Navigator>
   );

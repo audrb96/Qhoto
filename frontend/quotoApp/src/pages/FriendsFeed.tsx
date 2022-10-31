@@ -81,6 +81,7 @@ function FriendsFeed() {
       like: isLike[3],
     },
   ];
+
   const Item = ({item, onPress, backgroundColor, textColor}) => (
     <View style={{flex: 1}}>
       <View style={{flexDirection: 'row', flex: 0.5}}>
