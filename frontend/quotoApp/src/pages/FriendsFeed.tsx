@@ -184,9 +184,6 @@ function FriendsFeed() {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={{alignItems: 'center', flex: 0.2}}>
-        <Text style={{fontSize: 45, color: 'purple'}}>quoto</Text>
-      </View>
       <View
         style={{
           flexDirection: 'row',

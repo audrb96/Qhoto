@@ -1,0 +1,26 @@
+import React from 'react';
+import {Text, View} from 'react-native';
+import {createStackNavigator} from '@react-navigation/stack';
+import AllFeed from './AllFeed';
+import SelectedFeed from './SelectedFeed';
+import QhotoHeader from '../components/QhotoHeader';
+
+const AllFeedStack = createStackNavigator();
+function AllFeedStackScreen() {
+  return (
+    <AllFeedStack.Navigator>
+      <AllFeedStack.Screen
+        name="AllFeed"
+        component={AllFeed}
+        options={{headerShown: false}}
+      />
+      <AllFeedStack.Screen
+        name="SelectedFeed"
+        component={SelectedFeed}
+        options={{headerShown: false}}
+      />
+    </AllFeedStack.Navigator>
+  );
+}
+
+export default AllFeedStackScreen;
