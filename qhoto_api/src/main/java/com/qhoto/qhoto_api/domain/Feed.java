@@ -31,15 +31,15 @@ public class Feed {
     private Quest quest;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="active_daily_id", nullable = false)
+    @JoinColumn(name="active_daily_id", nullable = true)
     private ActiveDaily activeDaily;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="active_weekly_id", nullable = false)
+    @JoinColumn(name="active_weekly_id", nullable = true)
     private ActiveDaily activeWeekly;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="active_monthly_id", nullable = false)
+    @JoinColumn(name="active_monthly_id", nullable = true)
     private ActiveDaily activeMonthly;
 
     @Column(name = "feed_image", nullable = false)

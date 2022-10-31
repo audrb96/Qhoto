@@ -4,9 +4,11 @@ package com.qhoto.qhoto_api.api.controller;
 import com.qhoto.qhoto_api.api.service.FeedService;
 import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
+import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,14 +25,14 @@ public class FeedController {
     private final FeedService feedService;
 
 
-    @GetMapping("/{condition}")
-    public ResponseEntity<?> readAllFeed(@PathVariable String condition){
-        return new ResponseEntity<>(feedService.getAllFeed(condition),HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<?> readAllFeed(@RequestBody FeedAllReq feedAllReq, Pageable pageable){
+        return new ResponseEntity<>(feedService.getAllFeed(feedAllReq, pageable),HttpStatus.OK);
     }
 
-    @GetMapping("/detail/{feedId}/{userId}")
-    public ResponseEntity<?> readFeedDetail(@PathVariable Long userId, @PathVariable Long feedId){
-        return new ResponseEntity<>(feedService.getFeedDetail(userId, feedId), HttpStatus.OK);
+    @GetMapping("/detail/{feedId}")
+    public ResponseEntity<?> readFeedDetail(@PathVariable Long feedId){
+        return new ResponseEntity<>(feedService.getFeedDetail(feedId), HttpStatus.OK);
     }
 
     @PostMapping
@@ -68,6 +70,4 @@ public class FeedController {
         feedService.deleteLike(likeReq);
         return ResponseEntity.ok().build();
     }
-
-
 }
