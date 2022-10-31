@@ -1,5 +1,6 @@
 package com.qhoto.qhoto_api.filter;
 
+import com.qhoto.qhoto_api.exception.InvalidAccessTokenException;
 import com.qhoto.qhoto_api.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,15 +25,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = parseBearerToken(request);
-        log.info("filter");
         // Validation Access Token
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("filter");
             log.debug(authentication.getName() + "의 인증정보 저장");
         } else {
             log.debug("유효한 JWT 토큰이 없습니다.");
+            throw new InvalidAccessTokenException("Invalid Access Token");
         }
 
         filterChain.doFilter(request, response);

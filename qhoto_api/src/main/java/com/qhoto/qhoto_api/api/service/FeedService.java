@@ -17,7 +17,7 @@ import com.qhoto.qhoto_api.dto.response.FeedAllDto;
 import com.qhoto.qhoto_api.dto.response.QuestOptionRes;
 import com.qhoto.qhoto_api.dto.response.FeedDetailRes;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
-import com.qhoto.qhoto_api.utils.S3Utils;
+import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
