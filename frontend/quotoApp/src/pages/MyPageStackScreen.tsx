@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MyPage from './MyPage';
 import QhotoLevel from './QhotoLevel';
 import QuestLog from './QuestLog';
+import QhotoHeader from '../components/QhotoHeader';
 
 const MyPageStack = createStackNavigator();
 function MyPageStackScreen() {
@@ -12,7 +13,7 @@ function MyPageStackScreen() {
       <MyPageStack.Screen
         name="MyPage"
         component={MyPage}
-        options={{headerShown: false}}
+        options={{header: () => <QhotoHeader leftIcon={false}></QhotoHeader>}}
       />
       <MyPageStack.Screen
         name="QhotoLevel"
@@ -22,7 +23,7 @@ function MyPageStackScreen() {
       <MyPageStack.Screen
         name="QuestLog"
         component={QuestLog}
-        options={{headerShown: false}}
+        options={{header: () => <QhotoHeader leftIcon={false}></QhotoHeader>}}
       />
     </MyPageStack.Navigator>
   );
