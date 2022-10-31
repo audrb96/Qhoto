@@ -13,6 +13,8 @@ import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import com.qhoto.qhoto_api.dto.response.CommentRes;
 import com.qhoto.qhoto_api.dto.response.FeedAllRes;
+import com.qhoto.qhoto_api.dto.response.QuestOptionRes;
+
 import com.qhoto.qhoto_api.dto.response.FeedDetailRes;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.qhoto.qhoto_api.utils.S3Utils;
@@ -23,9 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -39,6 +39,11 @@ public class FeedService {
     private final FeedLikeRepository feedLikeRepository;
     private final QuestRepository questRepository;
 
+    private final ActiveDailyRepository activeDailyRepository;
+
+    private final ActiveWeeklyRepository activeWeeklyRepository;
+
+    private final ActiveMonthlyRepository activeMonthlyRepository;
 
 
 
@@ -133,4 +138,14 @@ public class FeedService {
         feedLikeRepository.deleteById(feedLikePK);
     }
 
+    public Map<String, Object> getQuestList() {
+        List<QuestOptionRes> dailyOptions = activeDailyRepository.findAllByQuestIdAndStatus();
+        List<QuestOptionRes> weeklyOptions = activeWeeklyRepository.findAllByQuestIdAndStatus();
+        List<QuestOptionRes> monthlyOptions = activeMonthlyRepository.findAllByQuestIdAndStatus();
+        Map<String, Object> optionList = new HashMap<>();
+        optionList.put("dailyOptions", dailyOptions);
+        optionList.put("weeklyOptions", weeklyOptions);
+        optionList.put("monthlyOptions", monthlyOptions);
+        return optionList;
+    }
 }
