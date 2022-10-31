@@ -1,9 +1,9 @@
 package com.qhoto.qhoto_api.api.repository;
 
 import com.qhoto.qhoto_api.domain.type.QuestDuration;
-import com.qhoto.qhoto_api.dto.request.FeedAllReq;
+import com.qhoto.qhoto_api.dto.response.FeedAllDto;
 import com.qhoto.qhoto_api.dto.response.FeedAllRes;
-import com.qhoto.qhoto_api.dto.response.QFeedAllRes;
+import com.qhoto.qhoto_api.dto.response.QFeedAllDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -24,18 +24,34 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
     }
 
     @Override
-    public List<FeedAllRes> findByCondition(FeedAllReq feedAllReq) {
-        System.out.println(feedAllReq.getCondition());
-        System.out.println(feedAllReq.getDuration());
-        List<FeedAllRes> feedAllList = jpaQueryFactory
-                .select(new QFeedAllRes(
+    public FeedAllRes findByCondition(String condition) {
+        FeedAllRes feedAllRes;
+        List<FeedAllDto> feedDailyList = jpaQueryFactory
+                .select(new QFeedAllDto(
                         feed.id,
                         feed.image))
                 .from(feed)
-                .where(feedClassIn(feedAllReq.getCondition()),
-                        feedTypeEq(feedAllReq.getDuration()))
+                .where(feedClassIn(condition),
+                        feedTypeEq("D"))
                 .fetch();
-        return feedAllList;
+        List<FeedAllDto> feedWeeklyList = jpaQueryFactory
+                .select(new QFeedAllDto(
+                        feed.id,
+                        feed.image))
+                .from(feed)
+                .where(feedClassIn(condition),
+                        feedTypeEq("W"))
+                .fetch();
+        List<FeedAllDto> feedMonthlyList = jpaQueryFactory
+                .select(new QFeedAllDto(
+                        feed.id,
+                        feed.image))
+                .from(feed)
+                .where(feedClassIn(condition),
+                        feedTypeEq("M"))
+                .fetch();
+        feedAllRes = new FeedAllRes(feedDailyList,feedWeeklyList,feedMonthlyList);
+        return feedAllRes;
 
 
     }

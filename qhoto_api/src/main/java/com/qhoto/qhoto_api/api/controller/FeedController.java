@@ -4,7 +4,6 @@ package com.qhoto.qhoto_api.api.controller;
 import com.qhoto.qhoto_api.api.service.FeedService;
 import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
-import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +23,14 @@ public class FeedController {
     private final FeedService feedService;
 
 
-    @GetMapping
-    public ResponseEntity<?> readAllFeed(@RequestBody FeedAllReq feedAllReq){
-        return new ResponseEntity<>(feedService.getAllFeed(feedAllReq),HttpStatus.OK);
+    @GetMapping("/{condition}")
+    public ResponseEntity<?> readAllFeed(@PathVariable String condition){
+        return new ResponseEntity<>(feedService.getAllFeed(condition),HttpStatus.OK);
+    }
+
+    @GetMapping("/detail/{feedId}/{userId}")
+    public ResponseEntity<?> readFeedDetail(@PathVariable Long userId, @PathVariable Long feedId){
+        return new ResponseEntity<>(feedService.getFeedDetail(userId, feedId), HttpStatus.OK);
     }
 
     @PostMapping
