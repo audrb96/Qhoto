@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   questCardContainer: {
-    flex: 3.5,
+    flex: 3,
   },
   questButtonContainer: {
     flex: 1,

@@ -9,7 +9,7 @@ interface Props {
   handleRerollClick: any;
 }
 
-const windowSize = Dimensions.get('window').width;
+const {width, height} = Dimensions.get('window');
 
 const questTypes: {[key: string]: {iconName: string; colorCode: string}} = {
   건강: {iconName: 'running', colorCode: '#C25445'},
@@ -59,8 +59,8 @@ const CardTemplate: React.FC<Props> = props => {
 
 const styles = StyleSheet.create({
   card: {
-    width: (windowSize * 5) / 6,
-    height: 350,
+    width: (width * 5) / 6,
+    height: height / 2,
     backgroundColor: 'white',
     justifyContent: 'center',
     shadowColor: 'black',
