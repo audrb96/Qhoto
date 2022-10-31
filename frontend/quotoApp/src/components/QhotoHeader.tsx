@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {HEADER_LOGO} from '../image';
 
-function QhotoHeader({leftIcon}) {
+function QhotoHeader({leftIcon, rightIcon}) {
   return (
     <View
       style={{
@@ -30,6 +30,11 @@ function QhotoHeader({leftIcon}) {
         }}
         source={HEADER_LOGO}
       />
+      {rightIcon && (
+        <TouchableOpacity style={styles.rightIcon}>
+          {rightIcon}
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -40,6 +45,9 @@ const styles = StyleSheet.create({
     top: 10,
     left: 5,
     justifyContent: 'center',
+  },
+  rightIcon: {
+    zIndex: 3,
   },
 });
 
