@@ -59,7 +59,7 @@ const CardTemplate: React.FC<Props> = props => {
 
 const styles = StyleSheet.create({
   card: {
-    width: (width * 5) / 6,
+    width: (width * 3) / 4,
     height: height / 2,
     backgroundColor: 'white',
     justifyContent: 'center',
