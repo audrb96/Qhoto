@@ -1,6 +1,14 @@
 import React from 'react';
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  Platform,
+  View,
+  Text,
+} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import {launchCamera} from 'react-native-image-picker';
 
 import QuestCard from '../components/main/QuestCard';
 
@@ -17,8 +25,10 @@ interface Quest {
   questImage: string;
 }
 
+const {width, height} = Dimensions.get('window');
+
 function Settings() {
-  const width = Dimensions.get('window').width;
+  const [modalVisible, setModalVisible] = React.useState(false);
   const questLists: Quest[][] = [
     [
       {
@@ -100,16 +110,32 @@ function Settings() {
     ],
   ];
 
+  const options = {
+    mediaType: 'mixed',
+    videoQuality: 'high',
+    durationLimit: 10,
+    maxWidth: 768,
+    maxHeight: 768,
+    includeBase64: Platform.OS === 'android',
+  };
+
+  const onPickImage = (res: any) => {
+    if (res.didCancel || !res) {
+      return;
+    }
+    console.log('PickImage', res);
+  };
+
   return (
     <View style={styles.body}>
       <View style={styles.questCardContainer}>
         <Carousel
           loop
           width={width}
-          height={width}
+          height={(height * 4) / 7}
           mode="parallax"
           modeConfig={{
-            parallaxScrollingScale: 0.8,
+            parallaxScrollingScale: 0.9,
             parallaxScrollingOffset: 160,
           }}
           data={questTypes}
@@ -124,9 +150,21 @@ function Settings() {
         />
       </View>
       <View style={styles.questButtonContainer}>
-        <Pressable style={styles.questButton}>
-          <Icon name="camera" color="white" size={45}></Icon>
-        </Pressable>
+        <View
+          style={{
+            flex: 0,
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}>
+          <Pressable
+            style={styles.questButton}
+            onPress={() => {
+              setModalVisible(!modalVisible);
+              // const result = launchCamera(options, onPickImage);
+            }}>
+            <Icon name="camera" color="white" size={50}></Icon>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -135,9 +173,11 @@ function Settings() {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   questCardContainer: {
-    flex: 3.5,
+    flex: 3,
   },
   questButtonContainer: {
     flex: 1,
@@ -147,8 +187,8 @@ const styles = StyleSheet.create({
   questButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 90,
-    height: 90,
+    width: 100,
+    height: 100,
     borderRadius: 45,
     backgroundColor: '#4B179F',
   },

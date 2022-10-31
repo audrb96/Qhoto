@@ -47,7 +47,7 @@ const QuestCard: React.FC<Props> = props => {
       <Text style={styles.questType}>{questType}</Text>
       <GestureFlipView
         width={300}
-        height={350}
+        height={400}
         gestureEnabled={false}
         onFlipEnd={handleFlip}
         style={{flex: 1}}
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
 });
