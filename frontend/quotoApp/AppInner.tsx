@@ -7,7 +7,7 @@ import SignUp from './src/pages/SignUp';
 import MyQuest from './src/pages/MyQuest';
 import MyPage from './src/pages/MyPage';
 import FriendsFeed from './src/pages/FriendsFeed';
-import AllFeed from './src/pages/AllFeed';
+import AllFeedStackScreen from './src/pages/AllFeedStackScreen';
 import FindFriend from './src/pages/FindFriend';
 import QhotoLevel from './src/pages/QhotoLevel';
 import MyPageStackScreen from './src/pages/MyPageStackScreen';
@@ -95,15 +95,15 @@ function AppInner() {
               component={FriendsFeed}
               options={{
                 title: '친구 피드',
-                header: () => <QhotoHeader leftIcon={false}></QhotoHeader>,
+                header: () => <QhotoHeader leftIcon={false} />,
               }}
             />
             <Tab.Screen
               name="AllFeed"
-              component={AllFeed}
+              component={AllFeedStackScreen}
               options={{
                 title: '전체 피드',
-                header: () => <QhotoHeader leftIcon={false}></QhotoHeader>,
+                headerShown: false,
               }}
             />
             <Tab.Screen
@@ -111,7 +111,7 @@ function AppInner() {
               component={MyQuest}
               options={{
                 title: '퀘스트',
-                header: () => <QhotoHeader leftIcon={false}></QhotoHeader>,
+                header: () => <QhotoHeader leftIcon={false} />,
               }}
             />
             <Tab.Screen
@@ -119,7 +119,7 @@ function AppInner() {
               component={FindFriend}
               options={{
                 title: '친구 찾기',
-                header: () => <QhotoHeader leftIcon={false}></QhotoHeader>,
+                header: () => <QhotoHeader leftIcon={false} />,
               }}
             />
             <Tab.Screen
