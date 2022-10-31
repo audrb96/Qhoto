@@ -31,15 +31,15 @@ public class Feed {
     private Quest quest;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="active_daily_id", nullable = true)
+    @JoinColumn(name="active_daily_id")
     private ActiveDaily activeDaily;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="active_weekly_id", nullable = true)
+    @JoinColumn(name="active_weekly_id")
     private ActiveDaily activeWeekly;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name="active_monthly_id", nullable = true)
+    @JoinColumn(name="active_monthly_id")
     private ActiveDaily activeMonthly;
 
     @Column(name = "feed_image", nullable = false)
@@ -51,6 +51,9 @@ public class Feed {
     @Enumerated(EnumType.STRING)
     @Column(name = "feed_status", nullable = false)
     private FeedStatus status;
+
+    @Column(name = "quest_name", nullable = false)
+    private String questName;
 
     @Column(nullable = false)
     private String location;
@@ -70,4 +73,5 @@ public class Feed {
     @Enumerated(EnumType.STRING)
     @Column(name = "quest_duration",nullable = false)
     private QuestDuration duration;
+
 }
