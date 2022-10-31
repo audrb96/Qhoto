@@ -4,15 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
 @Builder
 @AllArgsConstructor
-public class QuestPointRes {
-
-    private int point;
-    private int totalCnt;
-    private int dailyCnt;
-    private int weeklyCnt;
-    private int monthlyCnt;
-
+public class QuestLevelRes {
+    private Map<String, QuestPointRes> exp;
 }

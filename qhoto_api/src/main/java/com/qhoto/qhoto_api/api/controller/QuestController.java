@@ -48,5 +48,9 @@ public class QuestController {
         return new ResponseEntity<>(questService.getMonthlyIsClear(userId), HttpStatus.OK);
     }
 
-
+    @GetMapping("/point")
+    public ResponseEntity<?> readQuestLevel() {
+        Long userId = 1L;
+        return new ResponseEntity<>(questService.getQuestLevel(userId), HttpStatus.OK);
+    }
 }

@@ -1,10 +1,11 @@
 package com.qhoto.qhoto_api.api.service;
 
 import com.qhoto.qhoto_api.api.repository.*;
+import com.qhoto.qhoto_api.domain.Exp;
 import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.domain.Quest;
-import com.qhoto.qhoto_api.dto.response.QuestListItemRes;
-import com.qhoto.qhoto_api.dto.response.IsClearRes;
+import com.qhoto.qhoto_api.domain.QuestType;
+import com.qhoto.qhoto_api.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,9 @@ public class QuestService {
 
     private final UserRepository userRepository;
 
+    private final ExpRepository expRepository;
 
+    private final QuestTypeRepository questTypeRepository;
     public Map<String, Object> getQuestList(Long userId)  {
         List<Quest> dailyQuest = activeDailyRepository.findAllByIdAndStatus();
         List<Quest> weeklyQuest = activeWeeklyRepository.findAllByIdAndStatus();
@@ -114,4 +117,29 @@ public class QuestService {
         return  questList;
     }
 
- }
+    public QuestLevelRes getQuestLevel(Long userId) {
+        List<QuestType> questTypeList = questTypeRepository.findAll();
+        Map<String, QuestPointRes> questPoint = new HashMap<>();
+        List<QuestCountRes> questCounts = feedRepository.findAllQuestWithRollUp();
+        List<QuestCountRes> allExp = expRepository.findPointByTypeCodeAndUserId(userId);
+        for(QuestType qt : questTypeList) {
+            Exp exp = expRepository.findAllByTypeCodeAndUserId(qt.getCode(), userId);
+//            int totalCnt = feedRepository.findAllFeedByTypeCodeAndUserId(qt.getCode(), userId);
+
+            QuestPointRes QP = QuestPointRes.builder()
+                    .point(exp.getPoint())
+                    .totalCnt()
+                    .dailyCnt()
+                    .weeklyCnt()
+                    .monthlyCnt()
+                    .build();
+            questPoint.put(qt.getCode(), QP);
+        }
+       QuestLevelRes Q = QuestLevelRes.builder()
+                                    .exp(questPoint)
+                                    .build();
+//        System.out.println(feedRepository.findAllFeedByTypeCodeAndUserId("H", userId));
+
+        return Q;
+    }
+}
