@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class isClearRes {
+public class IsClearRes {
     private boolean isClear;
 }

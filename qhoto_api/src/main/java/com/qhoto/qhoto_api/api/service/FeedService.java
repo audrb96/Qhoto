@@ -10,22 +10,24 @@ import com.qhoto.qhoto_api.domain.type.FeedLikePK;
 import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
+import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import com.qhoto.qhoto_api.dto.response.CommentRes;
-import com.qhoto.qhoto_api.dto.response.FeedAllRes;
+import com.qhoto.qhoto_api.dto.response.FeedAllDto;
+import com.qhoto.qhoto_api.dto.response.QuestOptionRes;
 import com.qhoto.qhoto_api.dto.response.FeedDetailRes;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -39,16 +41,22 @@ public class FeedService {
     private final FeedLikeRepository feedLikeRepository;
     private final QuestRepository questRepository;
 
+    private final ActiveDailyRepository activeDailyRepository;
+
+    private final ActiveWeeklyRepository activeWeeklyRepository;
+
+    private final ActiveMonthlyRepository activeMonthlyRepository;
 
 
 
-    public FeedAllRes getAllFeed(String condition) {
-        return feedRepository.findByCondition(condition);
+    public Page<FeedAllDto> getAllFeed(FeedAllReq feedAllReq, Pageable pageable) {
+        return feedRepository.findByCondition(feedAllReq, pageable);
     }
 
-    public FeedDetailRes getFeedDetail(Long userId, Long feedId){
+    public FeedDetailRes getFeedDetail(Long feedId){
 
         Feed feed = feedRepository.findFeedById(feedId);
+        Long userId = 1L;
         FeedDetailRes feedDetailRes = FeedDetailRes.builder()
                 .feedId(feedId)
                 .feedImage(feed.getImage())
@@ -133,4 +141,14 @@ public class FeedService {
         feedLikeRepository.deleteById(feedLikePK);
     }
 
+    public Map<String, Object> getQuestList() {
+        List<QuestOptionRes> dailyOptions = activeDailyRepository.findAllByQuestIdAndStatus();
+        List<QuestOptionRes> weeklyOptions = activeWeeklyRepository.findAllByQuestIdAndStatus();
+        List<QuestOptionRes> monthlyOptions = activeMonthlyRepository.findAllByQuestIdAndStatus();
+        Map<String, Object> optionList = new HashMap<>();
+        optionList.put("dailyOptions", dailyOptions);
+        optionList.put("weeklyOptions", weeklyOptions);
+        optionList.put("monthlyOptions", monthlyOptions);
+        return optionList;
+    }
 }

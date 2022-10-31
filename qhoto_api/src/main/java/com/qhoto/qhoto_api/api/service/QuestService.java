@@ -4,7 +4,7 @@ import com.qhoto.qhoto_api.api.repository.*;
 import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.domain.Quest;
 import com.qhoto.qhoto_api.dto.response.QuestListItemRes;
-import com.qhoto.qhoto_api.dto.response.isClearRes;
+import com.qhoto.qhoto_api.dto.response.IsClearRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +24,13 @@ public class QuestService {
     private final UserRepository userRepository;
 
 
-    public Map<String, Object> getQuestList()  {
+    public Map<String, Object> getQuestList(Long userId)  {
         List<Quest> dailyQuest = activeDailyRepository.findAllByIdAndStatus();
         List<Quest> weeklyQuest = activeWeeklyRepository.findAllByIdAndStatus();
         List<Quest> monthlyQuest = activeMonthlyRepository.findAllByIdAndStatus();
-        Optional<Feed> dailyClear = feedRepository.findClearDailyQuest(1L);
-        Optional<Feed> weeklyClear = feedRepository.findClearWeeklyQuest(1L);
-        Optional<Feed> MonthlyClear = feedRepository.findClearMonthlyQuest(1L);
+        Optional<Feed> dailyClear = feedRepository.findClearDailyQuest(userId);
+        Optional<Feed> weeklyClear = feedRepository.findClearWeeklyQuest(userId);
+        Optional<Feed> MonthlyClear = feedRepository.findClearMonthlyQuest(userId);
         Map<String, Object> questList = new HashMap<>();
         // dailyQuestList 반환
         if(dailyClear.isPresent()) {
@@ -57,26 +57,26 @@ public class QuestService {
         return questList;
     }
 
-    public isClearRes getDailyIsClear() {
+    public IsClearRes getDailyIsClear(Long userId) {
 //        TODO: 이부분,, 고민 필요..
-        isClearRes isClear = isClearRes.builder()
-                .isClear(feedRepository.findClearMonthlyQuest(1L)
+        IsClearRes isClear = IsClearRes.builder()
+                .isClear(feedRepository.findClearDailyQuest(userId)
                         .isPresent())
                 .build();
         return isClear;
     }
 
-    public isClearRes getWeeklyIsClear() {
-        isClearRes isClear = isClearRes.builder()
-                .isClear(feedRepository.findClearWeeklyQuest(1L).isPresent())
+    public IsClearRes getWeeklyIsClear(Long userId) {
+        IsClearRes isClear = IsClearRes.builder()
+                .isClear(feedRepository.findClearWeeklyQuest(userId).isPresent())
                 .build();
         return isClear;
     }
 
 
-    public isClearRes getMonthlyIsClear() {
-        isClearRes isClear = isClearRes.builder()
-                .isClear(feedRepository.findClearMonthlyQuest(1L).isPresent())
+    public IsClearRes getMonthlyIsClear(Long userId) {
+        IsClearRes isClear = IsClearRes.builder()
+                .isClear(feedRepository.findClearMonthlyQuest(userId).isPresent())
                 .build();
         return isClear;
     }
