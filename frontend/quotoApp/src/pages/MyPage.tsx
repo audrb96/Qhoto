@@ -129,7 +129,7 @@ function MyPage({navigation}: null) {
     saveToPhotos: true,
     includeExtra: true, // If true, will include extra data which requires library permissions to be requested (i.e. exif data)
     // storageOptions: {
-    //   path: '/images', //카메라로 캡쳐시에 저장될 폴더명 [ Pictures/[path] 경로]
+    //   path: '/new', //카메라로 캡쳐시에 저장될 폴더명 [ Pictures/[path] 경로]
     // },
   };
 
@@ -140,59 +140,52 @@ function MyPage({navigation}: null) {
     }
     console.log('PickImage', res.assets[0].uri);
     // setImageUri(res.assets[0].uri);
-    // console.log('setImageUri------------------------');
+
     // dispatch(
     //   userSlice.actions.setUser({
     //     userImage: res.assets[0].uri, // Todo: 나중에 axios 로 back 으로 보내고 다시 유저 받아서 dispatch 해주고 store 에 저장해야함
     //     loggedIn: true,
     //   }),
     // );
-    function_tmp(res.assets[0].uri);
-    // edit(res.assets[0].uri);
+
+    savePhoto(res.assets[0].uri);
   };
 
-  const function_tmp = uri => {
+  const savePhoto = (uri: string) => {
     let photoPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
-    let binaryFile = Image.resolveAssetSource(
-      require('../assets/sticker0.png'),
-    );
-    console.log(photoPath); // data/user/0/com.quotoapp/files/photo.jpg
-    console.log(binaryFile);
-  };
-
-  const edit = uri => {
-    PhotoEditor.Edit({
-      path: '/storage/emulated/0/Pictures/73619742-8c90-494e-baaf-dae7e0fe3be8.jpg',
-      stickers: [
-        // sticker0,
-        'sticker1',
-        'sticker2',
-        'sticker3',
-        'sticker4',
-        'sticker5',
-        'sticker6',
-        'sticker7',
-        'sticker8',
-        'sticker9',
-        'sticker10',
-      ],
-      // hiddenControls: [
-      //   'clear',
-      //   'crop',
-      //   'draw',
-      //   'save',
-      //   'share',
-      //   'sticker',
-      //   'text',
-      // ],
-      colors: undefined,
-      onDone: res => {
-        console.log('onDone!!!', res);
-      },
-      onCancel: () => {
-        console.log('on cancel');
-      },
-    });
+    // let binaryFile = Image.resolveAssetSource(
+    //   require('../assets/sticker0.png'),
+    // );
+    console.log('photoPath----', photoPath); // data/user/0/com.quotoapp/files/photo.jpg
+    // console.log(binaryFile);
+    RNFS.moveFile(uri, photoPath)
+      .then(() => {
+        PhotoEditor.Edit({
+          path: photoPath,
+          colors: undefined,
+          // hiddenControls: ['save'],
+          onDone: RRRES => {
+            console.log('on done', RRRES);
+            // let binaryFile = Image.resolveAssetSource(require(RRRES));
+            // console.log('binaryFile : ', binaryFile);
+            // console.log('binaryFile.uri : ', binaryFile);
+            // RNFetchBlob.config({fileCache: true})
+            //   .fetch('GET', binaryFile.uri)
+            //   .then(RESPONSE => {
+            //     console.log('RESPONSE: ', RESPONSE);
+            //   });
+          },
+          onCancel: () => {
+            console.log('on cancel');
+          },
+        });
+      })
+      // .then(RESPONSE => {
+      //   console.log('RESPONSE', RESPONSE);
+      // })
+      .catch(err => {
+        console.log(err.message);
+      });
   };
 
   // 카메라 촬영
