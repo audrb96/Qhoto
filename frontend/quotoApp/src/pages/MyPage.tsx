@@ -8,6 +8,8 @@ import {
   Platform,
   SafeAreaView,
   Modal,
+  Pressable,
+  StyleSheet,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
@@ -20,8 +22,17 @@ import QhotoHeader from '../components/QhotoHeader';
 import UploadModeModal from '../components/mypage/UploadModeModal';
 import ProfileImageModal from '../components/mypage/ProfileImageModal';
 import ImageModal from 'react-native-image-modal';
+import PhotoEditor from 'react-native-photo-editor';
+import RNFS from 'react-native-fs';
+import RNFetchBlob from 'rn-fetch-blob';
+import sticker0 from '../assets/sticker0.png';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useAppDispatch} from '../store';
+import userSlice from '../slices/user';
 
 function MyPage({navigation}: null) {
+  const dispatch = useAppDispatch();
+
   const goToLevel = () => {
     navigation.navigate('QhotoLevel', {userPoint: userPoint});
   };
@@ -31,7 +42,7 @@ function MyPage({navigation}: null) {
   const userImage = useSelector((state: RootState) => state.user.userImage);
   // const userName = useSelector((state: RootState) => state.user.userName);
   const email = useSelector((state: RootState) => state.user.email);
-  const emailId = email.split('@');
+  // const emailId = email.split('@');
   const userPoint = 80;
   // Todo: 왜 userPoint 만 못가져옴?? 숫자라서 그런가??
   // const userPoint = useSelector((state: RootState) => state.user.userPoint);
@@ -101,6 +112,102 @@ function MyPage({navigation}: null) {
     }
   };
 
+  const imagePickerOption = {
+    mediaType: 'photo',
+    maxWidth: 768,
+    maxHeight: 768,
+    includeBase64: Platform.OS === 'android',
+    includeExtra: true,
+    // presentationStyle,
+  };
+
+  const launchCameraOption = {
+    mediaType: 'mixed',
+    maxWidth: 768,
+    maxHeight: 768,
+    includeBase64: Platform.OS === 'android',
+    saveToPhotos: true,
+    includeExtra: true, // If true, will include extra data which requires library permissions to be requested (i.e. exif data)
+    // storageOptions: {
+    //   path: '/images', //카메라로 캡쳐시에 저장될 폴더명 [ Pictures/[path] 경로]
+    // },
+  };
+
+  // 선택 사진 또는 촬영된 사진 정보
+  const onPickImage = res => {
+    if (res.didCancel || !res) {
+      return;
+    }
+    console.log('PickImage', res.assets[0].uri);
+    // setImageUri(res.assets[0].uri);
+    // console.log('setImageUri------------------------');
+    // dispatch(
+    //   userSlice.actions.setUser({
+    //     userImage: res.assets[0].uri, // Todo: 나중에 axios 로 back 으로 보내고 다시 유저 받아서 dispatch 해주고 store 에 저장해야함
+    //     loggedIn: true,
+    //   }),
+    // );
+    function_tmp(res.assets[0].uri);
+    // edit(res.assets[0].uri);
+  };
+
+  const function_tmp = uri => {
+    let photoPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
+    let binaryFile = Image.resolveAssetSource(
+      require('../assets/sticker0.png'),
+    );
+    console.log(photoPath); // data/user/0/com.quotoapp/files/photo.jpg
+    console.log(binaryFile);
+  };
+
+  const edit = uri => {
+    PhotoEditor.Edit({
+      path: '/storage/emulated/0/Pictures/73619742-8c90-494e-baaf-dae7e0fe3be8.jpg',
+      stickers: [
+        // sticker0,
+        'sticker1',
+        'sticker2',
+        'sticker3',
+        'sticker4',
+        'sticker5',
+        'sticker6',
+        'sticker7',
+        'sticker8',
+        'sticker9',
+        'sticker10',
+      ],
+      // hiddenControls: [
+      //   'clear',
+      //   'crop',
+      //   'draw',
+      //   'save',
+      //   'share',
+      //   'sticker',
+      //   'text',
+      // ],
+      colors: undefined,
+      onDone: res => {
+        console.log('onDone!!!', res);
+      },
+      onCancel: () => {
+        console.log('on cancel');
+      },
+    });
+  };
+
+  // 카메라 촬영
+  const onLaunchCamera = () => {
+    launchCamera(launchCameraOption, onPickImage);
+  };
+
+  // 갤러리에서 사진 선택
+  const onLaunchImageLibrary = () => {
+    launchImageLibrary(imagePickerOption, onPickImage);
+  };
+
+  //////////////////////////////////////////
+  const [imageUri, setImageUri] = useState('');
+
   return (
     <SafeAreaView>
       <View // 로그아웃 ~ 수정버튼
@@ -127,10 +234,12 @@ function MyPage({navigation}: null) {
       </View>
       <View // 프로필
       >
-        <UploadModeModal
+        {/* <UploadModeModal
           visible={changeModalVisible}
           onClose={() => setChangeModalVisible(false)}
-        />
+          setImageUri={setImageUri}
+          imageUri={imageUri}
+        /> */}
         <View style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
           <View style={{flex: 1, alignItems: 'center'}}>
             <View>
@@ -143,6 +252,7 @@ function MyPage({navigation}: null) {
                   height: 75,
                   borderRadius: 37.5,
                 }}
+                imageBackgroundColor="red"
                 swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
                 overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
               />
@@ -154,7 +264,7 @@ function MyPage({navigation}: null) {
               </TouchableOpacity>
             </View>
 
-            <Text style={{fontSize: 16}}>{emailId[0]}</Text>
+            <Text style={{fontSize: 16}}>{email}</Text>
             {editable === false ? (
               <Text style={{fontSize: 12}}>{introduction}</Text>
             ) : (
@@ -241,9 +351,81 @@ function MyPage({navigation}: null) {
           </Text>
           <FontAwesome5 name="angle-right" size={18} color={'#3B28B1'} />
         </TouchableOpacity>
+        <Text> URI: {imageUri}</Text>
       </View>
+
+      <Modal
+        ////////////////////////////////////////////////////////////////////////
+        visible={changeModalVisible} // modal 나타나는 조건
+        transparent={true} // false 로 하면 버튼을 눌렀던 page 가 안보임
+        animationType="fade" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+        onRequestClose={() => setChangeModalVisible(false)} // 안드로이드에서 뒤로가기 버튼을 눌렀을 때 호출되는 함수
+      >
+        <Pressable
+          style={styles.background}
+          onPress={() => setChangeModalVisible(false)}>
+          <View style={styles.whiteBox}>
+            <Pressable
+              style={styles.actionButton}
+              android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
+              onPress={() => {
+                onLaunchCamera();
+                () => setChangeModalVisible(false);
+              }}>
+              <MaterialIcons
+                name="camera-alt"
+                color="#757575"
+                size={24}
+                style={styles.icon}
+              />
+              <Text style={styles.actionText}>카메라로 촬영하기</Text>
+            </Pressable>
+            <Pressable
+              style={styles.actionButton}
+              android_ripple={{color: '#eee'}}
+              onPress={() => {
+                onLaunchImageLibrary();
+                () => setChangeModalVisible(false);
+              }}>
+              <MaterialIcons
+                name="photo"
+                color="#757575"
+                size={24}
+                style={styles.icon}
+              />
+              <Text style={styles.actionText}>사진 선택하기</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  background: {
+    backgroundColor: 'rgba(0,0,0,0)',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  whiteBox: {
+    width: 300,
+    backgroundColor: 'white',
+    borderRadius: 4,
+    elevation: 2,
+  },
+  actionButton: {
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 8,
+  },
+  text: {
+    fontSize: 26,
+  },
+});
 
 export default MyPage;
