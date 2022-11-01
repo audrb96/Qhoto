@@ -12,10 +12,7 @@ import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
-import com.qhoto.qhoto_api.dto.response.CommentRes;
-import com.qhoto.qhoto_api.dto.response.FeedAllDto;
-import com.qhoto.qhoto_api.dto.response.QuestOptionRes;
-import com.qhoto.qhoto_api.dto.response.FeedDetailRes;
+import com.qhoto.qhoto_api.dto.response.*;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.qhoto.qhoto_api.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +38,6 @@ public class FeedService {
     private final FeedLikeRepository feedLikeRepository;
     private final QuestRepository questRepository;
 
-    private final ActiveDailyRepository activeDailyRepository;
 
     private final ActiveWeeklyRepository activeWeeklyRepository;
 
@@ -141,14 +137,21 @@ public class FeedService {
         feedLikeRepository.deleteById(feedLikePK);
     }
 
-    public Map<String, Object> getQuestList() {
-        List<QuestOptionRes> dailyOptions = activeDailyRepository.findAllByQuestIdAndStatus();
-        List<QuestOptionRes> weeklyOptions = activeWeeklyRepository.findAllByQuestIdAndStatus();
-        List<QuestOptionRes> monthlyOptions = activeMonthlyRepository.findAllByQuestIdAndStatus();
+    public QuestOptionRes getQuestList() {
+
+        // 옵션 리스트
         Map<String, Object> optionList = new HashMap<>();
+        List<QuestOptionItemRes> dailyOptions = questRepository.findAllDailyByQuestIdAndStatus();
+        List<QuestOptionItemRes> weeklyOptions = questRepository.findAllWeeklyByQuestIdAndStatus();
+        List<QuestOptionItemRes> monthlyOptions = questRepository.findAllMonthlyByQuestIdAndStatus();
         optionList.put("dailyOptions", dailyOptions);
         optionList.put("weeklyOptions", weeklyOptions);
         optionList.put("monthlyOptions", monthlyOptions);
-        return optionList;
+
+        // QuestOptionRes 빌드
+        QuestOptionRes QO = QuestOptionRes.builder()
+                .options(optionList)
+                .build();
+        return QO;
     }
 }

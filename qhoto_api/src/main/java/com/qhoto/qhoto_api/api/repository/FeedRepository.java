@@ -1,7 +1,7 @@
 package com.qhoto.qhoto_api.api.repository;
 
 import com.qhoto.qhoto_api.domain.Feed;
-import com.qhoto.qhoto_api.dto.response.QuestCountRes;
+import com.qhoto.qhoto_api.dto.response.QuestAggregateRes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,10 +23,8 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
     @Query("select count(f) from Feed f where f.typeCode = :typeCode and f.user.id = :userId")
     int findAllFeedByTypeCodeAndUserId(@Param("typeCode")String typeCode,@Param("userId") Long userId);
 
-    @Query("select new com.qhoto.qhoto_api.dto.response.QuestCountRes(coalesce(f.typeCode, 'TOTAL'), coalesce(f.duration, 'ALL'), count(f)) from Feed f group by  f.typeCode, f.duration ")
-    @Query(value = "select ifnull(type_code, 'TOTAL') as type_code, ifnull(quest_duration, 'ALL') as quest_duration, count(*) from feed  group by type_code, quest_duration with rollup", nativeQuery = true)
-
-    List<QuestCountRes> findAllQuestWithRollUp();
+     @Query(value = "select ifnull(type_code, 'TOTAL') as code, ifnull(quest_duration, 'ALL') as duration, count(*) as count from feed where user_id= :userId group by type_code, quest_duration with rollup order by code", nativeQuery = true)
+    List<QuestAggregateRes> findAllQuestWithRollUp(@Param("userId") Long userId);
 
     Feed findFeedById(Long feedId);
 

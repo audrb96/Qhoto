@@ -6,17 +6,7 @@ import lombok.Getter;
 @Getter
 public class QuestCountRes {
     private String typeCode;
-    private String duration;
-    private int count;
     private int sumPoint;
-
-
-//    @Builder
-//    public QuestCountRes(String typeCode, String duration, int count) {
-//        this.typeCode = typeCode;
-//        this.duration = duration;
-//        this.count = count;
-//    }
 
 
     @Builder

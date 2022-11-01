@@ -50,7 +50,9 @@ public class QuestController {
 
     @GetMapping("/point")
     public ResponseEntity<?> readQuestLevel() {
-        Long userId = 1L;
+        Long userId = 2L;
         return new ResponseEntity<>(questService.getQuestLevel(userId), HttpStatus.OK);
     }
+
+
 }
