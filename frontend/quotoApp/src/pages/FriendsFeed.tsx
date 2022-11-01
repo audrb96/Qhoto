@@ -9,16 +9,22 @@ import {
   Image,
   SafeAreaView,
   ImageBackground,
+  Modal,
+  Pressable,
+  KeyboardAvoidingView,
+  TextInput,
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
+import SelectedFeed from './SelectedFeed';
 
 function FriendsFeed() {
+  const [modalVisible, setModalVisible] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const [isLike, setLike] = useState([true, false, true, false]);
-  const [isSuccess, setSuccess] = useState(false);
+  const [isSuccess, setSuccess] = useState(true);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const category = {
     environment: 'https://cdn-icons-png.flaticon.com/128/259/259345.png',
@@ -107,12 +113,14 @@ function FriendsFeed() {
           />
         </View>
       </View>
-      <View style={{backgroundColor: 'green', height: 200, width: '100%'}}>
+      <View style={{height: 200, width: '100%'}}>
         {isSuccess ? (
-          <Image
-            style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
-            source={{uri: item.feedImage}}
-          />
+          <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+            <Image
+              style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
+              source={{uri: item.feedImage}}
+            />
+          </TouchableOpacity>
         ) : (
           <ImageBackground
             source={{uri: item.feedImage}}
@@ -146,7 +154,7 @@ function FriendsFeed() {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              console.log(1);
+              setModalVisible(!modalVisible);
             }}>
             <Ionicons name="chatbubble-outline" size={30} color={'black'} />
           </TouchableOpacity>
@@ -164,6 +172,7 @@ function FriendsFeed() {
           <View>
             <Text>댓글을 써주세요</Text>
           </View>
+          <TextInput style={{height: 40}} placeholder="댓글입력" />
         </View>
       </View>
     </View>
@@ -184,7 +193,7 @@ function FriendsFeed() {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <KeyboardAvoidingView style={{flex: 1}}>
       <View
         style={{
           flexDirection: 'row',
@@ -241,7 +250,28 @@ function FriendsFeed() {
           style={{flex: 1}}
         />
       </View>
-    </SafeAreaView>
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <Pressable
+            style={styles.centeredView}
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}>
+            <Pressable>
+              <View style={styles.modalView}>
+                <SelectedFeed />
+              </View>
+            </Pressable>
+          </Pressable>
+        </Modal>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -257,6 +287,39 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+  modalView: {
+    width: 350,
+    height: 700,
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 20,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: 'black',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 
