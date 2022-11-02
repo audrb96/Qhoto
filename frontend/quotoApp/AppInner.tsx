@@ -89,6 +89,7 @@ function AppInner() {
               tabBarActiveTintColor: '#4B179F',
               tabBarInactiveTintColor: 'gray',
               headerShown: true,
+              tabBarHideOnKeyboard: true,
             })}>
             <Tab.Screen
               name="FriendFeed"
