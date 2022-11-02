@@ -114,8 +114,11 @@ public class QuestService {
             questPoint.put(qc.getTypeCode(), QP);
         }
         // 전체 QuestPoint 및 QuestCount 빌드
-        QuestPointRes QPR =  buildQuestPoint(totalPoint, totalCnt, totalDaily, totalWeekly, totalMonthly);
-        questPoint.put("Total", QPR);
+        if(questPoint.size() != 0) {
+            QuestPointRes QPR =  buildQuestPoint(totalPoint, totalCnt, totalDaily, totalWeekly, totalMonthly);
+            questPoint.put("Total", QPR);
+        }
+
 
         //QuestLevel 빌드
         QuestLevelRes Q = QuestLevelRes.builder()

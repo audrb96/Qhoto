@@ -39,10 +39,6 @@ public class FeedService {
     private final QuestRepository questRepository;
 
 
-    private final ActiveWeeklyRepository activeWeeklyRepository;
-
-    private final ActiveMonthlyRepository activeMonthlyRepository;
-
 
 
     public Page<FeedAllDto> getAllFeed(FeedAllReq feedAllReq, Pageable pageable) {
