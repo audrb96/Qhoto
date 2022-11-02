@@ -12,7 +12,8 @@ import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
 import com.qhoto.qhoto_api.dto.response.*;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
-import com.qhoto.qhoto_api.utils.S3Utils;
+import com.qhoto.qhoto_api.exception.NoFeedByIdException;
+import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,7 +57,7 @@ public class FeedService {
 
     public FeedDetailRes getFeedDetail(Long feedId){
 
-        Feed feed = feedRepository.findFeedById(feedId);
+        Feed feed = feedRepository.findFeedById(feedId).orElseThrow(() -> new NoFeedByIdException("no feed by id"));
         Long userId = 1L;
         List<CommentRes> commentResList = getCommentList(feedId);
 
@@ -144,7 +145,7 @@ public class FeedService {
     public void postComment(CreateCommentReq createCommentReq){
 
         Comment comment = Comment.builder()
-                .feed(feedRepository.findFeedById(createCommentReq.getFeedId()))
+                .feed(feedRepository.findFeedById(createCommentReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(createCommentReq.getUserId()))
                 .context(createCommentReq.getCommentContext())
                 .time(LocalDateTime.now())
@@ -165,7 +166,7 @@ public class FeedService {
 
     public void postLike(LikeReq likeReq){
         FeedLike feedLike = FeedLike.builder()
-                .feed(feedRepository.findFeedById(likeReq.getFeedId()))
+                .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(likeReq.getUserId()))
                 .build();
         feedLikeRepository.save(feedLike);
@@ -174,7 +175,7 @@ public class FeedService {
     @Modifying
     public void deleteLike(LikeReq likeReq){
         FeedLikePK feedLikePK = FeedLikePK.builder()
-                .feed(feedRepository.findFeedById(likeReq.getFeedId()))
+                .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(likeReq.getUserId()))
                 .build();
         feedLikeRepository.deleteById(feedLikePK);

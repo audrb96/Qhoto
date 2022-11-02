@@ -18,8 +18,9 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
     Optional<Feed> findClearWeeklyQuest(@Param("userId") Long userId);
     @Query("select f from Feed f inner join fetch ActiveMonthly a on f.activeMonthly.id = a.id where f.status = 'U' and a.status='A' and f.user.id= :userId")
     Optional<Feed> findClearMonthlyQuest(@Param("userId") Long userId);
-    Feed findFeedById(Long feedId);
+    Optional<Feed> findFeedById(Long feedId);
     @Query("select f from Feed f where f.user.id=:userId order by f.time desc")
     List<Feed> findAllByUserId(@Param("userId") Long userId);
+
 
 }

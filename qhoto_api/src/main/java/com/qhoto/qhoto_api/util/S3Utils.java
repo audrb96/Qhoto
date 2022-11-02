@@ -1,4 +1,4 @@
-package com.qhoto.qhoto_api.utils;
+package com.qhoto.qhoto_api.util;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;

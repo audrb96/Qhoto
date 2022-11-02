@@ -6,6 +6,9 @@ import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
+import com.qhoto.qhoto_api.dto.response.ErrorResponse;
+import com.qhoto.qhoto_api.exception.NoFeedByIdException;
+import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -91,6 +94,7 @@ public class FeedController {
     public ResponseEntity<?> readOptionList(){
         return new ResponseEntity<>(feedService.getQuestList(), HttpStatus.OK);
     }
+
 
 
 }
