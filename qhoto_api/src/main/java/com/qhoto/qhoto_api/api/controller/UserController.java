@@ -4,6 +4,7 @@ import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.api.service.LoginService;
 import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
+import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.dto.response.LoginRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class UserController {
     private final UserRepository userRepository;
     private final LoginService loginService;
+    private final UserService userService;
 
 
     @PostMapping("/login/google")
@@ -44,6 +46,11 @@ public class UserController {
         return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("not found user"));
     }
 
+    @PutMapping("/user/modify")
+    public ResponseEntity<String> modifyUser(@AuthenticationPrincipal User user,@RequestBody ModifyUserReq modifyUserReq) throws IOException {
+        userService.modifyUser(modifyUserReq, user);
+        return ResponseEntity.ok().body("success");
+    }
 
 
 
