@@ -43,7 +43,7 @@ function MyPage({navigation}: null) {
   // const userName = useSelector((state: RootState) => state.user.userName);
   const email = useSelector((state: RootState) => state.user.email);
   // const emailId = email.split('@');
-  const userPoint = 80;
+  const userPoint = 1500;
   // Todo: 왜 userPoint 만 못가져옴?? 숫자라서 그런가??
   // const userPoint = useSelector((state: RootState) => state.user.userPoint);
   let backgroundColor = 'red';
@@ -135,6 +135,9 @@ function MyPage({navigation}: null) {
 
   // 선택 사진 또는 촬영된 사진 정보
   const onPickImage = res => {
+    console.log('사진정보입니다.');
+    console.log(res.assets[0].uri);
+
     if (res.didCancel || !res) {
       return;
     }
@@ -152,19 +155,40 @@ function MyPage({navigation}: null) {
   };
 
   const savePhoto = (uri: string) => {
-    let photoPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
+    let MainBundlePath = RNFS.MainBundlePath + '/photo.jpg';
+    let CachesDirectoryPath = RNFS.CachesDirectoryPath + '/photo.jpg';
+    let ExternalCachesDirectoryPath =
+      RNFS.ExternalCachesDirectoryPath + '/photo.jpg';
+    let DownloadDirectoryPath = RNFS.DownloadDirectoryPath + '/photo.jpg';
+    let DocumentDirectoryPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
+    let ExternalDirectoryPath = RNFS.ExternalDirectoryPath + '/photo.jpg';
+    let ExternalStorageDirectoryPath =
+      RNFS.ExternalStorageDirectoryPath + '/photo.jpg';
+    let TemporaryDirectoryPath = RNFS.TemporaryDirectoryPath + '/photo.jpg';
+    let PicturesDirectoryPath = RNFS.PicturesDirectoryPath + '/photo.jpg';
     // let binaryFile = Image.resolveAssetSource(
     //   require('../assets/sticker0.png'),
     // );
-    console.log('photoPath----', photoPath); // data/user/0/com.quotoapp/files/photo.jpg
+    console.log('uri : ', uri);
+    console.log(1, MainBundlePath);
+    console.log(2, CachesDirectoryPath);
+    console.log(3, ExternalCachesDirectoryPath);
+    console.log(4, DownloadDirectoryPath);
+    console.log(5, DocumentDirectoryPath);
+    console.log(6, ExternalDirectoryPath);
+    console.log(7, ExternalStorageDirectoryPath);
+    console.log(8, TemporaryDirectoryPath);
+    console.log(9, PicturesDirectoryPath);
+
     // console.log(binaryFile);
-    RNFS.moveFile(uri, photoPath)
+    RNFS.moveFile(uri, TemporaryDirectoryPath)
       .then(() => {
         PhotoEditor.Edit({
-          path: photoPath,
+          path: TemporaryDirectoryPath,
           colors: undefined,
           // hiddenControls: ['save'],
           onDone: RRRES => {
+            console.log('확인해보자');
             console.log('on done', RRRES);
             // let binaryFile = Image.resolveAssetSource(require(RRRES));
             // console.log('binaryFile : ', binaryFile);
@@ -306,7 +330,7 @@ function MyPage({navigation}: null) {
                 style={{
                   width: 270,
                   height: 5,
-                  backgroundColor: 'silver',
+                  backgroundColor: 'red',
                 }}
               />
               <View
