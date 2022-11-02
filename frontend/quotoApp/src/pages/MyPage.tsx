@@ -128,21 +128,15 @@ function MyPage({navigation}: null) {
     includeBase64: Platform.OS === 'android',
     saveToPhotos: true,
     includeExtra: true, // If true, will include extra data which requires library permissions to be requested (i.e. exif data)
-    // storageOptions: {
-    //   path: '/new', //카메라로 캡쳐시에 저장될 폴더명 [ Pictures/[path] 경로]
-    // },
   };
 
   // 선택 사진 또는 촬영된 사진 정보
   const onPickImage = res => {
-    console.log('사진정보입니다.');
-    console.log(res.assets[0].uri);
-
     if (res.didCancel || !res) {
       return;
     }
     console.log('PickImage', res.assets[0].uri);
-    // setImageUri(res.assets[0].uri);
+    setImageUri(res.assets[0].uri);
 
     // dispatch(
     //   userSlice.actions.setUser({
@@ -155,58 +149,23 @@ function MyPage({navigation}: null) {
   };
 
   const savePhoto = (uri: string) => {
-    let MainBundlePath = RNFS.MainBundlePath + '/photo.jpg';
-    let CachesDirectoryPath = RNFS.CachesDirectoryPath + '/photo.jpg';
-    let ExternalCachesDirectoryPath =
-      RNFS.ExternalCachesDirectoryPath + '/photo.jpg';
-    let DownloadDirectoryPath = RNFS.DownloadDirectoryPath + '/photo.jpg';
     let DocumentDirectoryPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
-    let ExternalDirectoryPath = RNFS.ExternalDirectoryPath + '/photo.jpg';
-    let ExternalStorageDirectoryPath =
-      RNFS.ExternalStorageDirectoryPath + '/photo.jpg';
-    let TemporaryDirectoryPath = RNFS.TemporaryDirectoryPath + '/photo.jpg';
-    let PicturesDirectoryPath = RNFS.PicturesDirectoryPath + '/photo.jpg';
-    // let binaryFile = Image.resolveAssetSource(
-    //   require('../assets/sticker0.png'),
-    // );
-    console.log('uri : ', uri);
-    console.log(1, MainBundlePath);
-    console.log(2, CachesDirectoryPath);
-    console.log(3, ExternalCachesDirectoryPath);
-    console.log(4, DownloadDirectoryPath);
-    console.log(5, DocumentDirectoryPath);
-    console.log(6, ExternalDirectoryPath);
-    console.log(7, ExternalStorageDirectoryPath);
-    console.log(8, TemporaryDirectoryPath);
-    console.log(9, PicturesDirectoryPath);
 
-    // console.log(binaryFile);
-    RNFS.moveFile(uri, TemporaryDirectoryPath)
+    RNFS.moveFile(uri, DocumentDirectoryPath)
       .then(() => {
         PhotoEditor.Edit({
-          path: TemporaryDirectoryPath,
+          path: DocumentDirectoryPath,
           colors: undefined,
           // hiddenControls: ['save'],
           onDone: RRRES => {
-            console.log('확인해보자');
             console.log('on done', RRRES);
-            // let binaryFile = Image.resolveAssetSource(require(RRRES));
-            // console.log('binaryFile : ', binaryFile);
-            // console.log('binaryFile.uri : ', binaryFile);
-            // RNFetchBlob.config({fileCache: true})
-            //   .fetch('GET', binaryFile.uri)
-            //   .then(RESPONSE => {
-            //     console.log('RESPONSE: ', RESPONSE);
-            //   });
           },
           onCancel: () => {
             console.log('on cancel');
           },
         });
       })
-      // .then(RESPONSE => {
-      //   console.log('RESPONSE', RESPONSE);
-      // })
+
       .catch(err => {
         console.log(err.message);
       });
@@ -251,12 +210,6 @@ function MyPage({navigation}: null) {
       </View>
       <View // 프로필
       >
-        {/* <UploadModeModal
-          visible={changeModalVisible}
-          onClose={() => setChangeModalVisible(false)}
-          setImageUri={setImageUri}
-          imageUri={imageUri}
-        /> */}
         <View style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
           <View style={{flex: 1, alignItems: 'center'}}>
             <View>
@@ -330,7 +283,7 @@ function MyPage({navigation}: null) {
                 style={{
                   width: 270,
                   height: 5,
-                  backgroundColor: 'red',
+                  backgroundColor: 'silver',
                 }}
               />
               <View
