@@ -16,6 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 function SelectedFeed() {
   const [text, onChangeText] = useState('');
   const [isLike, setLike] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const category = {
     environment: 'https://cdn-icons-png.flaticon.com/128/259/259345.png',
     health: 'https://cdn-icons-png.flaticon.com/128/2262/2262878.png',
@@ -125,7 +126,7 @@ function SelectedFeed() {
   ];
 
   return (
-    <KeyboardAvoidingView behavior="padding">
+    <KeyboardAvoidingView style={{backgroundColor: 'red'}}>
       <ScrollView>
         <View style={{flexDirection: 'row', flex: 0.15}}>
           <View style={{flex: 0.15}}>
@@ -202,8 +203,11 @@ function SelectedFeed() {
         </View>
 
         <TextInput
-          style={{height: 40}}
+          style={isFocused ? {borderBottomWidth: 1} : {}}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           placeholder="댓글입력"
+          editable
           onChangeText={onChangeText}
           value={text}
         />
