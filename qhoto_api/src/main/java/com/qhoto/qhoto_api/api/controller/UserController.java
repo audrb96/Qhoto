@@ -51,6 +51,10 @@ public class UserController {
         userService.modifyUser(modifyUserReq, user);
         return ResponseEntity.ok().body("success");
     }
+    @GetMapping("/mypage")
+    public ResponseEntity<?> readMyFeed(){
+        return new ResponseEntity<>(userService.getMyFeed(),HttpStatus.OK);
+    }
 
 
 

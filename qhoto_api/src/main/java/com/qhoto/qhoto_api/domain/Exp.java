@@ -31,4 +31,9 @@ public class Exp {
     @JoinColumn(name = "type_code", nullable = false)
     private QuestType questType;
 
+
+    public void addPoint(int questPoint){
+        this.point+=questPoint;
+    }
+
 }

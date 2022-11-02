@@ -36,11 +36,11 @@ public class Feed {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name="active_weekly_id")
-    private ActiveDaily activeWeekly;
+    private ActiveWeekly activeWeekly;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name="active_monthly_id")
-    private ActiveDaily activeMonthly;
+    private ActiveMonthly activeMonthly;
 
     @Column(name = "feed_image", nullable = false)
     private String image;
