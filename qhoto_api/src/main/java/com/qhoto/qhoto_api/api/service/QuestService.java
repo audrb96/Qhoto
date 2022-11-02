@@ -136,7 +136,8 @@ public class QuestService {
                             .questScore(feed.getScore())
                             .questDifficulty(feed.getDifficulty())
                             .questImage(feed.getImage())
-                            .build()
+                                .build()
+
             );
             return questList;
     }
