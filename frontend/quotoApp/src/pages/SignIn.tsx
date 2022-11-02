@@ -64,16 +64,21 @@ function SignIn({navigation}: SignInScreenProps) {
 
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await login().then(token => {
+      console.log(11, token);
       if (token) {
         dispatch(
           userSlice.actions.setUser({
+            email: '이메일~~~@kakao',
+            userName: '프로도',
+            userImage:
+              'https://png.pngtree.com/thumb_back/fh260/back_our/20190625/ourmid/pngtree-black-series-monotonous-simple-background-image-image_262212.jpg',
             loggedIn: true,
           }),
         );
       }
     });
     setUser(token);
-    console.log(JSON.stringify(token));
+    // console.log(JSON.stringify(token));
     Alert.alert('알림', '로그인 되었습니다.');
   };
 
