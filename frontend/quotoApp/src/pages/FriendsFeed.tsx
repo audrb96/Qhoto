@@ -172,7 +172,6 @@ function FriendsFeed() {
           <View>
             <Text>댓글을 써주세요</Text>
           </View>
-          <TextInput style={{height: 40}} placeholder="댓글입력" />
         </View>
       </View>
     </View>
@@ -193,7 +192,7 @@ function FriendsFeed() {
   };
 
   return (
-    <KeyboardAvoidingView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <View
         style={{
           flexDirection: 'row',
@@ -250,28 +249,26 @@ function FriendsFeed() {
           style={{flex: 1}}
         />
       </View>
-      <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <KeyboardAvoidingView style={{backgroundColor: 'orange'}}>
           <Pressable
-            style={styles.centeredView}
             onPress={() => {
+              console.log(111);
               setModalVisible(!modalVisible);
             }}>
-            <Pressable>
-              <View style={styles.modalView}>
-                <SelectedFeed />
-              </View>
+            <Pressable style={styles.modalView}>
+              <SelectedFeed />
             </Pressable>
           </Pressable>
-        </Modal>
-      </View>
-    </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </Modal>
+    </View>
   );
 }
 
@@ -296,8 +293,8 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: 350,
-    height: 700,
-    backgroundColor: 'white',
+    height: 600,
+    backgroundColor: 'black',
     padding: 15,
     borderRadius: 20,
   },
