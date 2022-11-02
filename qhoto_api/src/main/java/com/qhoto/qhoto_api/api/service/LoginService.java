@@ -129,6 +129,7 @@ public class LoginService {
                 .authProvider(authProvider)
                 .contactAgree(false)
                 .contactAgreeDate(null)
+                .description(null)
                 .email(email)
                 .image(pictureUrl)
                 .joinDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
