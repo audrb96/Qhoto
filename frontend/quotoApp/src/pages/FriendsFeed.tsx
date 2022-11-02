@@ -9,16 +9,22 @@ import {
   Image,
   SafeAreaView,
   ImageBackground,
+  Modal,
+  Pressable,
+  KeyboardAvoidingView,
+  TextInput,
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
+import SelectedFeed from './SelectedFeed';
 
 function FriendsFeed() {
+  const [modalVisible, setModalVisible] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const [isLike, setLike] = useState([true, false, true, false]);
-  const [isSuccess, setSuccess] = useState(false);
+  const [isSuccess, setSuccess] = useState(true);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const category = {
     environment: 'https://cdn-icons-png.flaticon.com/128/259/259345.png',
@@ -107,12 +113,14 @@ function FriendsFeed() {
           />
         </View>
       </View>
-      <View style={{backgroundColor: 'green', height: 200, width: '100%'}}>
+      <View style={{height: 200, width: '100%'}}>
         {isSuccess ? (
-          <Image
-            style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
-            source={{uri: item.feedImage}}
-          />
+          <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+            <Image
+              style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
+              source={{uri: item.feedImage}}
+            />
+          </TouchableOpacity>
         ) : (
           <ImageBackground
             source={{uri: item.feedImage}}
@@ -146,7 +154,7 @@ function FriendsFeed() {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              console.log(1);
+              setModalVisible(!modalVisible);
             }}>
             <Ionicons name="chatbubble-outline" size={30} color={'black'} />
           </TouchableOpacity>
@@ -184,7 +192,7 @@ function FriendsFeed() {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <View
         style={{
           flexDirection: 'row',
@@ -241,7 +249,26 @@ function FriendsFeed() {
           style={{flex: 1}}
         />
       </View>
-    </SafeAreaView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <KeyboardAvoidingView style={{backgroundColor: 'orange'}}>
+          <Pressable
+            onPress={() => {
+              console.log(111);
+              setModalVisible(!modalVisible);
+            }}>
+            <Pressable style={styles.modalView}>
+              <SelectedFeed />
+            </Pressable>
+          </Pressable>
+        </KeyboardAvoidingView>
+      </Modal>
+    </View>
   );
 }
 
@@ -257,6 +284,39 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+  modalView: {
+    width: 350,
+    height: 600,
+    backgroundColor: 'black',
+    padding: 15,
+    borderRadius: 20,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: 'black',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 

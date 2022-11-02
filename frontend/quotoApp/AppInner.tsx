@@ -25,7 +25,7 @@ import QhotoHeader from './src/components/QhotoHeader';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
-  AllFeed: undefined;
+  AllFeedStackScreen: undefined;
   MyQuest: undefined;
   Settings: undefined;
   FindFriend: undefined;
@@ -64,7 +64,7 @@ function AppInner() {
                   size = 30;
                 } else if (route.name === 'FriendFeed') {
                   iconName = 'house-user';
-                } else if (route.name === 'AllFeed') {
+                } else if (route.name === 'AllFeedStackScreen') {
                   iconName = 'search';
                 } else if (route.name === 'FindFriend') {
                   iconName = 'users';
@@ -89,6 +89,7 @@ function AppInner() {
               tabBarActiveTintColor: '#4B179F',
               tabBarInactiveTintColor: 'gray',
               headerShown: true,
+              tabBarHideOnKeyboard: true,
             })}>
             <Tab.Screen
               name="FriendFeed"
@@ -99,7 +100,7 @@ function AppInner() {
               }}
             />
             <Tab.Screen
-              name="AllFeed"
+              name="AllFeedStackScreen"
               component={AllFeedStackScreen}
               options={{
                 title: '전체 피드',
