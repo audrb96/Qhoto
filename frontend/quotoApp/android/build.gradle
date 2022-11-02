@@ -19,6 +19,7 @@ buildscript {
     }
     repositories {
         google()
+        maven { url "https://jitpack.io" }
         mavenCentral()
     }
     dependencies {
@@ -44,6 +45,7 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
+
         mavenCentral {
             // We don't want to fetch react-native from Maven Central as there are
             // older versions over there.
