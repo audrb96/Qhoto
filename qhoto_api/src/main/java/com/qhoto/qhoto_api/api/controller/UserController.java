@@ -24,6 +24,7 @@ import java.util.Map;
 public class UserController {
     private final UserRepository userRepository;
     private final LoginService loginService;
+    private final UserService userService;
 
 
     @PostMapping("/login/google")
@@ -38,5 +39,9 @@ public class UserController {
         return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("not found user"));
     }
 
+    @GetMapping("/mypage")
+    public ResponseEntity<?> readMyFeed(){
+        return new ResponseEntity<>(userService.getMyFeed(),HttpStatus.OK);
+    }
 
 }

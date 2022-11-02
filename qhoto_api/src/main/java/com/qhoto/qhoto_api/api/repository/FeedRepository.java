@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,5 +19,7 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
     @Query("select f from Feed f inner join fetch ActiveMonthly a on f.activeMonthly.id = a.id where f.status = 'U' and a.status='A' and f.user.id= :userId")
     Optional<Feed> findClearMonthlyQuest(@Param("userId") Long userId);
     Feed findFeedById(Long feedId);
+    @Query("select f from Feed f where f.user.id=:userId order by f.time desc")
+    List<Feed> findAllByUserId(@Param("userId") Long userId);
 
 }
