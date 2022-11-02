@@ -6,9 +6,13 @@ import {
   Platform,
   View,
   Text,
+  Image,
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import {launchCamera} from 'react-native-image-picker';
+import Modal from 'react-native-modal';
+import PhotoEditor from 'react-native-photo-editor';
+import RNFS from 'react-native-fs';
 
 import QuestCard from '../components/main/QuestCard';
 
@@ -26,9 +30,12 @@ interface Quest {
 }
 
 const {width, height} = Dimensions.get('window');
+console.log(RNFS.DocumentDirectoryPath);
 
 function Settings() {
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [photo, setPhoto] = React.useState('');
+
   const questLists: Quest[][] = [
     [
       {
@@ -110,12 +117,68 @@ function Settings() {
     ],
   ];
 
+  const savePhoto = (uri: string) => {
+    let photoPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
+    console.log(RNFS.DocumentDirectoryPath + '/photo.jpg');
+    RNFS.moveFile(uri, photoPath)
+      .then(() => {
+        PhotoEditor.Edit({
+          path: RNFS.DocumentDirectoryPath + '/photo.jpg',
+          // stickers: [
+          //   'sticker0',
+          //   'sticker1',
+          //   'sticker2',
+          //   'sticker3',
+          //   'sticker4',
+          //   'sticker5',
+          //   'sticker6',
+          //   'sticker7',
+          //   'sticker8',
+          //   'sticker9',
+          //   'sticker10',
+          // ],
+          // hiddenControls: [
+          //   'clear',
+          //   'crop',
+          //   'draw',
+          //   'save',
+          //   'share',
+          //   'sticker',
+          //   'text',
+          // ],
+          colors: undefined,
+          onDone: async res => {
+            // const response = await RNFS.readFile(
+            //   RNFS.DocumentDirectoryPath + '/photo.jpg',
+            // );
+            console.log(res);
+            // setPhoto(response);
+            setModalVisible(false);
+          },
+          onCancel: () => {
+            console.log('on cancel');
+          },
+        });
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
+  };
+
+  const handlePhotoClick = () => {
+    launchCamera({...options, mediaType: 'photo'}, onPickImage);
+  };
+
+  const handleVideoClick = () => {
+    launchCamera({...options, mediaType: 'video'}, onPickImage);
+  };
+
   const options = {
-    mediaType: 'mixed',
     videoQuality: 'high',
     durationLimit: 10,
     maxWidth: 768,
     maxHeight: 768,
+    saveToPhotos: true,
     includeBase64: Platform.OS === 'android',
   };
 
@@ -123,7 +186,7 @@ function Settings() {
     if (res.didCancel || !res) {
       return;
     }
-    console.log('PickImage', res);
+    savePhoto(res.assets[0].uri);
   };
 
   return (
@@ -166,6 +229,31 @@ function Settings() {
           </Pressable>
         </View>
       </View>
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={() => setModalVisible(!modalVisible)}
+        onBackButtonPress={() => setModalVisible(!modalVisible)}
+        backdropOpacity={0.1}
+        deviceWidth={width}
+        deviceHeight={height}
+        backdropTransitionInTiming={200}
+        backdropTransitionOutTiming={200}
+        style={{margin: 0}}>
+        <View style={{flex: 1, justifyContent: 'flex-end'}}>
+          <View style={styles.modal}>
+            <Pressable style={styles.modalButton} onPress={handlePhotoClick}>
+              <Text style={styles.modalButtonText}>
+                <Icon name="camera-retro" size={18} /> &nbsp;&nbsp; 사진 촬영
+              </Text>
+            </Pressable>
+            <Pressable style={styles.modalButton} onPress={handleVideoClick}>
+              <Text style={styles.modalButtonText}>
+                <Icon name="video-camera" size={18} /> &nbsp;&nbsp; 동영상 촬영
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -173,8 +261,6 @@ function Settings() {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   questCardContainer: {
     flex: 3,
@@ -191,6 +277,17 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 45,
     backgroundColor: '#4B179F',
+  },
+  modal: {
+    backgroundColor: 'white',
+  },
+  modalButton: {
+    width: '100%',
+    padding: 20,
+  },
+  modalButtonText: {
+    fontFamily: 'Happiness-Sans-Bold',
+    fontSize: 18,
   },
 });
 
