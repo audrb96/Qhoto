@@ -32,11 +32,19 @@ public class UserController {
         return new ResponseEntity<>(loginRes, HttpStatus.OK);
     }
 
+    @PostMapping("/login/kakao")
+    public ResponseEntity<LoginRes> kakaoLogin(@RequestBody Map<String, String> kakaoToken) {
+        LoginRes loginRes = loginService.loginKakao(kakaoToken.get("accessToken"));
+        return new ResponseEntity<>(loginRes, HttpStatus.OK);
+    }
+
     @GetMapping("/me")
     @PreAuthorize("hasRole('ROLE_USER')")
     public User getCurrentUser(@AuthenticationPrincipal User user) {
         return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("not found user"));
     }
+
+
 
 
 }
