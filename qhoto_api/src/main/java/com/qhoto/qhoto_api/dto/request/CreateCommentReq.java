@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 @ToString
 public class CreateCommentReq {
 
-    @NotNull
+    @NotNull(message = "피드 아이디를 입력해주세요.")
     private final Long feedId;
 
-    @NotNull
+    @NotNull(message = "유저 아이디를 입력해주세요.")
     private final Long userId;
 
-    @NotNull
+    @NotNull(message = "댓글을 입력해주세요.")
     private final String commentContext;
 
 

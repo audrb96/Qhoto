@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class FeedAllReq {
 
-    @NotNull
+    @NotNull(message = "조건을 입력 해주세요")
     private final String condition;
 
-    @NotNull
+    @NotNull(message = "기간을 입력 해주세요.")
     private final String duration;
 
     @Builder
