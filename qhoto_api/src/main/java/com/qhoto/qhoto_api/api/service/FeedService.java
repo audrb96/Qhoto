@@ -95,22 +95,21 @@ public class FeedService {
         return commentResList;
     }
 
-    public Page<FeedFriendDto> getFriendFeed(FeedAllReq feedAllReq, Pageable pageable){
-        Long userId = 1L;
-        return feedRepository.findByConditionAndUserId(feedAllReq, pageable, userId);
+    public Page<FeedFriendDto> getFriendFeed(User user,FeedAllReq feedAllReq, Pageable pageable){
+        return feedRepository.findByConditionAndUserId(feedAllReq, pageable, user.getId());
     }
 
 
-    public void postFeed(CreateFeedReq createFeedReq) throws IOException {
+    public void postFeed(CreateFeedReq createFeedReq, User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
-        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+        User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "/feed/image/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
     }
 
-    public void postVideoFeed(CreateFeedReq createFeedReq) throws IOException {
+    public void postVideoFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
-        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+        User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "/feed/video/input/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
 
@@ -185,7 +184,7 @@ public class FeedService {
     public QuestOptionRes getQuestList() {
 
         // 옵션 리스트
-        Map<String, Object> optionList = new HashMap<>();
+        Map<String, List<QuestOptionItemRes>> optionList = new HashMap<>();
         List<QuestOptionItemRes> dailyOptions = questRepository.findAllDailyByQuestIdAndStatus();
         List<QuestOptionItemRes> weeklyOptions = questRepository.findAllWeeklyByQuestIdAndStatus();
         List<QuestOptionItemRes> monthlyOptions = questRepository.findAllMonthlyByQuestIdAndStatus();
