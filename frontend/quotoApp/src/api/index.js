@@ -15,7 +15,7 @@ function fileApiInstance() {
   const instance = axios.create({
     baseURL: 'https://qhoto-api.shop',
     headers: {
-      'Content-Type': `multipart/form-data`,
+      'Content-Type': 'multipart/form-data',
     },
   });
   return instance;
