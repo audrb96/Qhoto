@@ -6076,11 +6076,6 @@
   "resolved" "https://registry.npmjs.org/react-native-keyboard-aware-scrollview/-/react-native-keyboard-aware-scrollview-2.1.0.tgz"
   "version" "2.1.0"
 
-"react-native-keyboard-spacer@0.4.1":
-  "integrity" "sha512-QPX2El4U2VfhRQm1YOTrTsOJIDjJBydpdz87jmiFOxBmKJfVn7CwiTzzipKTiLwfAFoUYQ+sB/xcnIhRZPF+SQ=="
-  "resolved" "https://registry.npmjs.org/react-native-keyboard-spacer/-/react-native-keyboard-spacer-0.4.1.tgz"
-  "version" "0.4.1"
-
 "react-native-paper@5.0.0-rc.8":
   "integrity" "sha512-UyNgb9Pqo6VYe8VSM/V2494SXkXN72oL2SfQwCh7oWeN/kMA22uuz5QXbba4OGQDR0NHTOiyxetDQG+W/YS3IA=="
   "resolved" "https://registry.npmjs.org/react-native-paper/-/react-native-paper-5.0.0-rc.8.tgz"

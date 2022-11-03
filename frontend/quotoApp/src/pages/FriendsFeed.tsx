@@ -256,7 +256,13 @@ function FriendsFeed() {
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}>
-        <KeyboardAvoidingView style={{backgroundColor: 'orange'}}>
+        <KeyboardAvoidingView
+          style={{
+            backgroundColor: 'orange',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           <Pressable
             onPress={() => {
               console.log(111);
