@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Text,
   View,
@@ -13,7 +13,7 @@ import {Avatar} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-function SelectedFeed() {
+function SelectedFeed({parentFunction}) {
   const [text, onChangeText] = useState('');
   const [isLike, setLike] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -41,7 +41,8 @@ function SelectedFeed() {
   const comment_data = [
     {
       id: 'adsfadsfasdf',
-      comment: '1번입니다',
+      comment:
+        '1번입니다, 이거되냐, 어떻게되냐, 가나다라 마바사 아자차카 타파하, 이러아ㅣ',
     },
     {
       id: 'djfdfus',
@@ -124,6 +125,7 @@ function SelectedFeed() {
       comment: '7번입니다',
     },
   ];
+  console.log('체크');
 
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
@@ -131,7 +133,7 @@ function SelectedFeed() {
         <View style={{flex: 0.15}}>
           <Avatar.Image size={30} source={{uri: item[0].profile}} />
         </View>
-        <View style={{flex: 0.7}}>
+        <View style={{flex: 0.8}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Avatar.Image size={15} source={{uri: item[0].badge}} />
             <Text>{item[0].nickname}</Text>
@@ -140,6 +142,23 @@ function SelectedFeed() {
             <Text>{item[0].profileId}</Text>
           </View>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            parentFunction();
+          }}
+          style={{
+            justifyContent: 'center',
+            flex: 0.1,
+          }}>
+          <Text
+            style={{
+              fontSize: 30,
+              height: '100%',
+              textAlign: 'center',
+            }}>
+            X
+          </Text>
+        </TouchableOpacity>
       </View>
       <View
         style={{
@@ -188,7 +207,7 @@ function SelectedFeed() {
             }}>
             <AntDesign
               name={isLike ? 'heart' : 'hearto'}
-              size={20}
+              size={25}
               color={isLike ? 'red' : 'black'}
             />
           </TouchableOpacity>
@@ -196,7 +215,7 @@ function SelectedFeed() {
             onPress={() => {
               console.log(1);
             }}>
-            <Ionicons name="chatbubble-outline" size={20} color={'black'} />
+            <Ionicons name="chatbubble-outline" size={25} color={'black'} />
           </TouchableOpacity>
         </View>
       </View>
@@ -239,17 +258,16 @@ function SelectedFeed() {
       <View style={{marginTop: 5}}>
         {comment_data.map((item, index) => (
           <View key={index}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{flexDirection: 'row'}}>
               <Text
                 style={{
-                  flex: 0.5,
                   fontWeight: 'bold',
                   color: 'black',
                   fontSize: 16,
                 }}>
-                {item.id}
+                {item.id}&nbsp;&nbsp;&nbsp;&nbsp;
+                <Text style={{fontSize: 12}}>{item.comment}</Text>
               </Text>
-              <Text style={{fontSize: 14, color: 'black'}}>{item.comment}</Text>
             </View>
           </View>
         ))}
