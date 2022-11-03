@@ -10,6 +10,7 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 public class ModifyUserReq {
 
+    @Pattern(regexp = "^[a-zA-Z0-9._]{2,}\\$",message = "형식에 맞지 않는 닉네임입니다.")
     private String nickname;
 
     private String description;

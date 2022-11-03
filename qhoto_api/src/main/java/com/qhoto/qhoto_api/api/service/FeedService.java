@@ -13,7 +13,8 @@ import com.qhoto.qhoto_api.dto.request.LikeReq;
 import com.qhoto.qhoto_api.dto.response.*;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.qhoto.qhoto_api.exception.NoFeedByIdException;
-import com.qhoto.qhoto_api.exception.type.NoUserByIdException;
+import com.qhoto.qhoto_api.exception.NoQuestByIdException;
+import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -73,8 +77,8 @@ public class FeedService {
                 .questName(feed.getQuest().getName())
                 .questType(feed.getQuest().getQuestType().toString())
                 .questPoint(feed.getQuest().getScore())
-                .expPoint(expRepository.findPointByUserId(userId))
-                .likeCount(feedLikeRepository.countAllById(feedId))
+                .expPoint(expRepository.findPointByUserId(userId).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .likeCount(feedLikeRepository.countAllById(feedId).orElseThrow(()-> new NoFeedByIdException("no feed by id")))
                 .likeStatus((feedLikeRepository.findById(userId).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
                 .commentList(commentResList)
                 .build();
@@ -100,16 +104,16 @@ public class FeedService {
     }
 
 
-    public void postFeed(CreateFeedReq createFeedReq, User userInfo) throws IOException {
-        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
-        User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+    public void postFeed(CreateFeedReq createFeedReq) throws IOException {
+        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
+        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "/feed/image/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
     }
 
-    public void postVideoFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
-        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
-        User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+    public void postVideoFeed(CreateFeedReq createFeedReq) throws IOException {
+        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));;
+        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "/feed/video/input/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
 

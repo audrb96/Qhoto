@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ExpRepository extends JpaRepository<Exp, Long> {
     @Query("select e from Exp e where e.questType.code=:typeCode and e.user.id=:userId")
@@ -16,5 +17,5 @@ public interface ExpRepository extends JpaRepository<Exp, Long> {
     List<QuestCountRes> findPointByTypeCodeAndUserId(@Param("userId") Long userId);
 
     @Query("select sum(e.point) from Exp e where e.user.id = :userId")
-    int findPointByUserId(@Param("userId") Long userId);
+    Optional<Integer> findPointByUserId(@Param("userId") Long userId);
 }
