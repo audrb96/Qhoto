@@ -1,9 +1,9 @@
 server:
   port: 7070
 
-#spring:
-#  profiles:
-#    active: local
+spring:
+  profiles:
+    active: local
 
   security:
     oauth2:
@@ -15,9 +15,7 @@ server:
             redirect-uri: http://localhost:7070/oauth2/callback/google
             scope: profile, email
 
-spring:
-  profiles:
-    active: local
+#spring:
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://qhoto-db.c2k2xt6qu8x0.ap-northeast-2.rds.amazonaws.com/qhoto?serverTimezone=Asia/Seoul

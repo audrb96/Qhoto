@@ -14,4 +14,7 @@ public interface ExpRepository extends JpaRepository<Exp, Long> {
 
     @Query("select new com.qhoto.qhoto_api.dto.response.QuestCountRes(e.questType.code, sum(e.point)) from Exp e where e.user.id=:userId group by e.questType.code order by e.questType.code")
     List<QuestCountRes> findPointByTypeCodeAndUserId(@Param("userId") Long userId);
+
+    @Query("select sum(e.point) from Exp e where e.user.id = :userId")
+    int findPointByUserId(@Param("userId") Long userId);
 }

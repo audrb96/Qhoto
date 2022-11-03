@@ -6,6 +6,9 @@ import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
+import com.qhoto.qhoto_api.dto.response.ErrorResponse;
+import com.qhoto.qhoto_api.exception.NoFeedByIdException;
+import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -25,19 +28,35 @@ public class FeedController {
     private final FeedService feedService;
 
 
-    @GetMapping
-    public ResponseEntity<?> readAllFeed(@RequestBody FeedAllReq feedAllReq, Pageable pageable){
-        return new ResponseEntity<>(feedService.getAllFeed(feedAllReq, pageable),HttpStatus.OK);
+
+//    @GetMapping
+//    public ResponseEntity<?> readAllFeed(@ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
+//        return new ResponseEntity<>(feedService.getAllFeed(feedAllReq, pageable),HttpStatus.OK);
+//    }
+    @GetMapping("/all")
+    public ResponseEntity<?> readFeed(@ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
+        return new ResponseEntity<>(feedService.getFeed(feedAllReq, pageable),HttpStatus.OK);
     }
 
-    @GetMapping("/detail/{feedId}")
+    @GetMapping("/all/{feedId}")
     public ResponseEntity<?> readFeedDetail(@PathVariable Long feedId){
         return new ResponseEntity<>(feedService.getFeedDetail(feedId), HttpStatus.OK);
     }
+    @GetMapping("/friend")
+    public ResponseEntity<?> readFriendFeed(@ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
+        log.info("FeedAllReq = {}" , feedAllReq);
+        return new ResponseEntity<>(feedService.getFriendFeed(feedAllReq, pageable),HttpStatus.OK);
+    }
 
-    @PostMapping
-    public ResponseEntity<HttpStatus> createFeed(@Validated @RequestBody CreateFeedReq createFeedReq) throws IOException {
+    @PostMapping("/upload/image")
+    public ResponseEntity<HttpStatus> createFeed(@Validated CreateFeedReq createFeedReq) throws IOException {
+        log.info("createFeedReq = {}",createFeedReq);
         feedService.postFeed(createFeedReq);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/upload/video")
+    public ResponseEntity<HttpStatus> createVideoFeed(@Validated CreateFeedReq createFeedReq) throws IOException {
+        feedService.postVideoFeed(createFeedReq);
         return ResponseEntity.ok().build();
     }
 
@@ -75,6 +94,7 @@ public class FeedController {
     public ResponseEntity<?> readOptionList(){
         return new ResponseEntity<>(feedService.getQuestList(), HttpStatus.OK);
     }
+
 
 
 }
