@@ -1,9 +1,16 @@
 server:
   port: 7070
 
-#spring:
-#  profiles:
-#    active: local
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1091823482731-f0375q139gm9me0a4v7cg50jiamjkcq4.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:7070/oauth2/callback/google
+            scope: profile, email
 
 spring:
   datasource:
