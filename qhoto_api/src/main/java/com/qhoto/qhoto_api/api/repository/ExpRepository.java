@@ -10,4 +10,6 @@ public interface ExpRepository extends JpaRepository<Exp, Long> {
     @Query("select e from Exp e where e.questType.code=:typeCode and e.user.id=:userId")
     Exp findAllByTypeCodeAndUserId(@Param("typeCode") String typeCode, @Param("userId") Long userId);
 
+    @Query("select sum(e.point) from Exp e where e.user.id = :userId")
+    int findPointByUserId(@Param("userId") Long userId);
 }

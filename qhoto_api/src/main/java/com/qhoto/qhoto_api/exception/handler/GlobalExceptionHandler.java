@@ -3,20 +3,18 @@ package com.qhoto.qhoto_api.exception.handler;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.exception.NoFeedByIdException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
+import com.qhoto.qhoto_api.exception.type.NoUserByIdException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.BindException;
-import java.security.InvalidParameterException;
 
 @RestControllerAdvice
 @Slf4j
@@ -72,4 +70,11 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_FEED_BY_ID);
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
+
+    @ExceptionHandler(NoUserByIdException.class)
+    protected ResponseEntity<ErrorResponse> noUserByIdException(NoUserByIdException e){
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_USER_BY_ID);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+    }
+
 }
