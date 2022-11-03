@@ -3,7 +3,7 @@ import {
   Alert,
   Pressable,
   StyleSheet,
-  Text,
+  Dimensions,
   TextInput,
   View,
   Button,
@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../AppInner';
-import DismissKeyboardView from '../components/DismissKeyboardView';
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -27,8 +26,15 @@ import {
   unlink,
 } from '@react-native-seoul/kakao-login';
 import kakao from '../assets/kakao_login_medium_wide.png';
+import axios from 'axios';
+
+import {LOGIN_LOGO} from '../image';
+
+import {loginKakao, loginGoogle} from '../api/user';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
+
+const {width, height} = Dimensions.get('window');
 
 function SignIn({navigation}: SignInScreenProps) {
   //////////////////////////////
@@ -64,17 +70,31 @@ function SignIn({navigation}: SignInScreenProps) {
 
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await login().then(token => {
+      console.log(11, token);
       if (token) {
-        dispatch(
-          userSlice.actions.setUser({
-            loggedIn: true,
-          }),
+        loginKakao(
+          token.accessToken,
+          res => {
+            console.log(res.data);
+            const {id, email, name, image, nickname, profileOpen} =
+              res.data.user;
+
+            dispatch(
+              userSlice.actions.setUser({
+                email: email,
+                userName: name,
+                userImage: image,
+                loggedIn: true,
+              }),
+            );
+          },
+          err => {
+            console.log(err);
+          },
         );
       }
     });
     setUser(token);
-    console.log(JSON.stringify(token));
-    Alert.alert('알림', '로그인 되었습니다.');
   };
 
   const signInWithGoogle = async () => {
@@ -89,17 +109,33 @@ function SignIn({navigation}: SignInScreenProps) {
         if (hasPlayService) {
           GoogleSignin.signIn()
             .then(userInfo => {
-              console.log(JSON.stringify(userInfo));
-              setUser(userInfo);
-              Alert.alert('알림', '로그인 되었습니다.');
-              dispatch(
-                userSlice.actions.setUser({
-                  email: userInfo.user.email,
-                  userName: userInfo.user.name,
-                  userImage: userInfo.user.photo,
-                  loggedIn: true,
-                }),
+              loginGoogle(
+                userInfo.idToken,
+                res => {
+                  const {
+                    userId,
+                    email,
+                    name,
+                    image,
+                    userPoint,
+                    nickname,
+                    profileOpen,
+                  } = res.data;
+
+                  dispatch(
+                    userSlice.actions.setUser({
+                      email: email,
+                      userName: name,
+                      userImage: image,
+                      loggedIn: true,
+                    }),
+                  );
+                },
+                err => {
+                  console.log(err);
+                },
               );
+              setUser(userInfo);
             })
             .catch(e => {
               console.log('ERROR IS: ' + JSON.stringify(e));
@@ -112,107 +148,35 @@ function SignIn({navigation}: SignInScreenProps) {
   };
 
   return (
-    <DismissKeyboardView>
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>이메일</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={onChangeEmail}
-          placeholder="이메일을 입력해주세요"
-          placeholderTextColor="#666"
-          importantForAutofill="yes"
-          autoComplete="email"
-          textContentType="emailAddress"
-          value={email}
-          returnKeyType="next"
-          clearButtonMode="while-editing"
-          ref={emailRef}
-          onSubmitEditing={() => passwordRef.current?.focus()}
-          blurOnSubmit={false}
+    <View style={styles.container}>
+      <Image source={LOGIN_LOGO} style={styles.logo} />
+      <View style={styles.buttonContainer}>
+        <GoogleSigninButton
+          size={GoogleSigninButton.Size.Wide} // Standart or Wide
+          onPress={signInWithGoogle}
         />
-      </View>
-      <View style={styles.inputWrapper}>
-        <Text style={styles.label}>비밀번호</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="비밀번호를 입력해주세요(영문,숫자,특수문자)"
-          placeholderTextColor="#666"
-          importantForAutofill="yes"
-          onChangeText={onChangePassword}
-          value={password}
-          autoComplete="password"
-          textContentType="password"
-          secureTextEntry
-          returnKeyType="send"
-          clearButtonMode="while-editing"
-          ref={passwordRef}
-          onSubmitEditing={onSubmit}
-        />
-      </View>
-      <View style={styles.buttonZone}>
-        <Pressable
-          style={
-            canGoNext
-              ? StyleSheet.compose(styles.loginButton, styles.loginButtonActive)
-              : styles.loginButton
-          }
-          disabled={!canGoNext}
-          onPress={onSubmit}>
-          <Text style={styles.loginButtonText}>로그인</Text>
-        </Pressable>
-        <Pressable onPress={toSignUp}>
-          <Text>회원가입하기</Text>
-        </Pressable>
-
-        <View style={styles.container}>
-          <GoogleSigninButton
-            size={GoogleSigninButton.Size.Wide} // Standart or Wide
-            onPress={signInWithGoogle}
-          />
-        </View>
-        <Pressable onPress={signInWithKakao}>
+        <Pressable style={{marginTop: 10}} onPress={signInWithKakao}>
           <Image source={kakao} />
         </Pressable>
       </View>
-    </DismissKeyboardView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  textInput: {
-    padding: 5,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  inputWrapper: {
-    padding: 20,
-  },
-  label: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  buttonZone: {
-    alignItems: 'center',
-  },
-  loginButton: {
-    backgroundColor: 'gray',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  loginButtonActive: {
-    backgroundColor: 'blue',
-  },
-  loginButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  logo: {
+    height: (height * 2) / 7,
+    resizeMode: 'contain',
+  },
+  buttonContainer: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

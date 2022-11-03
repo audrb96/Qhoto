@@ -1,22 +1,38 @@
-import React, {useEffect, useCallback} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {Text, View, TouchableOpacity, StyleSheet, Alert} from 'react-native';
+import {
+  Agenda,
+  DateData,
+  AgendaEntry,
+  AgendaSchedule,
+} from 'react-native-calendars';
 
-function QhotoLevel({navigation}) {
-  const goToMyPage = () => {
-    navigation.navigate('MyPage');
-  };
-  return (
-    <View>
-      <Text> 퀘스트로그 화면</Text>
-      <View>
-        <TouchableOpacity onPress={goToMyPage}>
-          <Text style={{fontWeight: 'bold', color: '#3B28B1', fontSize: 40}}>
-            이동
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+function QhotoLevel() {
+  return <View></View>;
 }
+
+const styles = StyleSheet.create({
+  subjectBox: {
+    padding: 10,
+  },
+  subjectText: {
+    color: '#3B28B1',
+    fontFamily: 'Happiness-Sans-Bold',
+    fontSize: 20,
+  },
+  item: {
+    backgroundColor: 'white',
+    flex: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 17,
+  },
+  emptyDate: {
+    height: 15,
+    flex: 1,
+    paddingTop: 30,
+  },
+});
 
 export default QhotoLevel;
