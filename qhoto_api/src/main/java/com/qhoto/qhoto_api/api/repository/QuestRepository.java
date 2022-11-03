@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface QuestRepository extends JpaRepository<Quest,Long> {
 
-    Quest findQuestById(Long QuestId);
+    Optional<Quest> findQuestById(Long QuestId);
 
     @Query("select q from Quest q inner join fetch ActiveWeekly a on q.id = a.quest.id where a.status = 'A'")
     List<Quest> findAllWeeklyByIdAndStatus();
