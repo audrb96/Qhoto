@@ -7,9 +7,6 @@ import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
-import com.qhoto.qhoto_api.dto.response.ErrorResponse;
-import com.qhoto.qhoto_api.exception.NoFeedByIdException;
-import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -60,8 +57,8 @@ public class FeedController {
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<HttpStatus> createComment(@Validated @RequestBody CreateCommentReq createCommentReq){
-        feedService.postComment(createCommentReq);
+    public ResponseEntity<HttpStatus> createComment(@AuthenticationPrincipal User user, @Validated @RequestBody CreateCommentReq createCommentReq){
+        feedService.postComment(createCommentReq,user);
         return ResponseEntity.ok().build();
     }
 
@@ -78,14 +75,14 @@ public class FeedController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<HttpStatus> createLike(@Validated @RequestBody LikeReq likeReq){
-        feedService.postLike(likeReq);
+    public ResponseEntity<HttpStatus> createLike(@AuthenticationPrincipal User user,@Validated @RequestBody LikeReq likeReq){
+        feedService.postLike(likeReq,user);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/like")
-    public ResponseEntity<HttpStatus> removeLike(@Validated @RequestBody LikeReq likeReq){
-        feedService.deleteLike(likeReq);
+    public ResponseEntity<HttpStatus> removeLike(@AuthenticationPrincipal User user,@Validated @RequestBody LikeReq likeReq){
+        feedService.deleteLike(likeReq,user);
         return ResponseEntity.ok().build();
     }
 
