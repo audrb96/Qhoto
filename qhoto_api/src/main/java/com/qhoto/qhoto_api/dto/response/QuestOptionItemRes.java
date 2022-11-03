@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class QuestOptionItemRes {
     private Long questId;
+    private Long activeQuestId;
     private String questName;
     private String questType;
 }

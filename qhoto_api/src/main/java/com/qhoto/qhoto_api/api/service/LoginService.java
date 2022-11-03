@@ -139,15 +139,15 @@ public class LoginService {
                 .roles(Collections.singletonList(UserRole.USER))
                 .nickname(name)
                 .build();
-
+        User saveUser = userRepository.save(user);
         List<QuestType> questTypes = questTypeRepository.findAll();
         questTypes.forEach((questType) -> expRepository.save(Exp.builder()
-                .user(user)
+                .user(saveUser)
                 .point(0)
                 .questType(questType)
                 .build()));
 
-        return user;
+        return saveUser;
     }
 
 

@@ -99,9 +99,8 @@ public class FeedService {
         return commentResList;
     }
 
-    public Page<FeedFriendDto> getFriendFeed(FeedAllReq feedAllReq, Pageable pageable){
-        Long userId = 1L;
-        return feedRepository.findByConditionAndUserId(feedAllReq, pageable, userId);
+    public Page<FeedFriendDto> getFriendFeed(User user,FeedAllReq feedAllReq, Pageable pageable){
+        return feedRepository.findByConditionAndUserId(feedAllReq, pageable, user.getId());
     }
 
 
@@ -147,15 +146,16 @@ public class FeedService {
     }
 
 
-    public void postComment(CreateCommentReq createCommentReq){
+    public void postComment(CreateCommentReq createCommentReq, User user){
 
         Comment comment = Comment.builder()
                 .feed(feedRepository.findFeedById(createCommentReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
-                .user(userRepository.findUserById(createCommentReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .context(createCommentReq.getCommentContext())
                 .time(LocalDateTime.now())
                 .status(CommentStatus.U)
                 .build();
+
         commentRepository.save(comment);
     }
 
@@ -169,19 +169,19 @@ public class FeedService {
         comment.changeCommentStatus(CommentStatus.D);
     }
 
-    public void postLike(LikeReq likeReq){
+    public void postLike(LikeReq likeReq, User user){
         FeedLike feedLike = FeedLike.builder()
                 .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
-                .user(userRepository.findUserById(likeReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .build();
         feedLikeRepository.save(feedLike);
     }
 
     @Modifying
-    public void deleteLike(LikeReq likeReq){
+    public void deleteLike(LikeReq likeReq,User user){
         FeedLikePK feedLikePK = FeedLikePK.builder()
                 .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
-                .user(userRepository.findUserById(likeReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .build();
         feedLikeRepository.deleteById(feedLikePK);
     }
@@ -189,7 +189,7 @@ public class FeedService {
     public QuestOptionRes getQuestList() {
 
         // 옵션 리스트
-        Map<String, Object> optionList = new HashMap<>();
+        Map<String, List<QuestOptionItemRes>> optionList = new HashMap<>();
         List<QuestOptionItemRes> dailyOptions = questRepository.findAllDailyByQuestIdAndStatus();
         List<QuestOptionItemRes> weeklyOptions = questRepository.findAllWeeklyByQuestIdAndStatus();
         List<QuestOptionItemRes> monthlyOptions = questRepository.findAllMonthlyByQuestIdAndStatus();

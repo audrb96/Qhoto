@@ -34,8 +34,7 @@ public class SecurityConfig  {
         return (web) -> web.ignoring().mvcMatchers(
                 "/api/login/google",
                 "/api/auth/reissue",
-                "/api/login/kakao",
-                "/api/**"
+                "/api/login/kakao"
         );
     }
 
@@ -54,7 +53,6 @@ public class SecurityConfig  {
                 .antMatchers("/api/login/google").permitAll()
                 .antMatchers("/api/login/kakao").permitAll()
                 .antMatchers("/api/auth/reissue").permitAll()
-                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated();
 
         http.exceptionHandling()

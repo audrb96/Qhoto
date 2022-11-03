@@ -11,8 +11,6 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class CreateFeedReq {
 
-    @NotNull
-    private final Long userId;
     private final Long activeDailyId;
     private final Long activeWeeklyId;
     private final Long activeMonthlyId;
@@ -27,8 +25,7 @@ public class CreateFeedReq {
 
 
 
-    public CreateFeedReq(Long userId, Long questId, Long activeDailyId, Long activeWeeklyId, Long activeMonthlyId, MultipartFile feedImage, String location) {
-        this.userId = userId;
+    public CreateFeedReq(Long questId, Long activeDailyId, Long activeWeeklyId, Long activeMonthlyId, MultipartFile feedImage, String location) {
         this.questId = questId;
         this.activeDailyId = activeDailyId;
         this.activeWeeklyId = activeWeeklyId;
