@@ -19,5 +19,5 @@ public interface ActiveWeeklyRepository extends JpaRepository<Quest, Long> {
     @Query("select new com.qhoto.qhoto_api.dto.response.QuestOptionRes(a.id, q.name, q.questType.name) from Quest q inner join fetch ActiveWeekly a on q.id = a.quest.id where a.status = 'A'")
     List<QuestOptionRes> findAllByQuestIdAndStatus();
 
-
+    List<>
 }
