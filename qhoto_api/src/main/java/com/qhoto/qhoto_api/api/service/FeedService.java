@@ -48,9 +48,9 @@ public class FeedService {
     private final ExpRepository expRepository;
 
 
-    public Page<FeedAllDto> getAllFeed(FeedAllReq feedAllReq, Pageable pageable){
-        return feedRepository.findAllByCondition(feedAllReq, pageable);
-    }
+//    public Page<FeedAllDto> getAllFeed(FeedAllReq feedAllReq, Pageable pageable){
+//        return feedRepository.findAllByCondition(feedAllReq, pageable);
+//    }
 
     public Page<FeedAllDto> getFeed(FeedAllReq feedAllReq, Pageable pageable) {
         return feedRepository.findByCondition(feedAllReq, pageable);
@@ -104,21 +104,21 @@ public class FeedService {
     public void postFeed(CreateFeedReq createFeedReq) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
         User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
-        // 주소 직접 입력하지 말고 S3Utils.넣기
-        String dirName = "https://dxg5pxu9dqf6e.cloudfront.net/feed/image/"+user.getEmail();
+        String dirName = "/feed/image/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
     }
 
     public void postVideoFeed(CreateFeedReq createFeedReq) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
         User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
-        String dirName = "https://dxg5pxu9dqf6e.cloudfront.net/feed/video/"+user.getEmail();
+        String dirName = "/feed/video/input/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
 
     }
 
     private void S3upload(CreateFeedReq createFeedReq, Quest quest, User user, String dirName) throws IOException {
         s3Utils.upload(createFeedReq.getFeedImage(),dirName);
+        dirName = S3Utils.CLOUD_FRONT_DOMAIN_NAME+dirName;
         Feed feed = Feed.builder()
                 .user(user)
                 .quest(quest)

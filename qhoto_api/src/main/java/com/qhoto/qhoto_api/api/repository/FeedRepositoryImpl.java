@@ -38,10 +38,10 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
         this.jpaQueryFactory = new JPAQueryFactory(em);
     }
 
-    @Override
-    public Page<FeedAllDto> findAllByCondition(FeedAllReq feedAllReq, Pageable pageable){
-        return null;
-    }
+//    @Override
+//    public Page<FeedAllDto> findAllByCondition(FeedAllReq feedAllReq, Pageable pageable){
+//        return null;
+//    }
     @Override
     public Page<FeedAllDto> findByCondition(FeedAllReq feedAllReq, Pageable pageable) {
         List<FeedAllDto> feedList = jpaQueryFactory
