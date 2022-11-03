@@ -17,6 +17,7 @@ import RNFS from 'react-native-fs';
 import QuestCard from '../components/main/QuestCard';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const questTypes = ['DAILY', 'WEEKLY', 'MONTHLY'];
 
@@ -189,6 +190,10 @@ function Settings() {
     savePhoto(res.assets[0].uri);
   };
 
+  AsyncStorage.getItem('accessToken', (err, result) => {
+    console.log(result);
+  });
+
   return (
     <View style={styles.body}>
       <View style={styles.questCardContainer}>
@@ -225,7 +230,7 @@ function Settings() {
               setModalVisible(!modalVisible);
               // const result = launchCamera(options, onPickImage);
             }}>
-            <Icon name="camera" color="white" size={50}></Icon>
+            <Icon name="camera" color="white" size={50} />
           </Pressable>
         </View>
       </View>
