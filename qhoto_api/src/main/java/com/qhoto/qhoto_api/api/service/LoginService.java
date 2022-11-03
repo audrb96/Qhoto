@@ -125,6 +125,8 @@ public class LoginService {
     }
 
     private User createUser(String email, String name, String pictureUrl,AuthProvider authProvider) {
+        UUID uuid = UUID.randomUUID();
+
         User user = User.builder()
                 .authProvider(authProvider)
                 .contactAgree(false)
@@ -137,7 +139,7 @@ public class LoginService {
                 .phone("010-0000-0000")
                 .profileOpen(true)
                 .roles(Collections.singletonList(UserRole.USER))
-                .nickname(name)
+                .nickname(uuid.toString())
                 .build();
         User saveUser = userRepository.save(user);
         List<QuestType> questTypes = questTypeRepository.findAll();
