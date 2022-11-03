@@ -182,14 +182,21 @@ public class FeedService {
         feedLikeRepository.deleteById(feedLikePK);
     }
 
-    public Map<String, Object> getQuestList() {
-        List<QuestOptionRes> dailyOptions = activeDailyRepository.findAllByQuestIdAndStatus();
-        List<QuestOptionRes> weeklyOptions = activeWeeklyRepository.findAllByQuestIdAndStatus();
-        List<QuestOptionRes> monthlyOptions = activeMonthlyRepository.findAllByQuestIdAndStatus();
+    public QuestOptionRes getQuestList() {
+
+        // 옵션 리스트
         Map<String, Object> optionList = new HashMap<>();
+        List<QuestOptionItemRes> dailyOptions = questRepository.findAllDailyByQuestIdAndStatus();
+        List<QuestOptionItemRes> weeklyOptions = questRepository.findAllWeeklyByQuestIdAndStatus();
+        List<QuestOptionItemRes> monthlyOptions = questRepository.findAllMonthlyByQuestIdAndStatus();
         optionList.put("dailyOptions", dailyOptions);
         optionList.put("weeklyOptions", weeklyOptions);
         optionList.put("monthlyOptions", monthlyOptions);
-        return optionList;
+
+        // QuestOptionRes 빌드
+        QuestOptionRes QO = QuestOptionRes.builder()
+                .options(optionList)
+                .build();
+        return QO;
     }
 }

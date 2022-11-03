@@ -6,9 +6,9 @@ import lombok.Getter;
 
 import java.util.Map;
 
-@Builder
 @Getter
+@Builder
 @AllArgsConstructor
-public class QuestOptionRes {
-    private Map<String, Object> options;
+public class QuestLevelRes {
+    private Map<String, QuestPointRes> exp;
 }
