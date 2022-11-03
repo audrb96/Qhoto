@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface FeedRepositoryCon {
 
-    Page<FeedAllDto> findAllByCondition(FeedAllReq feedAllReq, Pageable pageable);
+//    Page<FeedAllDto> findAllByCondition(FeedAllReq feedAllReq, Pageable pageable);
     Page<FeedAllDto> findByCondition(FeedAllReq feedAllReq, Pageable pageable);
 
     Page<FeedFriendDto> findByConditionAndUserId(FeedAllReq feedAllReq, Pageable pageable, Long userId);
