@@ -35,8 +35,6 @@ cloud:
       secretKey: k/u1F1nPq2fukuY1K2Cj6ONdpIU+E2xBvd922bhg
     stack:
       auto: false
-    cloudfront:
-      domainName: https://dxg5pxu9dqf6e.cloudfront.net
 
 app:
   auth:

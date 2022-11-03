@@ -19,9 +19,7 @@ import java.util.Optional;
 @Component
 public class S3Utils {
     private final AmazonS3Client amazonS3Client;
-
-    @Value("${cloud.aws.cloudfront.domainName}")
-    public static String CLOUD_FRONT_DOMAIN_NAME;
+    public static final String CLOUD_FRONT_DOMAIN_NAME = "https://dxg5pxu9dqf6e.cloudfront.net";
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 

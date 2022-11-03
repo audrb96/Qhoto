@@ -46,8 +46,8 @@ public class UserController {
         return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("not found user"));
     }
 
-    @PutMapping("/user/modify")
-    public ResponseEntity<String> modifyUser(@AuthenticationPrincipal User user,@RequestBody ModifyUserReq modifyUserReq) throws IOException {
+    @PutMapping("/user")
+    public ResponseEntity<String> modifyUser(@AuthenticationPrincipal User user,ModifyUserReq modifyUserReq) throws IOException {
         userService.modifyUser(modifyUserReq, user);
         return ResponseEntity.ok().body("success");
     }
