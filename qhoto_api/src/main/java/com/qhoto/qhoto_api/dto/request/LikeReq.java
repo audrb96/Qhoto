@@ -13,11 +13,8 @@ public class LikeReq {
 
     @NotNull(message = "피드 아이디를 입력해주세요.")
     private Long feedId;
-    @NotNull(message = "유저 아이디를 입력해주세요.")
-    private Long userId;
 
-    public LikeReq(Long feedId, Long userId) {
+    public LikeReq(Long feedId) {
         this.feedId = feedId;
-        this.userId = userId;
     }
 }
