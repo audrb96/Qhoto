@@ -2,7 +2,6 @@ package com.qhoto.qhoto_api.exception.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
 @Getter
@@ -16,7 +15,8 @@ public enum ErrorCode {
     INVALID_GOOGLE_TOKEN(400,"U001", "Invalid Google Token"),
     INVALID_ACCESS_TOKEN(401, "U002", "Invalid Access Token"),
     //feed
-    NO_FEED_BY_ID(500, "F001", "No Feed By FeedId")
+    NO_FEED_BY_ID(500, "F001", "No Feed By FeedId"),
+    NO_USER_BY_ID(500, "F002", "No User By UserId")
     ;
 
     private final int status;

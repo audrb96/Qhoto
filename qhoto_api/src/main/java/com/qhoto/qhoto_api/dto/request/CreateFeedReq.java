@@ -1,5 +1,6 @@
 package com.qhoto.qhoto_api.dto.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ public class CreateFeedReq {
     private final MultipartFile feedImage;
     @NotNull
     private final String location;
+
 
 
 
