@@ -13,7 +13,7 @@ function MyPageStackScreen() {
       <MyPageStack.Screen
         name="MyPage"
         component={MyPage}
-        options={{header: () => <QhotoHeader leftIcon={false} />}}
+        options={{headerShown: false}}
       />
       <MyPageStack.Screen
         name="QhotoLevel"
