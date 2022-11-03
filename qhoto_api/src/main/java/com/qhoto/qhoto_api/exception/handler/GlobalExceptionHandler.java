@@ -4,7 +4,7 @@ import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.exception.NoFeedByIdException;
 import com.qhoto.qhoto_api.exception.NotFoundUserException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
-import com.qhoto.qhoto_api.exception.type.NoUserByIdException;
+import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

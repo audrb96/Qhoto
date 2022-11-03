@@ -17,7 +17,8 @@ public enum ErrorCode {
     NOT_FOUND_USER(500, "U003", "No User By UserId"),
     //feed
     NO_FEED_BY_ID(500, "F001", "No Feed By FeedId"),
-    NO_USER_BY_ID(500, "F002", "No User By UserId")
+    NO_USER_BY_ID(500, "F002", "No User By UserId"),
+    NO_QUEST_BY_ID(500, "F003","No Quest By QuestId")
     ;
 
     private final int status;
