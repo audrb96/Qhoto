@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.qhoto.qhoto_api.domain.QComment.comment;
+import static com.qhoto.qhoto_api.domain.QExp.exp;
 import static com.qhoto.qhoto_api.domain.QFeed.feed;
 import static com.qhoto.qhoto_api.domain.QFeedLike.feedLike;
+import static com.qhoto.qhoto_api.domain.QFriend.friend;
 import static com.qhoto.qhoto_api.domain.QUser.user;
 import static org.springframework.util.StringUtils.hasText;
 @Slf4j
@@ -72,12 +74,14 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
     public Page<FeedFriendDto> findByConditionAndUserId(FeedAllReq feedAllReq, Pageable pageable, Long userId) {
         List<FeedFriendDto> feedFriendList = jpaQueryFactory
                 .select(new QFeedFriendDto(feed.id,
+                        user.id,
                         feed.image,
                         feed.time,
                         feed.questName,
                         feed.quest.questType.code,
-                        feed.quest.score
-                        ,new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike,feed).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
+                        feed.quest.score,
+                        ExpressionUtils.as(JPAExpressions.select(exp.point.sum()).from(exp).where(exp.user.id.eq(user.id)),"expPoint"),
+                        new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike,feed).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
                         ExpressionUtils.as(JPAExpressions.select(feedLike.count()).from(feedLike).where(feedLike.feed.id.eq(feed.id)),"likeCount"),
                         user.nickname,
                         user.image,
@@ -85,20 +89,42 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         comment.context
                         ))
                 .from(feed,user,comment)
-                .rightJoin(comment.feed, feed)
+                .rightJoin(comment.user, user)
+                .rightJoin(feed.user, user)
                 .where(
                         feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
                         feedTypeEq(feedAllReq.getDuration())
+                        ,user.id.in(JPAExpressions.select(friend.followee.id).from(friend).where(friend.follower.id.eq(userId)))
                 ).groupBy(feed.id)
                 .fetch();
-        log.info("feedFirendDtoList = {}", feedFriendList);
 
-        for (FeedFriendDto feedFriendDto : feedFriendList) {
-            log.info("feedFirendDto = {}", feedFriendDto);
-        }
-
-        return null;
+        JPAQuery<FeedFriendDto> countQuery = jpaQueryFactory
+                .select(new QFeedFriendDto(feed.id,
+                        user.id,
+                        feed.image,
+                        feed.time,
+                        feed.questName,
+                        feed.quest.questType.code,
+                        feed.quest.score,
+                        ExpressionUtils.as(JPAExpressions.select(exp.point.sum()).from(exp).where(exp.user.id.eq(user.id)),"expPoint"),
+                        new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike,feed).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
+                        ExpressionUtils.as(JPAExpressions.select(feedLike.count()).from(feedLike).where(feedLike.feed.id.eq(feed.id)),"likeCount"),
+                        user.nickname,
+                        user.image,
+                        comment.time,
+                        comment.context
+                ))
+                .from(feed,user,comment)
+                .rightJoin(comment.user, user)
+                .rightJoin(feed.user, user)
+                .where(
+                        feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
+                        feedTypeEq(feedAllReq.getDuration())
+                        ,user.id.in(JPAExpressions.select(friend.followee.id).from(friend).where(friend.follower.id.eq(userId)))
+                ).groupBy(feed.id);
+        return PageableExecutionUtils.getPage(feedFriendList, pageable, countQuery::fetchCount);
     }
+
 
     private BooleanExpression feedTypeEq(String duration) {
         QuestDuration qd = null;

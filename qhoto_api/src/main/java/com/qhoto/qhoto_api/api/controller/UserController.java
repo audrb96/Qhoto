@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    public ResponseEntity<String> modifyUser(@AuthenticationPrincipal User user,ModifyUserReq modifyUserReq) throws IOException {
+    public ResponseEntity<String> modifyUser(@AuthenticationPrincipal User user, @Validated ModifyUserReq modifyUserReq) throws IOException {
         userService.modifyUser(modifyUserReq, user);
         return ResponseEntity.ok().body("success");
     }
