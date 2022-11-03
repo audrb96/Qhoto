@@ -32,6 +32,8 @@ import {LOGIN_LOGO} from '../image';
 
 import {loginKakao, loginGoogle} from '../api/user';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
 const {width, height} = Dimensions.get('window');
@@ -75,7 +77,9 @@ function SignIn({navigation}: SignInScreenProps) {
         loginKakao(
           token.accessToken,
           res => {
-            console.log(res.data);
+            AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
+              console.log('유저 닉네임 저장 완료');
+            });
             const {id, email, name, image, nickname, profileOpen} =
               res.data.user;
 
@@ -97,6 +101,10 @@ function SignIn({navigation}: SignInScreenProps) {
     setUser(token);
   };
 
+  AsyncStorage.getItem('accessToken', (err, result) => {
+    console.log(result);
+  });
+
   const signInWithGoogle = async () => {
     GoogleSignin.configure({
       webClientId:
@@ -111,7 +119,15 @@ function SignIn({navigation}: SignInScreenProps) {
             .then(userInfo => {
               loginGoogle(
                 userInfo.idToken,
-                res => {
+                async res => {
+                  AsyncStorage.setItem(
+                    'accessToken',
+                    res.data.accessToken,
+                    () => {
+                      console.log('유저 닉네임 저장 완료');
+                    },
+                  );
+
                   const {
                     userId,
                     email,
