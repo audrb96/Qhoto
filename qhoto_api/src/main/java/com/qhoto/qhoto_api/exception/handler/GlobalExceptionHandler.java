@@ -61,6 +61,9 @@ public class GlobalExceptionHandler {
                     code = ErrorCode.NOTNULL_INPUT_VALUE.getCode();
                     status = ErrorCode.NOTNULL_INPUT_VALUE.getStatus();
                     break;
+                case "Pattern" :
+                    code = ErrorCode.INVALID_PATTERN.getCode();
+                    status = ErrorCode.INVALID_PATTERN.getStatus();
             }
         }
         return new ErrorResponse(message, code, status );
