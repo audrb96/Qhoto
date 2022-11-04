@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long>,UserRepositoryByCon {
     Optional<User> findByEmail(String email);
     Optional<User> findUserById(Long userId);
+
+    Optional<User> findByRefreshToken(String refreshToken);
     boolean existsByEmail(String email);
     @Query("select u.refreshToken from User u where u.id = :id")
     String getRefreshTokenById(@Param("id") Long id);

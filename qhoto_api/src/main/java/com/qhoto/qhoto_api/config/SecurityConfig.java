@@ -35,8 +35,7 @@ public class SecurityConfig  {
                 "/api/login/google",
                 "/api/auth/reissue",
                 "/api/login/kakao",
-                "/api/valid/**",
-                "/api/**"
+                "/api/valid/**"
         );
     }
 

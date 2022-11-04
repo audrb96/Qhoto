@@ -5,8 +5,8 @@ import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
-import com.qhoto.qhoto_api.dto.response.FriendRes;
 import com.qhoto.qhoto_api.dto.response.MyFeedRes;
+import com.qhoto.qhoto_api.dto.response.MyInfoRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +34,21 @@ public class UserService implements UserDetailsService {
         userRepository.modifyUserByCon(modifyUserReq, userInfo);
     }
 
+    public MyInfoRes myInfo(User user) {
+        return MyInfoRes.builder()
+                .authProvider(user.getAuthProvider())
+                .contactAgree(user.getContactAgree())
+                .contactAgreeDate(user.getContactAgreeDate())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .JoinDate(user.getJoinDate())
+                .phone(user.getPhone())
+                .profileOpen(user.getProfileOpen())
+                .UserImage(user.getImage())
+                .build();
+    }
+
+
     public List<MyFeedRes> getMyFeed(){
         Long userId = 2L;
         List<Feed> feedList = feedRepository.findAllByUserId(userId);
@@ -56,31 +71,5 @@ public class UserService implements UserDetailsService {
         return userRepository.existsByNickname(nickname);
     }
 
-
-    public List<FriendRes> getFriends(User user) {
-        List<User> friendList = userRepository.findFriendById(user.getId());
-        List<FriendRes> friendResList = new ArrayList<>();
-        for(User friend:friendList){
-            friendResList.add(FriendRes.builder()
-                            .userId(friend.getId())
-                            .nickname(friend.getNickname())
-                            .userImage(friend.getImage())
-                    .build());
-        }
-        return friendResList;
-    }
-
-    public List<FriendRes> getReceives(User user){
-        List<User> receiveList = userRepository.findReceiveById(user.getId());
-        List<FriendRes> friendResList = new ArrayList<>();
-        for(User receive:receiveList){
-            friendResList.add(FriendRes.builder()
-                            .userId(receive.getId())
-                            .nickname(receive.getNickname())
-                            .userImage(receive.getImage())
-                    .build());
-        }
-        return friendResList;
-    }
 
 }

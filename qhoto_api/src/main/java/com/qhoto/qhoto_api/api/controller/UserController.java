@@ -7,6 +7,7 @@ import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.dto.response.FriendRes;
 import com.qhoto.qhoto_api.dto.response.LoginRes;
+import com.qhoto.qhoto_api.dto.response.MyInfoRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -45,8 +46,8 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public User getCurrentUser(@AuthenticationPrincipal User user) {
-        return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("not found user"));
+    public ResponseEntity<MyInfoRes> getCurrentUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.myInfo(user));
     }
 
     @PutMapping("/user")
@@ -59,20 +60,9 @@ public class UserController {
         return new ResponseEntity<>(userService.getMyFeed(),HttpStatus.OK);
     }
 
-
     @GetMapping("/valid/{nickname}")
     public ResponseEntity<Boolean> validUser(@PathVariable String nickname){
         return new ResponseEntity<>(userService.confirmUser(nickname),HttpStatus.OK);
-    }
-
-    @GetMapping("/friend")
-    public ResponseEntity<List<FriendRes>> readFriends(@AuthenticationPrincipal User user){
-        return new ResponseEntity<>(userService.getFriends(user),HttpStatus.OK);
-    }
-
-    @GetMapping("/receive")
-    public ResponseEntity<List<FriendRes>> readReceives(@AuthenticationPrincipal User user){
-        return new ResponseEntity<>(userService.getReceives(user), HttpStatus.OK);
     }
 
 }
