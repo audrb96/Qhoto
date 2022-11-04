@@ -78,7 +78,7 @@ function SignIn({navigation}: SignInScreenProps) {
           token.accessToken,
           res => {
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
-              console.log('유저 닉네임 저장 완료');
+              console.log('토큰 저장 완료');
             });
             const {id, email, name, image, nickname, profileOpen} =
               res.data.user;
@@ -119,12 +119,12 @@ function SignIn({navigation}: SignInScreenProps) {
             .then(userInfo => {
               loginGoogle(
                 userInfo.idToken,
-                async res => {
+                res => {
                   AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
                     () => {
-                      console.log('유저 닉네임 저장 완료');
+                      console.log('토큰 저장 완료');
                     },
                   );
 

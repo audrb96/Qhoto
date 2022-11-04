@@ -125,7 +125,6 @@ function SelectedFeed({parentFunction}) {
       comment: '7번입니다',
     },
   ];
-  console.log('체크');
 
   return (
     <ScrollView style={{backgroundColor: 'white'}}>
@@ -223,7 +222,9 @@ function SelectedFeed({parentFunction}) {
       <TextInput
         style={isFocused ? {borderBottomWidth: 1} : {}}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        onBlur={() => {
+          setIsFocused(false);
+        }}
         placeholder="댓글입력"
         editable
         onChangeText={onChangeText}
@@ -231,28 +232,33 @@ function SelectedFeed({parentFunction}) {
       />
 
       <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <TouchableOpacity
-          style={{
-            width: 50,
-            height: 30,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>댓글</Text>
-        </TouchableOpacity>
-        <Pressable
-          style={{
-            width: 50,
-            height: 30,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          onPress={() => {
-            console.log(text);
-            onChangeText('');
-          }}>
-          <Text>취소</Text>
-        </Pressable>
+        {text ? (
+          <>
+            <TouchableOpacity
+              style={{
+                width: 50,
+                height: 30,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text>댓글</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: 50,
+                height: 30,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                onChangeText('');
+              }}>
+              <Text>취소</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <></>
+        )}
       </View>
 
       <View style={{marginTop: 5}}>
