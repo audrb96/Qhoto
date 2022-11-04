@@ -3,14 +3,11 @@ import {useSelector} from 'react-redux';
 import {View, Image} from 'react-native';
 
 import SignIn from './src/pages/SignIn';
-import SignUp from './src/pages/SignUp';
 import MyQuest from './src/pages/MyQuest';
-import MyPage from './src/pages/MyPage';
-import FriendsFeed from './src/pages/FriendsFeed';
-import AllFeedStackScreen from './src/pages/AllFeedStackScreen';
+import FriendsFeed from './src/pages/feed/FriendsFeed';
+import AllFeedStackScreen from './src/pages/feed/AllFeedStackScreen';
 import FindFriend from './src/pages/FindFriend';
-import QhotoLevel from './src/pages/QhotoLevel';
-import MyPageStackScreen from './src/pages/MyPageStackScreen';
+import MyPageStackScreen from './src/pages/mypage/MyPageStackScreen';
 import {RootState} from './src/store/reducer';
 
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Dimensions, StyleSheet, View, Text} from 'react-native';
+import {Card} from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -16,7 +17,7 @@ const questTypes: {[key: string]: {iconName: string; colorCode: string}} = {
   일상: {iconName: 'sun', colorCode: '#ECB21D'},
   환경: {iconName: 'leaf', colorCode: '#70A348'},
   이색: {iconName: 'star', colorCode: '#2271CE'},
-  색깔: {iconName: 'palette', colorCode: '#4B179F'},
+  색깔: {iconName: 'palette', colorCode: '#592CB8'},
 };
 
 const CardTemplate: React.FC<Props> = props => {
@@ -63,11 +64,9 @@ const styles = StyleSheet.create({
     height: height / 2,
     backgroundColor: 'white',
     justifyContent: 'center',
-    shadowColor: 'black',
     alignItems: 'center',
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'gray',
+    elevation: 5,
   },
   rerollIcon: {
     color: '#C7C7C7',
