@@ -11,14 +11,14 @@ import {
 } from 'react-native';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 // Todo: 사진교체(tmp 파일은 크기가 제각각)
-import red_tmp from '../assets/red_tmp.png';
-import orange_tmp from '../assets/orange_tmp.png';
-import yellow_tmp from '../assets/yellow_tmp.png';
-import green_tmp from '../assets/green_tmp.png';
-import blue_tmp from '../assets/blue_tmp.png';
-import navy_tmp from '../assets/navy_tmp.png';
-import purple_tmp from '../assets/purple_tmp.png';
-import QhotoHeader from '../components/QhotoHeader';
+// import red_tmp from '../assets/red_tmp.png';
+// import orange_tmp from '../assets/orange_tmp.png';
+// import yellow_tmp from '../assets/yellow_tmp.png';
+// import green_tmp from '../assets/green_tmp.png';
+// import blue_tmp from '../assets/blue_tmp.png';
+// import navy_tmp from '../assets/navy_tmp.png';
+// import purple_tmp from '../assets/purple_tmp.png';
+// import QhotoHeader from '../components/QhotoHeader';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 function LevelInfo({navigation, route}) {

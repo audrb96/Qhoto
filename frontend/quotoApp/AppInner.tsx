@@ -4,8 +4,8 @@ import {View, Image} from 'react-native';
 
 import SignIn from './src/pages/SignIn';
 import MyQuest from './src/pages/MyQuest';
-import FriendsFeed from './src/pages/FriendsFeed';
-import AllFeedStackScreen from './src/pages/AllFeedStackScreen';
+import FriendsFeed from './src/pages/feed/FriendsFeed';
+import AllFeedStackScreen from './src/pages/feed/AllFeedStackScreen';
 import FindFriend from './src/pages/FindFriend';
 import MyPageStackScreen from './src/pages/mypage/MyPageStackScreen';
 import {RootState} from './src/store/reducer';
