@@ -49,7 +49,7 @@ function SignIn({navigation}: SignInScreenProps) {
         loginKakao(
           token.accessToken,
           (res: any) => {
-            console.log(1111, res);
+            // console.log(1111, res);
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
               console.log('유저 닉네임 저장 완료');
             });
