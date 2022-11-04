@@ -14,10 +14,13 @@ import {
 import QhotoHeader from '../components/QhotoHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectedFeed from './SelectedFeed';
+import axios from 'axios';
+import {State} from 'react-native-gesture-handler';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [Feeds, setFeeds] = useState([]);
 
   const rightIcon = (
     <Ionicons
@@ -41,7 +44,11 @@ function AllFeed({navigation}) {
         height,
         backgroundColor: 'gray',
       }}>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity
+        onPress={e => {
+          setModalVisible(true);
+          console.log(title);
+        }}>
         <Image
           style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
           source={{
@@ -54,23 +61,26 @@ function AllFeed({navigation}) {
   const DATA = [
     {title: 1},
     {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
-    {title: 2},
+    {title: 3},
+    {title: 4},
+    {title: 5},
+    {title: 6},
+    {title: 7},
+    {title: 8},
+    {title: 9},
+    {title: 10},
+    {title: 11},
+    {title: 12},
+    {title: 13},
   ];
   const [containerWidth, setContainerWidth] = useState(0);
   const numColumns = 3;
+  const parentFunction = () => {
+    setModalVisible(!modalVisible);
+  };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'orange'}}>
+    <SafeAreaView style={{flex: 1}}>
       <QhotoHeader rightIcon={rightIcon} />
 
       <View
@@ -84,12 +94,7 @@ function AllFeed({navigation}) {
           onPress={() => {
             setSelectedIdx(0);
           }}>
-          <Text
-            style={
-              selectedIdx === 0
-                ? {width: 80, textAlign: 'center', color: 'purple'}
-                : {width: 80, textAlign: 'center'}
-            }>
+          <Text style={selectedIdx === 0 ? styles.onText : styles.offText}>
             DAY
           </Text>
         </TouchableOpacity>
@@ -97,12 +102,7 @@ function AllFeed({navigation}) {
           onPress={() => {
             setSelectedIdx(1);
           }}>
-          <Text
-            style={
-              selectedIdx === 1
-                ? {width: 80, textAlign: 'center', color: 'purple'}
-                : {width: 80, textAlign: 'center'}
-            }>
+          <Text style={selectedIdx === 1 ? styles.onText : styles.offText}>
             WEEK
           </Text>
         </TouchableOpacity>
@@ -110,12 +110,7 @@ function AllFeed({navigation}) {
           onPress={() => {
             setSelectedIdx(2);
           }}>
-          <Text
-            style={
-              selectedIdx === 2
-                ? {width: 80, textAlign: 'center', color: 'purple'}
-                : {width: 80, textAlign: 'center'}
-            }>
+          <Text style={selectedIdx === 2 ? styles.onText : styles.offText}>
             MONTH
           </Text>
         </TouchableOpacity>
@@ -131,14 +126,13 @@ function AllFeed({navigation}) {
               height={containerWidth / numColumns}
             />
           )}
-          keyExtractor={(item, index) => index}
           numColumns={numColumns}
         />
       </View>
 
       <View>
         <Modal
-          animationType="slide"
+          animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
@@ -147,12 +141,11 @@ function AllFeed({navigation}) {
           <Pressable
             style={styles.centeredView}
             onPress={() => {
+              console.log(111);
               setModalVisible(!modalVisible);
             }}>
-            <Pressable>
-              <View style={styles.modalView}>
-                <SelectedFeed />
-              </View>
+            <Pressable style={styles.modalView}>
+              <SelectedFeed parentFunction={parentFunction} />
             </Pressable>
           </Pressable>
         </Modal>
@@ -166,14 +159,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   modalView: {
-    width: 300,
-    height: 400,
+    width: 350,
+    height: 650,
     backgroundColor: 'white',
-    padding: 20,
+    padding: 15,
     borderRadius: 20,
+    borderWidth: 3,
   },
   button: {
     borderRadius: 20,
@@ -194,6 +188,16 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  onText: {
+    width: 80,
+    textAlign: 'center',
+    color: 'purple',
+  },
+  offText: {
+    width: 80,
+    textAlign: 'center',
+    color: 'black',
   },
 });
 

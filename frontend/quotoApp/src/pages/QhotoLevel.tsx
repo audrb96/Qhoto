@@ -231,11 +231,11 @@ function QhotoLevel({navigation, route}) {
           />
         </View>
         {userPoint < 5000 ? (
-          <Text style={{fontSize: 12, marginHorizontal: 15}}>
+          <Text style={{color: 'black', fontSize: 12, marginHorizontal: 15}}>
             {nextColorName} 레벨까지 {maxPoint - userPoint} Points 남음
           </Text>
         ) : (
-          <Text />
+          <></>
         )}
       </View>
       <View style={{flexDirection: 'column', flex: 0.7}}>

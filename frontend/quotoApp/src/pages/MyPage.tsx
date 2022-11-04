@@ -184,8 +184,26 @@ function MyPage({navigation}: null) {
   //////////////////////////////////////////
   const [imageUri, setImageUri] = useState('');
 
+  let rightIcon = editable ? (
+    <TouchableOpacity
+      onPress={() => setEditable(false)}
+      style={styles.rightIcon}>
+      <Text style={{color: 'black'}}>완료</Text>
+    </TouchableOpacity>
+  ) : (
+    <FontAwesome5
+      name="edit"
+      size={30}
+      color="#3B28B1"
+      onPress={() => setEditable(true)}
+      style={styles.rightIcon} // Todo 해결!!!: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
+    />
+  );
+
   return (
     <SafeAreaView>
+      <QhotoHeader rightIcon={rightIcon} />
+
       <View // 로그아웃 ~ 수정버튼
         style={{
           flexDirection: 'row',
@@ -195,18 +213,6 @@ function MyPage({navigation}: null) {
         <TouchableOpacity style={{width: 40, height: 60}}>
           <Text>임시logout</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          {editable === false ? (
-            <FontAwesome5
-              name="edit"
-              size={18}
-              color={'#3B28B1'}
-              onPress={() => setEditable(true)}
-            />
-          ) : (
-            <Text onPress={() => setEditable(false)}>완료</Text>
-          )}
-        </TouchableOpacity>
       </View>
       <View // 프로필
       >
@@ -215,30 +221,30 @@ function MyPage({navigation}: null) {
             <View>
               <ImageModal
                 source={{uri: userImage}}
-                resizeMode="contain"
+                resizeMode="cover"
                 modalImageResizeMode="contain"
                 style={{
-                  width: 75,
-                  height: 75,
-                  borderRadius: 37.5,
+                  width: 120,
+                  height: 120,
+                  borderRadius: 100,
                 }}
-                imageBackgroundColor="red"
                 swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
                 overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
               />
 
               <TouchableOpacity
-                style={{position: 'absolute', top: 55, left: 55}}
+                style={{position: 'absolute', top: 90, left: 90}}
                 onPress={modalOpen}>
-                <AntDesign name="camerao" size={18} color={'#3B28B1'} />
+                <AntDesign name="camerao" size={20} color={'#3B28B1'} />
               </TouchableOpacity>
             </View>
 
-            <Text style={{fontSize: 16}}>{email}</Text>
+            <Text style={{fontSize: 16, color: 'black'}}>{email}</Text>
             {editable === false ? (
-              <Text style={{fontSize: 12}}>{introduction}</Text>
+              <Text style={{fontSize: 12, color: 'black'}}>{introduction}</Text>
             ) : (
               <TextInput
+                style={{color: 'black'}}
                 value={introduction}
                 onChangeText={text => setIntroduction(text)}
               />
@@ -272,12 +278,21 @@ function MyPage({navigation}: null) {
               backgroundColor,
               borderRadius: 10,
             }}>
-            <Text style={{marginHorizontal: 15}}>{colorName}</Text>
+            <Text style={{marginHorizontal: 15, color: 'black'}}>
+              {colorName}
+            </Text>
             <Text
-              style={{fontSize: 30, fontWeight: '600', marginHorizontal: 15}}>
+              style={{
+                color: 'black',
+                fontSize: 30,
+                fontWeight: '600',
+                marginHorizontal: 15,
+              }}>
               {userPoint}
             </Text>
-            <Text style={{marginHorizontal: 15}}>총퀘스트점수</Text>
+            <Text style={{color: 'black', marginHorizontal: 15}}>
+              총퀘스트점수
+            </Text>
             <View style={{marginHorizontal: 15, marginVertical: 5}}>
               <View
                 style={{
@@ -296,7 +311,7 @@ function MyPage({navigation}: null) {
               />
             </View>
             {userPoint < 5000 ? (
-              <Text style={{marginHorizontal: 15}}>
+              <Text style={{color: 'black', marginHorizontal: 15}}>
                 {nextColorName} 레벨까지 {maxPoint - userPoint} Points 남음
               </Text>
             ) : (
@@ -321,7 +336,7 @@ function MyPage({navigation}: null) {
           </Text>
           <FontAwesome5 name="angle-right" size={18} color={'#3B28B1'} />
         </TouchableOpacity>
-        <Text> URI: {imageUri}</Text>
+        <Text style={{color: 'black'}}> URI: {imageUri}</Text>
       </View>
 
       <Modal
@@ -395,6 +410,15 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 26,
+  },
+  rightIcon: {
+    position: 'absolute',
+    // padding: 10,
+    // width: 40,
+    // height: 40,
+    // top: -10,
+    // left: 20,
+    backgroundColor: 'black',
   },
 });
 

@@ -87,6 +87,9 @@ function FriendsFeed() {
       like: isLike[3],
     },
   ];
+  const parentFunction = () => {
+    setModalVisible(!modalVisible);
+  };
 
   const Item = ({item, onPress, backgroundColor, textColor}) => (
     <View style={{flex: 1}}>
@@ -250,23 +253,22 @@ function FriendsFeed() {
         />
       </View>
       <Modal
-        animationType="slide"
+        animationType="none"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}>
-        <KeyboardAvoidingView style={{backgroundColor: 'orange'}}>
-          <Pressable
-            onPress={() => {
-              console.log(111);
-              setModalVisible(!modalVisible);
-            }}>
-            <Pressable style={styles.modalView}>
-              <SelectedFeed />
-            </Pressable>
+        <Pressable
+          style={styles.centeredView}
+          onPress={() => {
+            console.log(111);
+            setModalVisible(!modalVisible);
+          }}>
+          <Pressable style={styles.modalView}>
+            <SelectedFeed parentFunction={parentFunction} />
           </Pressable>
-        </KeyboardAvoidingView>
+        </Pressable>
       </Modal>
     </View>
   );
@@ -289,14 +291,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   modalView: {
     width: 350,
-    height: 600,
-    backgroundColor: 'black',
+    height: 650,
+    backgroundColor: 'white',
     padding: 15,
     borderRadius: 20,
+    borderWidth: 3,
   },
   button: {
     borderRadius: 20,
