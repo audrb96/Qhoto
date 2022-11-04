@@ -24,6 +24,7 @@ import {
   login,
   logout,
   unlink,
+  getAccessToken,
 } from '@react-native-seoul/kakao-login';
 import kakao from '../assets/kakao_login_medium_wide.png';
 import axios from 'axios';
@@ -72,22 +73,19 @@ function SignIn({navigation}: SignInScreenProps) {
 
   const signInWithKakao = async (): Promise<void> => {
     const token: KakaoOAuthToken = await login().then(token => {
-      console.log(11, token);
+      console.log('로그인 token : ', token);
       if (token) {
         loginKakao(
           token.accessToken,
           res => {
+            console.log(1111, res);
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
               console.log('유저 닉네임 저장 완료');
             });
-            const {id, email, name, image, nickname, profileOpen} =
-              res.data.user;
-
+            const accessToken = res.data.accessToken;
             dispatch(
               userSlice.actions.setUser({
-                email: email,
-                userName: name,
-                userImage: image,
+                token: accessToken,
                 loggedIn: true,
               }),
             );
@@ -120,6 +118,7 @@ function SignIn({navigation}: SignInScreenProps) {
               loginGoogle(
                 userInfo.idToken,
                 async res => {
+                  console.log('구글로그인', res);
                   AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
@@ -127,22 +126,11 @@ function SignIn({navigation}: SignInScreenProps) {
                       console.log('유저 닉네임 저장 완료');
                     },
                   );
-
-                  const {
-                    userId,
-                    email,
-                    name,
-                    image,
-                    userPoint,
-                    nickname,
-                    profileOpen,
-                  } = res.data;
+                  const accessToken = res.data.accessToken;
 
                   dispatch(
                     userSlice.actions.setUser({
-                      email: email,
-                      userName: name,
-                      userImage: image,
+                      token: accessToken,
                       loggedIn: true,
                     }),
                   );

@@ -3,13 +3,13 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
   TextInput,
   Platform,
   SafeAreaView,
   Modal,
   Pressable,
   StyleSheet,
+  NativeModules,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
@@ -25,10 +25,10 @@ import ImageModal from 'react-native-image-modal';
 import PhotoEditor from 'react-native-photo-editor';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
-import sticker0 from '../assets/sticker0.png';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
+import {getUserInfo} from '../api/mypage';
 
 function MyPage({navigation}: null) {
   const dispatch = useAppDispatch();
@@ -39,13 +39,9 @@ function MyPage({navigation}: null) {
   const goToQuestLog = () => {
     navigation.navigate('QuestLog');
   };
-  const userImage = useSelector((state: RootState) => state.user.userImage);
-  // const userName = useSelector((state: RootState) => state.user.userName);
-  const email = useSelector((state: RootState) => state.user.email);
-  // const emailId = email.split('@');
-  const userPoint = 1500;
-  // Todo: 왜 userPoint 만 못가져옴?? 숫자라서 그런가??
-  // const userPoint = useSelector((state: RootState) => state.user.userPoint);
+
+  // // Todo: 왜 userPoint 만 못가져옴?? 숫자라서 그런가??
+  // // const userPoint = useSelector((state: RootState) => state.user.userPoint);
   let backgroundColor = 'red';
   let colorName = '';
   let nextColorName = '';
@@ -181,9 +177,9 @@ function MyPage({navigation}: null) {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
 
-  //////////////////////////////////////////
   const [imageUri, setImageUri] = useState('');
 
+  //Icon
   let rightIcon = editable ? (
     <TouchableOpacity
       onPress={() => setEditable(false)}
@@ -200,10 +196,67 @@ function MyPage({navigation}: null) {
     />
   );
 
+  let [email, setEmail] = useState(
+    useSelector((state: RootState) => state.user.email),
+  );
+  let [joinDate, setJoinDate] = useState(
+    useSelector((state: RootState) => state.user.joinDate),
+  );
+  let [userImage, setUserImage] = useState(
+    useSelector((state: RootState) => state.user.userImage),
+  );
+  let [nickname, setNickname] = useState(
+    useSelector((state: RootState) => state.user.nickname),
+  );
+  let [phone, setPhone] = useState(
+    useSelector((state: RootState) => state.user.phone),
+  );
+  let [profileOpen, setProfileOpen] = useState(
+    useSelector((state: RootState) => state.user.profileOpen),
+  );
+
+  // const joinDate = useSelector((state: RootState) => state.user.joinDate);
+  // const userImage = useSelector((state: RootState) => state.user.userImage);
+  // const nickname = useSelector((state: RootState) => state.user.nickname);
+  // const email = useSelector((state: RootState) => state.user.email);
+
+  const userPoint = 1500;
+
+  useEffect(() => {
+    getUserInfo(
+      // token,
+      res => {
+        let {email, joinDate, nickname, phone, profileOpen, userImage} =
+          res.data;
+        setEmail(email);
+        setJoinDate(joinDate);
+        setUserImage(userImage);
+        setNickname(nickname);
+        setPhone(phone);
+        setProfileOpen(profileOpen);
+        dispatch(
+          userSlice.actions.setUser({
+            email: email,
+            joinDate: joinDate,
+            nickname: nickname,
+            phone: phone,
+            profileOpen: profileOpen,
+            userImage: userImage,
+            loggedIn: true,
+          }),
+        );
+        console.log('getUserInfo-res : ', res);
+        console.log('');
+        // Todo: back 에서 point 주면 redux 에 넣어야 함
+        // Todo: 유저 point state 관리도 해줘야함
+      },
+      err => console.log('getUserInfo-err : ', err),
+    );
+  }, []);
+
   return (
     <SafeAreaView>
       <QhotoHeader rightIcon={rightIcon} />
-
       <View // 로그아웃 ~ 수정버튼
         style={{
           flexDirection: 'row',
@@ -239,7 +292,7 @@ function MyPage({navigation}: null) {
               </TouchableOpacity>
             </View>
 
-            <Text style={{fontSize: 16, color: 'black'}}>{email}</Text>
+            <Text style={{fontSize: 16, color: 'black'}}>{nickname}</Text>
             {editable === false ? (
               <Text style={{fontSize: 12, color: 'black'}}>{introduction}</Text>
             ) : (
@@ -337,6 +390,11 @@ function MyPage({navigation}: null) {
           <FontAwesome5 name="angle-right" size={18} color={'#3B28B1'} />
         </TouchableOpacity>
         <Text style={{color: 'black'}}> URI: {imageUri}</Text>
+        <Text style={{color: 'black'}}> joinDate: {joinDate}</Text>
+        <Text style={{color: 'black'}}>
+          {' '}
+          profileOpen: {profileOpen === true ? 'true' : 'false'}
+        </Text>
       </View>
 
       <Modal
