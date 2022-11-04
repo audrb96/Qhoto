@@ -6,6 +6,8 @@ import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.dto.response.MyFeedRes;
+import com.qhoto.qhoto_api.dto.response.MyInfoRes;
+import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +33,21 @@ public class UserService implements UserDetailsService {
     public void modifyUser(ModifyUserReq modifyUserReq, User userInfo) throws IOException {
         userRepository.modifyUserByCon(modifyUserReq, userInfo);
     }
+
+    public MyInfoRes myInfo(User user) {
+        return MyInfoRes.builder()
+                .authProvider(user.getAuthProvider())
+                .contactAgree(user.getContactAgree())
+                .contactAgreeDate(user.getContactAgreeDate())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .JoinDate(user.getJoinDate())
+                .phone(user.getPhone())
+                .profileOpen(user.getProfileOpen())
+                .UserImage(user.getImage())
+                .build();
+    }
+
 
     public List<MyFeedRes> getMyFeed(){
         Long userId = 2L;
