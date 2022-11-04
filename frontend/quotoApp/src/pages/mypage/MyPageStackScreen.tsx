@@ -1,10 +1,9 @@
 import React from 'react';
-import {Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import MyPage from './MyPage';
 import QhotoLevel from './QhotoLevel';
-import QhotoLog from './QhotoLog';
 import QhotoHeader from '../../components/QhotoHeader';
+import EditMyProfile from './EditMyProfile';
 
 const MyPageStack = createStackNavigator();
 function MyPageStackScreen() {
@@ -23,6 +22,11 @@ function MyPageStackScreen() {
       <MyPageStack.Screen
         name="QuestLog"
         component={QhotoLog}
+        options={{header: () => <QhotoHeader leftIcon={false} />}}
+      />
+      <MyPageStack.Screen
+        name="EditMyProfile"
+        component={EditMyProfile}
         options={{header: () => <QhotoHeader leftIcon={false} />}}
       />
     </MyPageStack.Navigator>
