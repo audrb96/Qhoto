@@ -13,6 +13,7 @@ import com.qhoto.qhoto_api.exception.AlreadyRequestException;
 import com.qhoto.qhoto_api.exception.NobodyRequestException;
 import com.qhoto.qhoto_api.exception.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +22,7 @@ import java.time.ZoneId;
 import java.util.Optional;
 
 import static com.qhoto.qhoto_api.domain.type.RequestStatus.*;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FriendService {
@@ -29,6 +30,7 @@ public class FriendService {
     private final FriendRequestRepository friendRequestRepository;
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
+
     @Transactional
     public void friendRequest(FriendRequestReq friendRequestReq, User reqUser) {
         Optional<User> resUser = userRepository.findUserById(friendRequestReq.getResUserId());
@@ -44,18 +46,18 @@ public class FriendService {
                 case F:
                     throw new AlreadyFriendException("이미 친구인 상대입니다.");
                 case G:
-                    makeFriend(reqUser, resUser, isAcceptRequest.orElseThrow(() -> new NobodyRequestException("친구를 요청한 사람이 없는데 받은 사람만 있습니다.")));
+                    makeFriend(reqUser, resUser, isAcceptRequest.orElseThrow(() -> new NobodyRequestException("친구를 요청한 사람이 없는데 받은 사람만 있습니다.")),friendRequest.get());
                     break;
             }
         } else {
             saveRequest(reqUser, resUser.get(),R);
             saveRequest(resUser.get(),reqUser,G);
         }
-
     }
 
-    private void makeFriend(User reqUser, Optional<User> resUser, FriendRequest isAcceptRequest) {
+    private void makeFriend(User reqUser, Optional<User> resUser, FriendRequest isAcceptRequest, FriendRequest friendRequest) {
         isAcceptRequest.changeStatus(F);
+        friendRequest.changeStatus(F);
         Friend friend1 = Friend.builder()
                 .follower(reqUser)
                 .followee(resUser.get())

@@ -65,11 +65,11 @@ public class LoginService {
             String name = (String) payload.get("name");
             String pictureUrl = (String) payload.get("picture");
 
-            Map<String, Object> userMap = isJoined(email, name, pictureUrl,AuthProvider.GOOGLE);
+            Map<String, String> userMap = isJoined(email, name, pictureUrl,AuthProvider.GOOGLE);
 
             return LoginRes.builder()
-                    .accessToken((String) userMap.get("accessToken"))
-                    .user((User) userMap.get("user"))
+                    .accessToken(userMap.get("accessToken"))
+                    .refreshToken(userMap.get("refreshToken"))
                     .build();
 
         }
@@ -88,16 +88,16 @@ public class LoginService {
         log.info("profileImage = {}", profileImage);
         log.info("email = {}", email);
 
-        Map<String, Object> userMap = isJoined(email, nickname, profileImage,AuthProvider.KAKAO);
+        Map<String, String> userMap = isJoined(email, nickname, profileImage,AuthProvider.KAKAO);
 
         return LoginRes.builder()
-                .accessToken((String) userMap.get("accessToken"))
-                .user((User) userMap.get("user"))
+                .accessToken(userMap.get("accessToken"))
+                .refreshToken(userMap.get("refreshToken"))
                 .build();
     }
 
-    private Map<String,Object> isJoined(String email, String name, String pictureUrl,AuthProvider authProvider) {
-        Map<String, Object> map = new HashMap<>();
+    private Map<String,String> isJoined(String email, String name, String pictureUrl,AuthProvider authProvider) {
+        Map<String, String> map = new HashMap<>();
         User user;
         Optional<User> findUser = userRepository.findByEmail(email);
 
@@ -117,7 +117,7 @@ public class LoginService {
             userRepository.save(user);
         }
 
-        map.put("user",user);
+        map.put("refreshToken",refreshToken);
         map.put("accessToken", accessToken);
 
         return map;
