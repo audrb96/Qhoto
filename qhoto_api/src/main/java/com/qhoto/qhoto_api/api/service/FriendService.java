@@ -8,6 +8,7 @@ import com.qhoto.qhoto_api.domain.FriendRequest;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.RequestStatus;
 import com.qhoto.qhoto_api.dto.request.FriendRequestReq;
+import com.qhoto.qhoto_api.dto.response.FriendRes;
 import com.qhoto.qhoto_api.exception.AlreadyFriendException;
 import com.qhoto.qhoto_api.exception.AlreadyRequestException;
 import com.qhoto.qhoto_api.exception.NobodyRequestException;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.qhoto.qhoto_api.domain.type.RequestStatus.*;
@@ -82,4 +85,32 @@ public class FriendService {
 
         return friendRequestRepository.save(savedRequest);
     }
+
+    public List<FriendRes> getFriends(User user) {
+        List<User> friendList = userRepository.findFriendById(user.getId());
+        List<FriendRes> friendResList = new ArrayList<>();
+        for(User friend:friendList){
+            friendResList.add(FriendRes.builder()
+                    .userId(friend.getId())
+                    .nickname(friend.getNickname())
+                    .userImage(friend.getImage())
+                    .build());
+        }
+        return friendResList;
+    }
+
+    public List<FriendRes> getReceives(User user){
+        List<User> receiveList = userRepository.findReceiveById(user.getId());
+        List<FriendRes> friendResList = new ArrayList<>();
+        for(User receive:receiveList){
+            friendResList.add(FriendRes.builder()
+                    .userId(receive.getId())
+                    .nickname(receive.getNickname())
+                    .userImage(receive.getImage())
+                    .build());
+        }
+        return friendResList;
+    }
+
+
 }

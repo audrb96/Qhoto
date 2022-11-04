@@ -4,6 +4,7 @@ import com.qhoto.qhoto_api.api.service.FriendService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.FriendRequestReq;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
+import com.qhoto.qhoto_api.dto.response.FriendRes;
 import com.qhoto.qhoto_api.exception.AlreadyFriendException;
 import com.qhoto.qhoto_api.exception.AlreadyRequestException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -41,6 +44,17 @@ public class FriendController {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ALREADY_FRIEND);
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
+
+    @GetMapping
+    public ResponseEntity<List<FriendRes>> readFriends(@AuthenticationPrincipal User user){
+        return new ResponseEntity<>(friendService.getFriends(user),HttpStatus.OK);
+    }
+
+    @GetMapping("/receive")
+    public ResponseEntity<List<FriendRes>> readReceives(@AuthenticationPrincipal User user){
+        return new ResponseEntity<>(friendService.getReceives(user), HttpStatus.OK);
+    }
+
 
 
 }

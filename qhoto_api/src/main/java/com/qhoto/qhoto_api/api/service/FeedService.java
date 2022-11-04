@@ -36,7 +36,6 @@ import java.util.Map;
 public class FeedService {
 
 
-    private final AmazonS3Client amazonS3Client;
     private final S3Utils s3Utils;
     private final CommentRepository commentRepository;
     private final FeedRepository feedRepository;
@@ -52,9 +51,6 @@ public class FeedService {
     private final ExpRepository expRepository;
 
 
-//    public Page<FeedAllDto> getAllFeed(FeedAllReq feedAllReq, Pageable pageable){
-//        return feedRepository.findAllByCondition(feedAllReq, pageable);
-//    }
 
     public Page<FeedAllDto> getFeed(FeedAllReq feedAllReq, Pageable pageable) {
         return feedRepository.findByCondition(feedAllReq, pageable);
