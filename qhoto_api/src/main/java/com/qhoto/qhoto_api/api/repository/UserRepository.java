@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long>,UserRepository
     @Query("select u from User u inner join fetch Friend f on u.id=f.followee.id where f.follower.id=:id")
     List<User> findFriendById(@Param("id") Long id);
 
-    @Query("select u from User u inner join fetch FriendRequest r on r.requestUser.id=u.id where r.responseUser.id=:id and r.status='G'")
+    @Query("select u from User u inner join fetch FriendRequest r on r.requestUser.id=u.id where r.responseUser.id=:id and r.status='R'")
     List<User> findReceiveById(@Param("id") Long id);
 
 }
