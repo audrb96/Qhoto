@@ -16,8 +16,6 @@ import {RootState} from '../store/reducer';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
-// import ImageModal from 'react-native-image-modal';
-
 import QhotoHeader from '../components/QhotoHeader';
 import UploadModeModal from '../components/mypage/UploadModeModal';
 import ProfileImageModal from '../components/mypage/ProfileImageModal';
@@ -39,6 +37,9 @@ function MyPage({navigation}: null) {
   const goToQuestLog = () => {
     navigation.navigate('QuestLog');
   };
+  const goToEditMyProfile = () => {
+    navigation.navigate('EditMyProfile');
+  };
 
   // // Todo: 왜 userPoint 만 못가져옴?? 숫자라서 그런가??
   // // const userPoint = useSelector((state: RootState) => state.user.userPoint);
@@ -47,6 +48,7 @@ function MyPage({navigation}: null) {
   let nextColorName = '';
   let minPoint = 0;
   let maxPoint = 0;
+  const userPoint = 1500;
 
   // Todo: 이것도 컴포넌트화 가능??
   // Todo: 타입스크립트방식으로 해도 지저분하긴함..
@@ -191,7 +193,8 @@ function MyPage({navigation}: null) {
       name="edit"
       size={30}
       color="#3B28B1"
-      onPress={() => setEditable(true)}
+      // onPress={() => setEditable(true)}
+      onPress={() => goToEditMyProfile()}
       style={styles.rightIcon} // Todo 해결!!!: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
     />
   );
@@ -220,12 +223,10 @@ function MyPage({navigation}: null) {
   // const nickname = useSelector((state: RootState) => state.user.nickname);
   // const email = useSelector((state: RootState) => state.user.email);
 
-  const userPoint = 1500;
-
   useEffect(() => {
     getUserInfo(
       // token,
-      res => {
+      (res: any) => {
         let {email, joinDate, nickname, phone, profileOpen, userImage} =
           res.data;
         setEmail(email);
@@ -250,7 +251,7 @@ function MyPage({navigation}: null) {
         // Todo: back 에서 point 주면 redux 에 넣어야 함
         // Todo: 유저 point state 관리도 해줘야함
       },
-      err => console.log('getUserInfo-err : ', err),
+      (err: any) => console.log('getUserInfo-err : ', err),
     );
   }, []);
 
@@ -478,6 +479,9 @@ const styles = StyleSheet.create({
     // top: -10,
     // left: 20,
     backgroundColor: 'black',
+  },
+  actionText: {
+    color: 'black',
   },
 });
 
