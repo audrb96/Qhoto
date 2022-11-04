@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
   modalButtonText: {
     fontFamily: 'Happiness-Sans-Bold',
     fontSize: 18,
+    color: '#595959',
   },
 });
 

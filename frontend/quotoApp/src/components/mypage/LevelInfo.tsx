@@ -21,7 +21,7 @@ import purple_tmp from '../assets/purple_tmp.png';
 import QhotoHeader from '../components/QhotoHeader';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-function QhotoLevel({navigation, route}) {
+function LevelInfo({navigation, route}) {
   const goToMyPage = () => {
     navigation.navigate('MyPage');
   };
@@ -259,4 +259,4 @@ function QhotoLevel({navigation, route}) {
   );
 }
 
-export default QhotoLevel;
+export default LevelInfo;

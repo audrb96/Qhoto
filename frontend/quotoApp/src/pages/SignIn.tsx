@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState, useEffect} from 'react';
+import React from 'react';
 import {
   Alert,
   Pressable,
@@ -27,7 +27,6 @@ import {
   getAccessToken,
 } from '@react-native-seoul/kakao-login';
 import {KAKAO_LOGIN_BUTTON} from '../image';
-import axios from 'axios';
 
 import {LOGIN_LOGO} from '../image';
 
@@ -37,7 +36,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 function SignIn({navigation}: SignInScreenProps) {
   const dispatch = useAppDispatch();
@@ -128,7 +127,9 @@ function SignIn({navigation}: SignInScreenProps) {
           onPress={signInWithGoogle}
         />
         <Pressable style={{marginTop: 10}} onPress={signInWithKakao}>
-          <Image source={KAKAO_LOGIN_BUTTON} />
+          <View style={{elevation: 5}}>
+            <Image source={KAKAO_LOGIN_BUTTON} />
+          </View>
         </Pressable>
       </View>
     </View>
