@@ -8,6 +8,12 @@ spring:
     username: qhoto_admin
     password: ssafyA707
 
+  rabbitmq:
+    host: 34.64.115.144
+    username: qhoto_admin
+    password: ssafyA707
+    port: 5672
+
   jpa:
     hibernate:
       ddl-auto: update
