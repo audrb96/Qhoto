@@ -6,6 +6,7 @@ import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.dto.response.LoginRes;
+import com.qhoto.qhoto_api.dto.response.UserRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,12 @@ public class UserController {
         return new ResponseEntity<>(userService.getMyFeed(),HttpStatus.OK);
     }
 
-
+    @GetMapping("/friend/find")
+    public ResponseEntity<UserRes> readUsers(@AuthenticationPrincipal User user, @PathVariable String nickName){
+//        Long userId= user.getUserId();
+        Long userId = 1L;
+        UserRes friend = userService.getUserByNickName(userId, nickName);
+        return new ResponseEntity<>( friend , HttpStatus.OK);
+    }
 
 }

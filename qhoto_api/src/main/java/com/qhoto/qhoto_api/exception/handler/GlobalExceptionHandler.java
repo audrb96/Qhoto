@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
         log.error("SQLException", e);
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    
+
     @ExceptionHandler(NoUserByIdException.class)
     protected ResponseEntity<ErrorResponse> noUserByIdException(NoUserByIdException e){
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_USER_BY_ID);

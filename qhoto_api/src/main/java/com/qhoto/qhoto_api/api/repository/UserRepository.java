@@ -1,8 +1,8 @@
 package com.qhoto.qhoto_api.api.repository;
 
 import com.qhoto.qhoto_api.domain.User;
+import com.qhoto.qhoto_api.dto.response.UserRes;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,5 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long>,UserRepository
     @Modifying
     @Query("update User u set u.refreshToken=:token where u.id=:id")
     void updateRefreshToken(@Param("id") Long id, @Param("token") String token);
+
+    Optional<UserRes> findUserByNickname(String nickName);
+
 
 }
