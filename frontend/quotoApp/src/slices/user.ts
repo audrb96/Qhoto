@@ -1,24 +1,30 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
+  token: '',
   userId: '',
   email: '',
+  phone: '',
   userName: '',
+  joinDate: '',
   userImage: '',
   userPoint: '',
   nickname: '',
-  profileOpen: '',
-  loggedIn: true,
-  // loggedIn: false,
+  profileOpen: true,
+  // loggedIn: true,
+  loggedIn: false,
 };
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
     setUser(state, action) {
+      // state.token = action.payload.token;
       state.userId = action.payload.userId;
       state.email = action.payload.email;
+      state.phone = action.payload.phone;
       state.userName = action.payload.userName;
+      state.joinDate = action.payload.joinDate;
       state.userImage = action.payload.userImage;
       state.userPoint = action.payload.userPoint;
       state.nickname = action.payload.nickname;
