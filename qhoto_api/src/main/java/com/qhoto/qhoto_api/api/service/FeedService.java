@@ -104,18 +104,18 @@ public class FeedService {
     }
 
 
-    public void postFeed(CreateFeedReq createFeedReq) throws IOException {
+    public void postFeed(CreateFeedReq createFeedReq, User user) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
-        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+//        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "/feed/image/"+user.getEmail();
-        S3upload(createFeedReq, quest, user, dirName);
+//        S3upload(createFeedReq, quest, user, dirName);
     }
 
-    public void postVideoFeed(CreateFeedReq createFeedReq) throws IOException {
+    public void postVideoFeed(CreateFeedReq createFeedReq, User user) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));;
-        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+//        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "/feed/video/input/"+user.getEmail();
-        S3upload(createFeedReq, quest, user, dirName);
+//        S3upload(createFeedReq, quest, user, dirName);
 
     }
 
