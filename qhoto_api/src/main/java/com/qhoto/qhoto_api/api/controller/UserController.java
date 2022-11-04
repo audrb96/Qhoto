@@ -25,7 +25,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class UserController {
-    private final UserRepository userRepository;
     private final LoginService loginService;
     private final UserService userService;
 
