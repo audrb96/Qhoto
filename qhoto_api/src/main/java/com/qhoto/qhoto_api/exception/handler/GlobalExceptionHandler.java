@@ -2,6 +2,7 @@ package com.qhoto.qhoto_api.exception.handler;
 
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.exception.NoFeedByIdException;
+import com.qhoto.qhoto_api.exception.NotFoundUserException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +77,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoUserByIdException.class)
     protected ResponseEntity<ErrorResponse> noUserByIdException(NoUserByIdException e){
+        log.error("noUserByIdException", e);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_USER_BY_ID);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+    }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    protected ResponseEntity<ErrorResponse> NotFoundUserException(NotFoundUserException e) {
+        log.error("NotFoundUserException", e);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_FOUND_USER);
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
 

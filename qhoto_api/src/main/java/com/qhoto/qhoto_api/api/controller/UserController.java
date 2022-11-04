@@ -6,6 +6,7 @@ import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.dto.response.LoginRes;
+import com.qhoto.qhoto_api.dto.response.MyInfoRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,8 +44,8 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public User getCurrentUser(@AuthenticationPrincipal User user) {
-        return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("not found user"));
+    public ResponseEntity<MyInfoRes> getCurrentUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.myInfo(user));
     }
 
     @PutMapping("/user")
@@ -56,7 +57,6 @@ public class UserController {
     public ResponseEntity<?> readMyFeed(){
         return new ResponseEntity<>(userService.getMyFeed(),HttpStatus.OK);
     }
-
 
 
 }
