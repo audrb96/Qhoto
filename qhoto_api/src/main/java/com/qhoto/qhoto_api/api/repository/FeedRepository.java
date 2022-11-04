@@ -20,12 +20,12 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
     @Query("select f from Feed f inner join fetch ActiveMonthly a on f.activeMonthly.id = a.id where f.status = 'U' and a.status='A' and f.user.id= :userId")
     Optional<Feed> findClearMonthlyQuest(@Param("userId") Long userId);
 
-    @Query("select count(f) from Feed f where f.typeCode = :typeCode and f.user.id = :userId")
-    int findAllFeedByTypeCodeAndUserId(@Param("typeCode")String typeCode,@Param("userId") Long userId);
-
-     @Query(value = "select ifnull(type_code, 'TOTAL') as code, ifnull(quest_duration, 'ALL') as duration, count(*) as count from feed where user_id= :userId group by type_code, quest_duration with rollup order by code", nativeQuery = true)
+    @Query(value = "select ifnull(type_code, 'TOTAL') as code, ifnull(quest_duration, 'ALL') as duration, count(*) as count from feed where user_id= :userId group by type_code, quest_duration with rollup order by code", nativeQuery = true)
     List<QuestAggregateRes> findAllQuestWithRollUp(@Param("userId") Long userId);
 
-    Feed findFeedById(Long feedId);
+    Optional<Feed> findFeedById(Long feedId);
+    @Query("select f from Feed f where f.user.id=:userId order by f.time desc")
+    List<Feed> findAllByUserId(@Param("userId") Long userId);
+
 
 }

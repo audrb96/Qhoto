@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
 import java.util.List;
 
 public interface ExpRepository extends JpaRepository<Exp, Long> {
@@ -14,4 +15,6 @@ public interface ExpRepository extends JpaRepository<Exp, Long> {
 
     @Query("select new com.qhoto.qhoto_api.dto.response.QuestCountRes(e.questType.code, sum(e.point)) from Exp e where e.user.id=:userId group by e.questType.code order by e.questType.code")
     List<QuestCountRes> findPointByTypeCodeAndUserId(@Param("userId") Long userId);
+
+
 }
