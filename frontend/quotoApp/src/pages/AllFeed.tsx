@@ -14,13 +14,34 @@ import {
 import QhotoHeader from '../components/QhotoHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectedFeed from './SelectedFeed';
-import axios from 'axios';
 import {State} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getAllFeeds} from '../api/feed';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [Feeds, setFeeds] = useState([]);
+  // 활성화된 퀘스트의 아이디
+  const [condition, setCondition] = useState('');
+  // DAY, WEEK, MONTH
+  const [duration, setDuration] = useState('DAY');
+  const [test, setTest] = useState();
+  useEffect(() => {
+    async function fetchAndSetUser() {
+      const data = await getAllFeeds(
+        res => {
+          console.log(res);
+          setTest(res);
+        },
+        err => {
+          console.log(err);
+        },
+      );
+    }
+    fetchAndSetUser();
+    2;
+  }, []);
 
   const rightIcon = (
     <Ionicons
