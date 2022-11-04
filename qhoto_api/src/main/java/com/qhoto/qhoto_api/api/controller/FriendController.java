@@ -45,7 +45,7 @@ public class FriendController {
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
 
-    @GetMapping("/friend")
+    @GetMapping
     public ResponseEntity<List<FriendRes>> readFriends(@AuthenticationPrincipal User user){
         return new ResponseEntity<>(friendService.getFriends(user),HttpStatus.OK);
     }
