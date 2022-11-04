@@ -3,6 +3,7 @@ package com.qhoto.qhoto_api.exception.handler;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.exception.NoFeedByIdException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
+import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,9 @@ public class GlobalExceptionHandler {
                     code = ErrorCode.NOTNULL_INPUT_VALUE.getCode();
                     status = ErrorCode.NOTNULL_INPUT_VALUE.getStatus();
                     break;
+                case "Pattern" :
+                    code = ErrorCode.INVALID_PATTERN.getCode();
+                    status = ErrorCode.INVALID_PATTERN.getStatus();
             }
         }
         return new ErrorResponse(message, code, status );
@@ -75,6 +79,13 @@ public class GlobalExceptionHandler {
     protected ResponseEntity handleSQLException(SQLException e) {
         log.error("SQLException", e);
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    @ExceptionHandler(NoUserByIdException.class)
+    protected ResponseEntity<ErrorResponse> noUserByIdException(NoUserByIdException e){
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_USER_BY_ID);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+
     }
 
 }

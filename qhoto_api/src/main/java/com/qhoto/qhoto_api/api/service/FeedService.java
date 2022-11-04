@@ -13,6 +13,8 @@ import com.qhoto.qhoto_api.dto.request.LikeReq;
 import com.qhoto.qhoto_api.dto.response.*;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.qhoto.qhoto_api.exception.NoFeedByIdException;
+import com.qhoto.qhoto_api.exception.NoQuestByIdException;
+import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -47,10 +52,9 @@ public class FeedService {
     private final ExpRepository expRepository;
 
 
-
-    public Page<FeedAllDto> getAllFeed(FeedAllReq feedAllReq, Pageable pageable){
-        return feedRepository.findAllByCondition(feedAllReq, pageable);
-    }
+//    public Page<FeedAllDto> getAllFeed(FeedAllReq feedAllReq, Pageable pageable){
+//        return feedRepository.findAllByCondition(feedAllReq, pageable);
+//    }
 
     public Page<FeedAllDto> getFeed(FeedAllReq feedAllReq, Pageable pageable) {
         return feedRepository.findByCondition(feedAllReq, pageable);
@@ -60,17 +64,21 @@ public class FeedService {
 
         Feed feed = feedRepository.findFeedById(feedId).orElseThrow(() -> new NoFeedByIdException("no feed by id"));
         Long userId = 1L;
+        User user = userRepository.findUserById(userId).orElseThrow(()-> new NoUserByIdException("no user by id"));
         List<CommentRes> commentResList = getCommentList(feedId);
-
 
         FeedDetailRes feedDetailRes = FeedDetailRes.builder()
                 .feedId(feedId)
+                .userId(userId)
+                .userImage(user.getImage())
+                .nickName(user.getNickname())
                 .feedImage(feed.getImage())
                 .feedTime(feed.getTime())
                 .questName(feed.getQuest().getName())
                 .questType(feed.getQuest().getQuestType().toString())
                 .questPoint(feed.getQuest().getScore())
-                .likeCount(feedLikeRepository.countAllById(feedId))
+                .expPoint(expRepository.findPointByUserId(userId).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .likeCount(feedLikeRepository.countAllById(feedId).orElseThrow(()-> new NoFeedByIdException("no feed by id")))
                 .likeStatus((feedLikeRepository.findById(userId).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
                 .commentList(commentResList)
                 .build();
@@ -91,34 +99,29 @@ public class FeedService {
         return commentResList;
     }
 
-    public Page<FeedFriendDto> getFriendFeed(FeedAllReq feedAllReq, Pageable pageable){
-        Long userId = 1L;
-        return feedRepository.findByConditionAndUserId(feedAllReq, pageable, userId);
+    public Page<FeedFriendDto> getFriendFeed(User user,FeedAllReq feedAllReq, Pageable pageable){
+        return feedRepository.findByConditionAndUserId(feedAllReq, pageable, user.getId());
     }
-
-
 
 
     public void postFeed(CreateFeedReq createFeedReq) throws IOException {
-        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
-        User user = userRepository.findUserById(createFeedReq.getUserId());
-        String uuid = UUID.randomUUID().toString();
-        // uuid 이메일로 바꾸기
-        String dirName = "feed/image/"+uuid;
-        S3upload(createFeedReq, quest, user, dirName);
+        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
+//        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+//        String dirName = "/feed/image/"+user.getEmail();
+//        S3upload(createFeedReq, quest, user, dirName);
     }
 
     public void postVideoFeed(CreateFeedReq createFeedReq) throws IOException {
-        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId());
-        User user = userRepository.findUserById(createFeedReq.getUserId());
-        String uuid = UUID.randomUUID().toString();
-        String dirName = "feed/video/"+uuid;
-        S3upload(createFeedReq, quest, user, dirName);
+        Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));;
+//        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+//        String dirName = "/feed/video/input/"+user.getEmail();
+//        S3upload(createFeedReq, quest, user, dirName);
 
     }
 
     private void S3upload(CreateFeedReq createFeedReq, Quest quest, User user, String dirName) throws IOException {
         s3Utils.upload(createFeedReq.getFeedImage(),dirName);
+        dirName = S3Utils.CLOUD_FRONT_DOMAIN_NAME+dirName;
         Feed feed = Feed.builder()
                 .user(user)
                 .quest(quest)
@@ -143,15 +146,16 @@ public class FeedService {
     }
 
 
-    public void postComment(CreateCommentReq createCommentReq){
+    public void postComment(CreateCommentReq createCommentReq, User user){
 
         Comment comment = Comment.builder()
                 .feed(feedRepository.findFeedById(createCommentReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
-                .user(userRepository.findUserById(createCommentReq.getUserId()))
+                .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .context(createCommentReq.getCommentContext())
                 .time(LocalDateTime.now())
                 .status(CommentStatus.U)
                 .build();
+
         commentRepository.save(comment);
     }
 
@@ -165,19 +169,19 @@ public class FeedService {
         comment.changeCommentStatus(CommentStatus.D);
     }
 
-    public void postLike(LikeReq likeReq){
+    public void postLike(LikeReq likeReq, User user){
         FeedLike feedLike = FeedLike.builder()
                 .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
-                .user(userRepository.findUserById(likeReq.getUserId()))
+                .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .build();
         feedLikeRepository.save(feedLike);
     }
 
     @Modifying
-    public void deleteLike(LikeReq likeReq){
+    public void deleteLike(LikeReq likeReq,User user){
         FeedLikePK feedLikePK = FeedLikePK.builder()
                 .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
-                .user(userRepository.findUserById(likeReq.getUserId()))
+                .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .build();
         feedLikeRepository.deleteById(feedLikePK);
     }
@@ -185,7 +189,7 @@ public class FeedService {
     public QuestOptionRes getQuestList() {
 
         // 옵션 리스트
-        Map<String, Object> optionList = new HashMap<>();
+        Map<String, List<QuestOptionItemRes>> optionList = new HashMap<>();
         List<QuestOptionItemRes> dailyOptions = questRepository.findAllDailyByQuestIdAndStatus();
         List<QuestOptionItemRes> weeklyOptions = questRepository.findAllWeeklyByQuestIdAndStatus();
         List<QuestOptionItemRes> monthlyOptions = questRepository.findAllMonthlyByQuestIdAndStatus();

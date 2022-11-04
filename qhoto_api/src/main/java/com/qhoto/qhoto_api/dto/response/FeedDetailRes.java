@@ -14,11 +14,15 @@ import java.util.List;
 public class FeedDetailRes {
 
     private final Long feedId;
+    private final Long userId;
+    private final String userImage;
+    private final String nickName;
     private final String feedImage;
     private final LocalDateTime feedTime;
     private final String questName;
     private final String questType;
     private final int questPoint;
+    private final int expPoint;
     private final LikeStatus likeStatus;
     private final int likeCount;
     private final List<CommentRes> commentList;
