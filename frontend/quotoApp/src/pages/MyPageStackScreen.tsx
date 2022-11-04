@@ -5,6 +5,7 @@ import MyPage from './MyPage';
 import QhotoLevel from './QhotoLevel';
 import QuestLog from './QuestLog';
 import QhotoHeader from '../components/QhotoHeader';
+import EditMyProfile from './EditMyProfile';
 
 const MyPageStack = createStackNavigator();
 function MyPageStackScreen() {
@@ -23,6 +24,11 @@ function MyPageStackScreen() {
       <MyPageStack.Screen
         name="QuestLog"
         component={QuestLog}
+        options={{header: () => <QhotoHeader leftIcon={false} />}}
+      />
+      <MyPageStack.Screen
+        name="EditMyProfile"
+        component={EditMyProfile}
         options={{header: () => <QhotoHeader leftIcon={false} />}}
       />
     </MyPageStack.Navigator>

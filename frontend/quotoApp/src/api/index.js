@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // axios 객체 생성
 function apiInstance() {
   const instance = axios.create({
-    baseURL: 'https://qhoto-api.shop',
+    baseURL: 'https://qhoto-api.com',
     headers: {
       'Content-type': 'application/json',
     },
@@ -14,7 +14,7 @@ function apiInstance() {
 
 function fileApiInstance() {
   const instance = axios.create({
-    baseURL: 'https://qhoto-api.shop',
+    baseURL: 'https://qhoto-api.com',
     headers: {
       'Content-Type': 'multipart/form-data',
     },
