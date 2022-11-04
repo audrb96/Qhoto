@@ -12,21 +12,21 @@ import {
   NativeModules,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {RootState} from '../store/reducer';
+import {RootState} from '../../store/reducer';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
-import QhotoHeader from '../components/QhotoHeader';
-import UploadModeModal from '../components/mypage/UploadModeModal';
-import ProfileImageModal from '../components/mypage/ProfileImageModal';
+import QhotoHeader from '../../components/QhotoHeader';
+// import UploadModeModal from '../../components/mypage/UploadModeModal';
+// import ProfileImageModal from '../../components/mypage/ProfileImageModal';
 import ImageModal from 'react-native-image-modal';
 import PhotoEditor from 'react-native-photo-editor';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useAppDispatch} from '../store';
-import userSlice from '../slices/user';
-import {getUserInfo} from '../api/mypage';
+import {useAppDispatch} from '../../store';
+import userSlice from '../../slices/user';
+import {getUserInfo} from '../../api/mypage';
 
 function MyPage({navigation}: null) {
   const dispatch = useAppDispatch();

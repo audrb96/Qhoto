@@ -11,12 +11,12 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import QhotoHeader from '../components/QhotoHeader';
+import QhotoHeader from '../../components/QhotoHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectedFeed from './SelectedFeed';
 import {State} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getAllFeeds} from '../api/feed';
+import {getAllFeeds} from '../../api/feed';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
