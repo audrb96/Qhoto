@@ -51,7 +51,7 @@ function SignIn({navigation}: SignInScreenProps) {
           (res: any) => {
             console.log(1111, res);
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
-              console.log('유저 닉네임 저장 완료');
+              console.log('토큰 저장 완료');
             });
             const accessToken = res.data.accessToken;
             dispatch(
@@ -93,7 +93,7 @@ function SignIn({navigation}: SignInScreenProps) {
                     'accessToken',
                     res.data.accessToken,
                     () => {
-                      console.log('유저 닉네임 저장 완료');
+                      console.log('토큰 저장 완료');
                     },
                   );
                   const accessToken = res.data.accessToken;

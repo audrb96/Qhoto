@@ -190,10 +190,6 @@ function Settings() {
     savePhoto(res.assets[0].uri);
   };
 
-  AsyncStorage.getItem('accessToken', (err, result) => {
-    console.log(result);
-  });
-
   return (
     <View style={styles.body}>
       <View style={styles.questCardContainer}>
