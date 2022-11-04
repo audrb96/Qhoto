@@ -24,6 +24,7 @@ import {
   login,
   logout,
   unlink,
+  getAccessToken,
 } from '@react-native-seoul/kakao-login';
 import {KAKAO_LOGIN_BUTTON} from '../image';
 import axios from 'axios';
@@ -47,18 +48,15 @@ function SignIn({navigation}: SignInScreenProps) {
       if (token) {
         loginKakao(
           token.accessToken,
-          res => {
+          (res: any) => {
+            console.log(1111, res);
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
               console.log('유저 닉네임 저장 완료');
             });
-            const {id, email, name, image, nickname, profileOpen} =
-              res.data.user;
-
+            const accessToken = res.data.accessToken;
             dispatch(
               userSlice.actions.setUser({
-                email: email,
-                userName: name,
-                userImage: image,
+                token: accessToken,
                 loggedIn: true,
               }),
             );
@@ -89,7 +87,8 @@ function SignIn({navigation}: SignInScreenProps) {
             .then(userInfo => {
               loginGoogle(
                 userInfo.idToken,
-                async res => {
+                (res: any) => {
+                  console.log('구글로그인', res);
                   AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
@@ -97,21 +96,10 @@ function SignIn({navigation}: SignInScreenProps) {
                       console.log('유저 닉네임 저장 완료');
                     },
                   );
-                  const {
-                    userId,
-                    email,
-                    name,
-                    image,
-                    userPoint,
-                    nickname,
-                    profileOpen,
-                  } = res.data;
-
+                  const accessToken = res.data.accessToken;
                   dispatch(
                     userSlice.actions.setUser({
-                      email: email,
-                      userName: name,
-                      userImage: image,
+                      token: accessToken,
                       loggedIn: true,
                     }),
                   );
