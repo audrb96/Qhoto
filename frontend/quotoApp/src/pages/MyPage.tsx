@@ -391,6 +391,7 @@ function MyPage({navigation}: null) {
         </TouchableOpacity>
         <Text style={{color: 'black'}}> URI: {imageUri}</Text>
         <Text style={{color: 'black'}}> joinDate: {joinDate}</Text>
+        <Text style={{color: 'black'}}> phone: {phone}</Text>
         <Text style={{color: 'black'}}>
           {' '}
           profileOpen: {profileOpen === true ? 'true' : 'false'}

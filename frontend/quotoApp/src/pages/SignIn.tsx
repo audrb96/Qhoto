@@ -26,7 +26,7 @@ import {
   unlink,
   getAccessToken,
 } from '@react-native-seoul/kakao-login';
-import kakao from '../assets/kakao_login_medium_wide.png';
+import {KAKAO_LOGIN_BUTTON} from '../image';
 import axios from 'axios';
 
 import {LOGIN_LOGO} from '../image';
@@ -40,44 +40,15 @@ type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 const {width, height} = Dimensions.get('window');
 
 function SignIn({navigation}: SignInScreenProps) {
-  //////////////////////////////
   const dispatch = useAppDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const emailRef = useRef<TextInput | null>(null);
-  const passwordRef = useRef<TextInput | null>(null);
-
-  const onChangeEmail = useCallback(text => {
-    setEmail(text.trim());
-  }, []);
-  const onChangePassword = useCallback(text => {
-    setPassword(text.trim());
-  }, []);
-  const onSubmit = useCallback(() => {
-    if (!email || !email.trim()) {
-      return Alert.alert('알림', '이메일을 입력해주세요.');
-    }
-    if (!password || !password.trim()) {
-      return Alert.alert('알림', '비밀번호를 입력해주세요.');
-    }
-    Alert.alert('알림', '로그인 되었습니다.');
-  }, [email, password]);
-
-  const toSignUp = () => {
-    navigation.navigate('SignUp');
-  };
-
-  const canGoNext = email && password;
-
-  const [user, setUser] = useState({});
 
   const signInWithKakao = async (): Promise<void> => {
-    const token: KakaoOAuthToken = await login().then(token => {
-      console.log('로그인 token : ', token);
+    await login().then((token: any) => {
+      console.log(11, token);
       if (token) {
         loginKakao(
           token.accessToken,
-          res => {
+          (res: any) => {
             console.log(1111, res);
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
               console.log('유저 닉네임 저장 완료');
@@ -90,13 +61,12 @@ function SignIn({navigation}: SignInScreenProps) {
               }),
             );
           },
-          err => {
+          (err: any) => {
             console.log(err);
           },
         );
       }
     });
-    setUser(token);
   };
 
   AsyncStorage.getItem('accessToken', (err, result) => {
@@ -117,7 +87,7 @@ function SignIn({navigation}: SignInScreenProps) {
             .then(userInfo => {
               loginGoogle(
                 userInfo.idToken,
-                async res => {
+                (res: any) => {
                   console.log('구글로그인', res);
                   AsyncStorage.setItem(
                     'accessToken',
@@ -127,7 +97,6 @@ function SignIn({navigation}: SignInScreenProps) {
                     },
                   );
                   const accessToken = res.data.accessToken;
-
                   dispatch(
                     userSlice.actions.setUser({
                       token: accessToken,
@@ -135,11 +104,10 @@ function SignIn({navigation}: SignInScreenProps) {
                     }),
                   );
                 },
-                err => {
+                (err: any) => {
                   console.log(err);
                 },
               );
-              setUser(userInfo);
             })
             .catch(e => {
               console.log('ERROR IS: ' + JSON.stringify(e));
@@ -160,7 +128,7 @@ function SignIn({navigation}: SignInScreenProps) {
           onPress={signInWithGoogle}
         />
         <Pressable style={{marginTop: 10}} onPress={signInWithKakao}>
-          <Image source={kakao} />
+          <Image source={KAKAO_LOGIN_BUTTON} />
         </Pressable>
       </View>
     </View>

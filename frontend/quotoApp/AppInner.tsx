@@ -68,7 +68,7 @@ function AppInner() {
                   iconName = 'search';
                 } else if (route.name === 'FindFriend') {
                   iconName = 'users';
-                } else if (route.name === 'MyPage') {
+                } else if (route.name === 'MyPageStackScreen') {
                   iconName = 'user-circle';
                   size = 28;
                 }
@@ -124,7 +124,7 @@ function AppInner() {
               }}
             />
             <Tab.Screen
-              name="MyPage"
+              name="MyPageStackScreen"
               component={MyPageStackScreen}
               options={{
                 title: '마이페이지',
