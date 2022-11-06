@@ -19,35 +19,37 @@ public class QuestController {
 
     @GetMapping("")
     public ResponseEntity<?> readAllQuestList(@AuthenticationPrincipal User user) {
-
-//        Long userId = jwt.getUserId(request);
-//        Long userId;
-//        try {
-////            userId = jwtService.getUserId(request);
-//        } catch (Exception e) {
-//            userId = -1L;
-//        }
-
-        return new ResponseEntity<>(questService.getQuestList(), HttpStatus.OK);
+        Long userId = user.getId();
+//        Long userId = 1L;
+        return new ResponseEntity<>(questService.getQuestList(userId), HttpStatus.OK);
     }
 
     @GetMapping("/isClear/daily")
     public ResponseEntity<?> readDailyIsClear(@AuthenticationPrincipal User user) {
-        Long userId = 1L;
-        System.out.println(user.getId());
-        return new ResponseEntity<>(questService.getDailyIsClear(), HttpStatus.OK);
+        Long userId = user.getId();
+//        Long userId = 1L;
+        return new ResponseEntity<>(questService.getDailyIsClear(userId), HttpStatus.OK);
     }
 
     @GetMapping("/isClear/weekly")
     public ResponseEntity<?> readWeeklyIsClear(@AuthenticationPrincipal User user) {
-        Long userId = 1L;
-        return new ResponseEntity<>(questService.getWeeklyIsClear(), HttpStatus.OK);
+        Long userId = user.getId();
+//        Long userId = 1L;
+        return new ResponseEntity<>(questService.getWeeklyIsClear(userId), HttpStatus.OK);
     }
 
     @GetMapping("/isClear/monthly")
     public ResponseEntity<?> readMonthlyIsClear(@AuthenticationPrincipal User user) {
-        Long userId = 1L;
-        return new ResponseEntity<>(questService.getMonthlyIsClear(), HttpStatus.OK);
+        Long userId = user.getId();
+//        Long userId = 1L;
+        return new ResponseEntity<>(questService.getMonthlyIsClear(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/point")
+    public ResponseEntity<?> readQuestLevel(@AuthenticationPrincipal User user) {
+        Long userId = user.getId();
+//        Long userId = 3L;
+        return new ResponseEntity<>(questService.getQuestLevel(userId), HttpStatus.OK);
     }
 
 

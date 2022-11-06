@@ -40,6 +40,9 @@ public class User implements UserDetails {
     @Column(name = "user_image")
     private String image;
 
+    @Column(name="user_description")
+    private String description;
+
     @Enumerated(STRING)
     @Column(nullable = false)
     @ElementCollection(fetch = FetchType.EAGER)

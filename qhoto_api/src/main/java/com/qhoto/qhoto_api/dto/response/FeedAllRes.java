@@ -8,15 +8,10 @@ import java.util.List;
 @Getter
 public class FeedAllRes {
 
-    private final List<FeedAllDto> dayQuestList;
-    private final List<FeedAllDto> weekQuestList;
-    private final List<FeedAllDto> monthQuestList;
-
+    private final List<FeedAllDto> questList;
 
     @Builder
-    public FeedAllRes(List<FeedAllDto> dayQuestList, List<FeedAllDto> weekQuestList, List<FeedAllDto> monthQuestList) {
-        this.dayQuestList = dayQuestList;
-        this.weekQuestList = weekQuestList;
-        this.monthQuestList = monthQuestList;
+    public FeedAllRes(List<FeedAllDto> questList) {
+        this.questList = questList;
     }
 }
