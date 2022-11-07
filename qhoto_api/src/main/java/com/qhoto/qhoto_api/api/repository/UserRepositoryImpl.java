@@ -33,8 +33,9 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
             updateClause.set(user.image, imageUrl);
         }
         if(hasText(modifyUserReq.getPhone())) updateClause.set(user.phone, modifyUserReq.getPhone());
+        if(modifyUserReq.getProfileOpen() != null) updateClause.set(user.profileOpen, modifyUserReq.getProfileOpen());
 
 //        updateClause.where(user.id.eq(userInfo.getId())).execute();
-        updateClause.where(user.id.eq(1L)).execute();
+        updateClause.where(user.id.eq(userInfo.getId())).execute();
     }
 }

@@ -33,6 +33,8 @@ public class ActiveWeekly {
     @Enumerated(STRING)
     private QuestStatus status;
 
-
+    public void changeStatus(QuestStatus questStatus) {
+        this.status = questStatus;
+    }
 
 }
