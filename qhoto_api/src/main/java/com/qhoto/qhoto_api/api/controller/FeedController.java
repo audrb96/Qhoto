@@ -33,9 +33,9 @@ public class FeedController {
         return new ResponseEntity<>(feedService.getFeed(feedAllReq, pageable),HttpStatus.OK);
     }
 
-    @GetMapping("/all/{feedId}/{userId}")
-    public ResponseEntity<?> readFeedDetail(@PathVariable Long feedId, @PathVariable Long userId){
-        return new ResponseEntity<>(feedService.getFeedDetail(feedId, userId), HttpStatus.OK);
+    @GetMapping("/all/{feedId}")
+    public ResponseEntity<?> readFeedDetail(@AuthenticationPrincipal User user, @PathVariable Long feedId){
+        return new ResponseEntity<>(feedService.getFeedDetail(feedId, user), HttpStatus.OK);
     }
 
     @GetMapping("/friend")
