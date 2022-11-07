@@ -186,7 +186,7 @@ function FindFriend() {
       <Item
         item={item}
         onPress={() => setSelectedId(item.userId)}
-        // backgroundColor={{backgroundColor}}
+        // backgroundColor={{backgroundColor}} .
         // textColor={{color}}
         iconType={recieve}
       />
