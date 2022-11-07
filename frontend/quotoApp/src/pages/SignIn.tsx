@@ -48,8 +48,8 @@ function SignIn({navigation}: SignInScreenProps) {
         loginKakao(
           token.accessToken,
           (res: any) => {
-            // console.log(1111, res);
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
+              console.log(res.data.accessToken);
               console.log('토큰 저장 완료');
             });
             const accessToken = res.data.accessToken;
