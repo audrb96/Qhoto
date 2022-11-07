@@ -45,6 +45,7 @@ public class UserService implements UserDetailsService {
                 .phone(user.getPhone())
                 .profileOpen(user.getProfileOpen())
                 .UserImage(user.getImage())
+                .description(user.getDescription())
                 .build();
     }
 
