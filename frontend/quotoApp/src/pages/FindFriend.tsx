@@ -36,11 +36,12 @@ function FindFriend() {
 
   const findFriend = () => {
     findFriendApi(
-      res => {
+      (res: any) => {
         console.log('findFriendApi - res', res);
       },
-      err => {
+      (err: any) => {
         console.log('findFriendApi - err', err);
+        console.log('findFriendApi - err', err.response);
       },
     );
   };
@@ -51,35 +52,60 @@ function FindFriend() {
     console.log('resUserId', resUserId);
     addFriendApi(
       resUserId,
-      res => {
+      (res: any) => {
         console.log('addFriendApi - res', res);
+        // 친구 요청 수락 후 받은 친구목록 재요청
+        receiveListApi(
+          res => {
+            console.log('receiveListApi - res', res);
+            setReceiveList(res.data);
+          },
+          (err: any) => {
+            console.log('receiveListApi - err', err);
+            console.log('receiveListApi - err', err.response);
+          },
+        );
+        // 친구 요청 수락 후 친구 리스트 재요청
+        friendListApi(
+          res => {
+            console.log('friendListApi - res', res);
+            setFriendList(res.data);
+          },
+          (err: any) => {
+            console.log('friendListApi - err', err);
+            console.log('friendListApi - err', err.response);
+          },
+        );
       },
-      err => {
+      (err: any) => {
         console.log('addFriendApi - err', err);
+        console.log('addFriendApi - err', err.response);
       },
     );
   };
 
   useEffect(() => {
     receiveListApi(
-      res => {
+      (res: any) => {
         console.log('receiveListApi - res', res);
         setReceiveList(res.data);
       },
-      err => {
+      (err: any) => {
         console.log('receiveListApi - err', err);
+        console.log('receiveListApi - err', err.response);
       },
     );
   }, []);
 
   useEffect(() => {
     friendListApi(
-      res => {
+      (res: any) => {
         console.log('friendListApi - res', res);
         setFriendList(res.data);
       },
-      err => {
+      (err: any) => {
         console.log('friendListApi - err', err);
+        console.log('friendListApi - err', err.response);
       },
     );
   }, []);
@@ -318,31 +344,13 @@ function FindFriend() {
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
   textInput: {
     color: 'black',
     padding: 5,
     width: width * 0.9,
     borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  label: {
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 8,
-  },
-  subitem: {
-    backgroundColor: 'lightblue',
-    padding: 20,
-    marginVertical: 8,
-  },
-  title: {
-    fontSize: 24,
   },
 });
 
