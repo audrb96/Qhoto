@@ -55,15 +55,15 @@ public class FeedService {
         return feedRepository.findByCondition(feedAllReq, pageable);
     }
 
-    public FeedDetailRes getFeedDetail(Long feedId, Long userId){
+    public FeedDetailRes getFeedDetail(Long feedId){
 
         Feed feed = feedRepository.findFeedById(feedId).orElseThrow(() -> new NoFeedByIdException("no feed by id"));
-        User user = userRepository.findUserById(userId).orElseThrow(()-> new NoUserByIdException("no user by id"));
+        User user = userRepository.findUserById(feed.getUser().getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         List<CommentRes> commentResList = getCommentList(feedId);
 
         FeedDetailRes feedDetailRes = FeedDetailRes.builder()
                 .feedId(feedId)
-                .userId(userId)
+                .userId(user.getId())
                 .userImage(user.getImage())
                 .nickName(user.getNickname())
                 .feedImage(feed.getImage())
@@ -71,9 +71,9 @@ public class FeedService {
                 .questName(feed.getQuest().getName())
                 .questType(feed.getQuest().getQuestType().toString())
                 .questPoint(feed.getQuest().getScore())
-                .expPoint(expRepository.findPointByUserId(userId).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .expPoint(expRepository.findPointByUserId(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .likeCount(feedLikeRepository.countAllById(feedId).orElseThrow(()-> new NoFeedByIdException("no feed by id")))
-                .likeStatus((feedLikeRepository.findById(userId).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
+                .likeStatus((feedLikeRepository.findById(user.getId()).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
                 .commentList(commentResList)
                 .build();
 
@@ -98,24 +98,24 @@ public class FeedService {
     }
 
 
-    public void postFeed(CreateFeedReq createFeedReq, User userInfo) throws IOException {
+    public void postFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
-        String dirName = "/feed/image/"+user.getEmail();
+        String dirName = "feed/image/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
     }
 
     public void postVideoFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));;
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
-        String dirName = "/feed/video/input/"+user.getEmail();
+        String dirName = "feed/video/input/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
 
     }
 
     private void S3upload(CreateFeedReq createFeedReq, Quest quest, User user, String dirName) throws IOException {
         s3Utils.upload(createFeedReq.getFeedImage(),dirName);
-        dirName = S3Utils.CLOUD_FRONT_DOMAIN_NAME+dirName;
+        dirName = S3Utils.CLOUD_FRONT_DOMAIN_NAME+"/"+dirName;
         Feed feed = Feed.builder()
                 .user(user)
                 .quest(quest)
