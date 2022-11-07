@@ -27,7 +27,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAppDispatch} from '../../store';
 import userSlice from '../../slices/user';
-import {getUserInfoApi} from '../../api/mypage';
+import {editMyProfileApi, getUserInfoApi} from '../../api/mypage';
 
 function MyPage({navigation}: null) {
   const dispatch = useAppDispatch();
@@ -166,6 +166,7 @@ function MyPage({navigation}: null) {
       })
 
       .catch(err => {
+        console.log(err);
         console.log(err.message);
       });
   };
@@ -205,6 +206,7 @@ function MyPage({navigation}: null) {
     joinDate: '',
     userImage: '',
     phone: '',
+    description: '',
     nickname: '',
     contactAgreeDate: '',
     profileOpen: true,
@@ -219,6 +221,7 @@ function MyPage({navigation}: null) {
           nickname,
           phone,
           profileOpen,
+          description,
           userImage,
           contactAgreeDate,
         } = res.data;
@@ -229,6 +232,7 @@ function MyPage({navigation}: null) {
           nickname,
           phone,
           profileOpen,
+          description,
           userImage,
           contactAgreeDate,
         });
@@ -240,13 +244,13 @@ function MyPage({navigation}: null) {
             userImage: userInfo.userImage,
             phone: userInfo.phone,
             nickname: userInfo.nickname,
+            description: userInfo.description,
             contactAgreeDate: userInfo.contactAgreeDate,
             profileOpen: userInfo.profileOpen,
             loggedIn: true,
           }),
         );
         console.log('getUserInfo-res : ', res);
-        console.log('');
         // Todo: back 에서 point 주면 redux 에 넣어야 함
         // Todo: 유저 point state 관리도 해줘야함
       },
@@ -295,15 +299,9 @@ function MyPage({navigation}: null) {
             <Text style={{fontSize: 16, color: 'black'}}>
               {userInfo.nickname}
             </Text>
-            {editable === false ? (
-              <Text style={{fontSize: 12, color: 'black'}}>{introduction}</Text>
-            ) : (
-              <TextInput
-                style={{color: 'black'}}
-                value={introduction}
-                onChangeText={text => setIntroduction(text)}
-              />
-            )}
+            <Text style={{fontSize: 12, color: 'black'}}>
+              {userInfo.description}
+            </Text>
           </View>
         </View>
       </View>
