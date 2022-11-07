@@ -266,7 +266,7 @@ function FriendsFeed() {
             setModalVisible(!modalVisible);
           }}>
           <Pressable style={styles.modalView}>
-            <SelectedFeed parentFunction={parentFunction} />
+            {/* <SelectedFeed parentFunction={parentFunction} /> */}
           </Pressable>
         </Pressable>
       </Modal>
