@@ -1,6 +1,5 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.qhoto.qhoto_api.api.repository.*;
 import com.qhoto.qhoto_api.domain.*;
 import com.qhoto.qhoto_api.domain.type.CommentStatus;
@@ -56,10 +55,9 @@ public class FeedService {
         return feedRepository.findByCondition(feedAllReq, pageable);
     }
 
-    public FeedDetailRes getFeedDetail(Long feedId){
+    public FeedDetailRes getFeedDetail(Long feedId, Long userId){
 
         Feed feed = feedRepository.findFeedById(feedId).orElseThrow(() -> new NoFeedByIdException("no feed by id"));
-        Long userId = 1L;
         User user = userRepository.findUserById(userId).orElseThrow(()-> new NoUserByIdException("no user by id"));
         List<CommentRes> commentResList = getCommentList(feedId);
 
