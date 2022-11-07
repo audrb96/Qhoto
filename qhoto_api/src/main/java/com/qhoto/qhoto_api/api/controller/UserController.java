@@ -1,11 +1,9 @@
 package com.qhoto.qhoto_api.api.controller;
 
-import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.api.service.LoginService;
 import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
-import com.qhoto.qhoto_api.dto.response.FriendRes;
 import com.qhoto.qhoto_api.dto.response.LoginRes;
 import com.qhoto.qhoto_api.dto.response.MyInfoRes;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -55,8 +52,8 @@ public class UserController {
         return ResponseEntity.ok().body("success");
     }
     @GetMapping("/mypage")
-    public ResponseEntity<?> readMyFeed(){
-        return new ResponseEntity<>(userService.getMyFeed(),HttpStatus.OK);
+    public ResponseEntity<?> readMyFeed(@AuthenticationPrincipal User user){
+        return new ResponseEntity<>(userService.getMyFeed(user),HttpStatus.OK);
     }
 
     @GetMapping("/valid/{nickname}")
