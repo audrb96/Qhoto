@@ -8,8 +8,9 @@ const initialState = {
   userName: '',
   joinDate: '',
   userImage: '',
-  userPoint: '',
   nickname: '',
+  userPoint: '',
+  contactAgreeDate: '',
   profileOpen: true,
   // loggedIn: true,
   loggedIn: false,
@@ -26,8 +27,9 @@ const userSlice = createSlice({
       state.userName = action.payload.userName;
       state.joinDate = action.payload.joinDate;
       state.userImage = action.payload.userImage;
-      state.userPoint = action.payload.userPoint;
       state.nickname = action.payload.nickname;
+      state.userPoint = action.payload.userPoint;
+      state.contactAgreeDate = action.payload.contactAgreeDate;
       state.profileOpen = action.payload.profileOpen;
       state.loggedIn = action.payload.loggedIn;
     },
