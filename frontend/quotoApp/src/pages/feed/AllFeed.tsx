@@ -9,56 +9,67 @@ import {
   Pressable,
   Modal,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import QhotoHeader from '../../components/QhotoHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectedFeed from './SelectedFeed';
-import {State} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getAllFeeds} from '../../api/feed';
+import {getAllFeeds, getSelectedFeed} from '../../api/feed';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [Feeds, setFeeds] = useState([]);
   // 활성화된 퀘스트의 아이디
-  const [condition, setCondition] = useState('');
-  // DAY, WEEK, MONTH
-  const [duration, setDuration] = useState('DAY');
-  const [test, setTest] = useState();
+  const [condition, setCondition] = useState([10, 11, 12]);
+  // duration = D, W, M
+  const [duration, setDuration] = useState('D');
+  const [commentList, setComment] = useState([]);
+
   useEffect(() => {
-    async function fetchAndSetUser() {
-      const data = await getAllFeeds(
+    let change_condition = '';
+    condition.forEach(elem => {
+      change_condition += elem + ',';
+    });
+    const curcondtion = change_condition.substring(
+      0,
+      change_condition.length - 1,
+    );
+    const params = [duration, curcondtion];
+    async function SetAllFeeds() {
+      await getAllFeeds(
+        params,
         res => {
-          console.log(res);
-          setTest(res);
+          setFeeds(res.data.content);
         },
         err => {
           console.log(err);
         },
       );
     }
-    fetchAndSetUser();
-    2;
-  }, []);
+    SetAllFeeds();
+  }, [duration, condition]);
 
   const rightIcon = (
-    <Ionicons
-      name="options-outline"
-      size={40}
-      color="#3B28B1"
-      onPress={() => console.log(1)}
-      style={{
-        position: 'absolute',
-        width: 40,
-        height: 40,
-        right: 0,
-        top: -20,
-      }}
-    />
+    <TouchableOpacity
+      onPress={() => {
+        console.log('펼치기');
+      }}>
+      <Ionicons
+        name="options-outline"
+        size={40}
+        color="#3B28B1"
+        style={{
+          position: 'absolute',
+          width: 40,
+          height: 40,
+          right: 0,
+          top: -20,
+        }}
+      />
+    </TouchableOpacity>
   );
-  const Item = ({title, width, height}) => (
+  const Item = ({content, width, height}) => (
     <View
       style={{
         width,
@@ -66,34 +77,27 @@ function AllFeed({navigation}) {
         backgroundColor: 'gray',
       }}>
       <TouchableOpacity
-        onPress={e => {
+        onPress={() => {
+          getSelectedFeed(
+            content.feedId,
+            res => {
+              setComment(res.data);
+            },
+            err => {
+              console.log(err);
+            },
+          );
           setModalVisible(true);
-          console.log(title);
         }}>
         <Image
           style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
           source={{
-            uri: 'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
+            uri: content.feedImage,
           }}
         />
       </TouchableOpacity>
     </View>
   );
-  const DATA = [
-    {title: 1},
-    {title: 2},
-    {title: 3},
-    {title: 4},
-    {title: 5},
-    {title: 6},
-    {title: 7},
-    {title: 8},
-    {title: 9},
-    {title: 10},
-    {title: 11},
-    {title: 12},
-    {title: 13},
-  ];
   const [containerWidth, setContainerWidth] = useState(0);
   const numColumns = 3;
   const parentFunction = () => {
@@ -114,6 +118,7 @@ function AllFeed({navigation}) {
         <TouchableOpacity
           onPress={() => {
             setSelectedIdx(0);
+            setDuration('D');
           }}>
           <Text style={selectedIdx === 0 ? styles.onText : styles.offText}>
             DAY
@@ -122,6 +127,7 @@ function AllFeed({navigation}) {
         <TouchableOpacity
           onPress={() => {
             setSelectedIdx(1);
+            setDuration('W');
           }}>
           <Text style={selectedIdx === 1 ? styles.onText : styles.offText}>
             WEEK
@@ -130,6 +136,7 @@ function AllFeed({navigation}) {
         <TouchableOpacity
           onPress={() => {
             setSelectedIdx(2);
+            setDuration('M');
           }}>
           <Text style={selectedIdx === 2 ? styles.onText : styles.offText}>
             MONTH
@@ -138,11 +145,11 @@ function AllFeed({navigation}) {
       </View>
       <View style={{flex: 1}}>
         <FlatList
-          data={DATA}
+          data={Feeds}
           onLayout={e => setContainerWidth(e.nativeEvent.layout.width)}
           renderItem={({item}) => (
             <Item
-              title={item.title}
+              content={item}
               width={containerWidth / numColumns}
               height={containerWidth / numColumns}
             />
@@ -162,11 +169,13 @@ function AllFeed({navigation}) {
           <Pressable
             style={styles.centeredView}
             onPress={() => {
-              console.log(111);
               setModalVisible(!modalVisible);
             }}>
             <Pressable style={styles.modalView}>
-              <SelectedFeed parentFunction={parentFunction} />
+              <SelectedFeed
+                parentFunction={parentFunction}
+                props={commentList}
+              />
             </Pressable>
           </Pressable>
         </Modal>
