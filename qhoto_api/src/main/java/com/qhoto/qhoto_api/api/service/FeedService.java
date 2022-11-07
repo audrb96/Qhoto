@@ -69,10 +69,11 @@ public class FeedService {
                 .feedImage(feed.getImage())
                 .feedTime(feed.getTime())
                 .questName(feed.getQuest().getName())
-                .questType(feed.getQuest().getQuestType().toString())
+                .questType(feed.getQuest().getQuestType().getCode())
                 .questPoint(feed.getQuest().getScore())
                 .expPoint(expRepository.findPointByUserId(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .likeCount(feedLikeRepository.countAllById(feedId).orElseThrow(()-> new NoFeedByIdException("no feed by id")))
+                // '내'가 눌렀는지 확인해야 하므로 userInfo에서 가져옴
                 .likeStatus((feedLikeRepository.findById(userInfo.getId()).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
                 .commentList(commentResList)
                 .build();
