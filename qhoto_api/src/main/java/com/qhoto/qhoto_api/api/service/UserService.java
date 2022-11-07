@@ -49,9 +49,8 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<MyFeedRes> getMyFeed(){
-        Long userId = 2L;
-        List<Feed> feedList = feedRepository.findAllByUserId(userId);
+    public List<MyFeedRes> getMyFeed(User user){
+        List<Feed> feedList = feedRepository.findAllByUserId(user.getId());
         List<MyFeedRes> myFeedResList = new ArrayList<>();
         for(Feed feed:feedList){
             myFeedResList.add(MyFeedRes.builder()
@@ -63,7 +62,6 @@ public class UserService implements UserDetailsService {
                             .build());
         }
         return myFeedResList;
-
     }
 
 
