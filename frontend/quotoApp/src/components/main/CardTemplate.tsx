@@ -1,6 +1,7 @@
 import React from 'react';
 import {Dimensions, StyleSheet, View, Text} from 'react-native';
-import {Card} from 'react-native-paper';
+
+import info from '../info';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -12,13 +13,8 @@ interface Props {
 
 const {width, height} = Dimensions.get('window');
 
-const questTypes: {[key: string]: {iconName: string; colorCode: string}} = {
-  건강: {iconName: 'running', colorCode: '#C25445'},
-  일상: {iconName: 'sun', colorCode: '#ECB21D'},
-  환경: {iconName: 'leaf', colorCode: '#70A348'},
-  이색: {iconName: 'star', colorCode: '#2271CE'},
-  색깔: {iconName: 'palette', colorCode: '#592CB8'},
-};
+const questTypes: {[key: string]: {iconName: string; colorCode: string}} =
+  info.questTypes;
 
 const CardTemplate: React.FC<Props> = props => {
   const {questName, questType, handleRerollClick} = props;
