@@ -129,9 +129,9 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
     private BooleanExpression feedTypeEq(String duration) {
         QuestDuration qd = null;
 
-        if(duration.equals("D")) qd = QuestDuration.D;
-        else if(duration.equals("W")) qd = QuestDuration.W;
-        else if(duration.equals("M")) qd = QuestDuration.M;
+        if(duration.equals("D")) qd = QuestDuration.DAY;
+        else if(duration.equals("W")) qd = QuestDuration.WEEK;
+        else if(duration.equals("M")) qd = QuestDuration.MONTH;
 
         return hasText(duration)? feed.duration.eq(qd):null;
     }

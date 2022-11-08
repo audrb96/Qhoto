@@ -18,7 +18,7 @@ import java.util.*;
 public class JwtTokenProvider {
     private final String SECRET_KEY;
     private final Long ACCESS_TOKEN_EXPIRE_LENGTH = 1000L * 60 * 60;//1hour
-    private final Long REFRESH_TOKEN_EXPIRE_LENGTH = 1000L * 60 * 60 * 24 * 7;
+    private final Long REFRESH_TOKEN_EXPIRE_LENGTH = 1000L * 60 * 60 * 24 * 7 * 4 * 12;
     private final String AUTHORITIES_KEY = "role";
 
     private final UserDetailsService userDetailsService;

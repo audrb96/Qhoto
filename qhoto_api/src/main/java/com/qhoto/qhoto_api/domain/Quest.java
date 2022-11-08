@@ -2,6 +2,8 @@ package com.qhoto.qhoto_api.domain;
 
 import com.qhoto.qhoto_api.domain.type.QuestDuration;
 import com.qhoto.qhoto_api.domain.type.QuestStatus;
+import com.qhoto.qhoto_api.domain.type.converter.QuestDurationConverter;
+import com.qhoto.qhoto_api.domain.type.converter.QuestStatusConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +27,7 @@ public class Quest {
     @Column(name = "quest_name",nullable = false)
     private String name;
 
-    @Enumerated(STRING)
+    @Convert(converter = QuestDurationConverter.class)
     @Column(name = "quest_duration",nullable = false)
     private QuestDuration duration;
 
@@ -35,7 +37,7 @@ public class Quest {
     @Column(name = "quest_difficulty",nullable = false)
     private Integer difficulty;
 
-    @Enumerated(STRING)
+    @Convert(converter = QuestStatusConverter.class)
     @Column(name = "quest_status",nullable = false)
     private QuestStatus status;
 

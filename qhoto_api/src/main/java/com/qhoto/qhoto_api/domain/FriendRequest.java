@@ -1,6 +1,7 @@
 package com.qhoto.qhoto_api.domain;
 
 import com.qhoto.qhoto_api.domain.type.RequestStatus;
+import com.qhoto.qhoto_api.domain.type.converter.RequestStatusConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,7 +30,7 @@ public class FriendRequest {
     @JoinColumn(name = "response_user", nullable = false)
     private User responseUser;
 
-    @Enumerated(STRING)
+    @Convert(converter = RequestStatusConverter.class)
     @Column(name = "request_status",nullable = false)
     private RequestStatus status;
 
