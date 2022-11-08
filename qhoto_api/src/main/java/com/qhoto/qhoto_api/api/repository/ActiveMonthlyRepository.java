@@ -1,13 +1,10 @@
 package com.qhoto.qhoto_api.api.repository;
 
 import com.qhoto.qhoto_api.domain.ActiveMonthly;
-import com.qhoto.qhoto_api.domain.type.QuestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface ActiveMonthlyRepository extends JpaRepository<ActiveMonthly, Long> {

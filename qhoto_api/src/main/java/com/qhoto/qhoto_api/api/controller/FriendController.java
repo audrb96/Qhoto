@@ -4,6 +4,7 @@ import com.qhoto.qhoto_api.api.service.FriendService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.FriendRequestReq;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
+import com.qhoto.qhoto_api.dto.response.FriendInfoRes;
 import com.qhoto.qhoto_api.dto.response.FriendRes;
 import com.qhoto.qhoto_api.exception.AlreadyFriendException;
 import com.qhoto.qhoto_api.exception.AlreadyRequestException;
@@ -55,6 +56,11 @@ public class FriendController {
         return new ResponseEntity<>(friendService.getReceives(user), HttpStatus.OK);
     }
 
+    @GetMapping("/find/{nickName}")
+    public ResponseEntity<FriendInfoRes> readUsers(@AuthenticationPrincipal User user, @PathVariable String nickName) {
+        FriendInfoRes friend = friendService.getUserByNickName(user, nickName);
+        return new ResponseEntity<>(friend, HttpStatus.OK);
+    }
 
 
 }
