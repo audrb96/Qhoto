@@ -27,7 +27,8 @@ public class QuestService {
 
     public Map<String, Object> getQuestList(Long userId){
 
-        List<Quest> dailyQuest = questRepository.findAllDailyByIdAndStatus();
+        List<ActiveQuestRes> dailyQuest = questRepository.findAllDailyByIdAndStatus();
+        System.out.println(dailyQuest.get(0).getActiveId());
         List<Quest> weeklyQuest = questRepository.findAllWeeklyByIdAndStatus();
         List<Quest> monthlyQuest = questRepository.findAllMonthlyByIdAndStatus();
         Optional<Feed> dailyClear = feedRepository.findClearDailyQuest(userId);
@@ -35,26 +36,26 @@ public class QuestService {
         Optional<Feed> MonthlyClear = feedRepository.findClearMonthlyQuest(userId);
         Map<String, Object> questList = new HashMap<>();
         // dailyQuestList 반환
-        if(dailyClear.isPresent()) {
-            Feed today = dailyClear.get();
-            questList.put("daily", buildQuestListWithClear(today));
-        }else {
-            questList.put("daily", buildQuestList(dailyQuest));
-        }
-        //weeklyQuestList 반환
-        if(weeklyClear.isPresent()) {
-            Feed weekly = weeklyClear.get();
-            questList.put("weekly", buildQuestListWithClear(weekly));
-        }else {
-            questList.put("weekly", buildQuestList(weeklyQuest));
-        }
-        //MonthlyQuestList 반환
-        if(MonthlyClear.isPresent()) {
-            Feed monthly = MonthlyClear.get();
-            questList.put("monthly", buildQuestListWithClear(monthly));
-        }else {
-            questList.put("monthly", buildQuestList(monthlyQuest));
-        }
+//        if(dailyClear.isPresent()) {
+//            Feed today = dailyClear.get();
+//            questList.put("daily", buildQuestListWithClear(today));
+//        }else {
+//            questList.put("daily", buildQuestList(dailyQuest));
+//        }
+//        //weeklyQuestList 반환
+//        if(weeklyClear.isPresent()) {
+//            Feed weekly = weeklyClear.get();
+//            questList.put("weekly", buildQuestListWithClear(weekly));
+//        }else {
+//            questList.put("weekly", buildQuestList(weeklyQuest));
+//        }
+//        //MonthlyQuestList 반환
+//        if(MonthlyClear.isPresent()) {
+//            Feed monthly = MonthlyClear.get();
+//            questList.put("monthly", buildQuestListWithClear(monthly));
+//        }else {
+//            questList.put("monthly", buildQuestList(monthlyQuest));
+//        }
 
         return questList;
     }
