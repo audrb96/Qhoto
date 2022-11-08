@@ -43,34 +43,30 @@ function SignIn({navigation}: SignInScreenProps) {
 
   const signInWithKakao = async (): Promise<void> => {
     await login().then((token: any) => {
-      console.log(11, token);
       if (token) {
         loginKakao(
           token.accessToken,
           (res: any) => {
-            // console.log(1111, res);
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
-              console.log('토큰 저장 완료');
+              console.log('accessToken : ' + res.data.accessToken);
             });
-            const accessToken = res.data.accessToken;
+
+            AsyncStorage.setItem('refreshToken', res.data.refreshToken, () => {
+              console.log('refreshToken : ' + res.data.refreshToken);
+            });
             dispatch(
               userSlice.actions.setUser({
-                token: accessToken,
                 loggedIn: true,
               }),
             );
           },
           (err: any) => {
-            console.log(err);
+            console.log(err.response);
           },
         );
       }
     });
   };
-
-  AsyncStorage.getItem('accessToken', (err, result) => {
-    console.log(result);
-  });
 
   const signInWithGoogle = async () => {
     GoogleSignin.configure({
@@ -87,12 +83,18 @@ function SignIn({navigation}: SignInScreenProps) {
               loginGoogle(
                 userInfo.idToken,
                 (res: any) => {
-                  console.log('구글로그인', res);
                   AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
                     () => {
-                      console.log('토큰 저장 완료');
+                      console.log('accessToken : ' + res.data.accessToken);
+                    },
+                  );
+                  AsyncStorage.setItem(
+                    'refreshToken',
+                    res.data.refreshToken,
+                    () => {
+                      console.log('refreshToken : ' + res.data.refreshToken);
                     },
                   );
                   const accessToken = res.data.accessToken;
