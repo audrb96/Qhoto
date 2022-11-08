@@ -18,4 +18,5 @@ public interface ExpRepository extends JpaRepository<Exp, Long> {
 
     @Query("select sum(e.point) from Exp e where e.user.id = :userId")
     Optional<Integer> findPointByUserId(@Param("userId") Long userId);
+
 }

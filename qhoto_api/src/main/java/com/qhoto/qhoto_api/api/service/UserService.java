@@ -28,6 +28,7 @@ import java.util.List;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
+
     private final ExpRepository expRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
