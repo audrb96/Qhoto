@@ -18,8 +18,7 @@ import java.util.Map;
 public interface ActiveWeeklyRepository extends JpaRepository<ActiveWeekly, Long> {
 
     ActiveWeekly findWeeklyById(Long activeWeeklyId);
-    @Query("select q from Quest q inner join fetch ActiveWeekly a on q.id = a.quest.id where a.status = 'A'")
-    List<Quest> findAllByIdAndStatus();
+
     List<ActiveWeekly> findTop3ByStatusOrderByDateDesc(QuestStatus questStatus);
 
     @Modifying
