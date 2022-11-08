@@ -17,6 +17,7 @@ import com.qhoto.qhoto_api.exception.NoQuestByIdException;
 import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class FeedService {
@@ -102,6 +104,7 @@ public class FeedService {
 
     public void postFeed(CreateFeedReq createFeedReq, User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
+        log.info("quest = {}", quest.getDuration());
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "/feed/image/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
