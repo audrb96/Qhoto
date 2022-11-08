@@ -34,8 +34,38 @@ function FindFriend() {
   const [receiveList, setReceiveList] = useState('');
   const [friendList, setFriendList] = useState('');
 
-  const findFriend = () => {
+  // 친구요청 받은 리스트
+  useEffect(() => {
+    receiveListApi(
+      (res: any) => {
+        console.log('receiveListApi - res', res);
+        setReceiveList(res.data);
+      },
+      (err: any) => {
+        console.log('receiveListApi - err', err);
+        console.log('receiveListApi - err', err.response);
+      },
+    );
+  }, []);
+
+  // 친구 리스트
+  useEffect(() => {
+    friendListApi(
+      (res: any) => {
+        console.log('friendListApi - res', res);
+        setFriendList(res.data);
+      },
+      (err: any) => {
+        console.log('friendListApi - err', err);
+        console.log('friendListApi - err', err.response);
+      },
+    );
+  }, []);
+
+  // 친구검색
+  const findFriend = nickname => {
     findFriendApi(
+      nickname,
       (res: any) => {
         console.log('findFriendApi - res', res);
       },
@@ -54,7 +84,7 @@ function FindFriend() {
       resUserId,
       (res: any) => {
         console.log('addFriendApi - res', res);
-        // 친구 요청 수락 후 받은 친구목록 재요청
+        // 친구 요청or수락 후 받은 친구목록 재요청
         receiveListApi(
           res => {
             console.log('receiveListApi - res', res);
@@ -65,7 +95,7 @@ function FindFriend() {
             console.log('receiveListApi - err', err.response);
           },
         );
-        // 친구 요청 수락 후 친구 리스트 재요청
+        // 친구 요청or수락 후 친구 리스트 재요청
         friendListApi(
           res => {
             console.log('friendListApi - res', res);
@@ -83,32 +113,6 @@ function FindFriend() {
       },
     );
   };
-
-  useEffect(() => {
-    receiveListApi(
-      (res: any) => {
-        console.log('receiveListApi - res', res);
-        setReceiveList(res.data);
-      },
-      (err: any) => {
-        console.log('receiveListApi - err', err);
-        console.log('receiveListApi - err', err.response);
-      },
-    );
-  }, []);
-
-  useEffect(() => {
-    friendListApi(
-      (res: any) => {
-        console.log('friendListApi - res', res);
-        setFriendList(res.data);
-      },
-      (err: any) => {
-        console.log('friendListApi - err', err);
-        console.log('friendListApi - err', err.response);
-      },
-    );
-  }, []);
 
   const onChangeTargetId = useCallback(targetId => {
     let reg = /[\{\}\[\]\/?,;:|\)*~`!^\-+<>@\#$%&\\\=\(\'\"]/gi;
@@ -242,8 +246,8 @@ function FindFriend() {
             />
             <TouchableOpacity
               onPress={() => {
-                console.log(targetId);
-                findFriend();
+                console.log('targetId', targetId);
+                findFriend(targetId);
               }}>
               <Text
                 style={{color: 'black', backgroundColor: 'red', padding: 5}}>
@@ -353,5 +357,4 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
 });
-
 export default FindFriend;

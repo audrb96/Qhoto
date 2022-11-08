@@ -3,9 +3,13 @@ import {apiInstance, createHeaders} from '.';
 const api = apiInstance();
 
 // 친구검색(친구조회 = 유저검색)
-async function findFriendApi(success, fail) {
+async function findFriendApi(nickname, success, fail) {
   await api
-    .get('/api/me', {headers: await createHeaders()})
+    .get(
+      `/api/friend/${nickname}`,
+      {params: {nickname: nickname}},
+      {headers: await createHeaders()},
+    )
     .then(success)
     .catch(fail);
 }
