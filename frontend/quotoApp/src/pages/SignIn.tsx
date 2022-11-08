@@ -51,9 +51,9 @@ function SignIn({navigation}: SignInScreenProps) {
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
               console.log('토큰 저장 완료', res.data);
               console.log('토큰 저장 완료');
-              if (res.data.isJoined === 'false') {
-                navigation.navigate('SignUp');
-              }
+              // if (res.data.isJoined === 'false') {
+              //   return navigation.navigate('SignUp');
+              // }
             });
             const accessToken = res.data.accessToken;
             dispatch(
@@ -91,6 +91,9 @@ function SignIn({navigation}: SignInScreenProps) {
                 userInfo.idToken,
                 (res: any) => {
                   console.log('구글로그인', res);
+                  if (res.data.isJoined === false) {
+                    return navigation.navigate('SignUp');
+                  }
                   AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
