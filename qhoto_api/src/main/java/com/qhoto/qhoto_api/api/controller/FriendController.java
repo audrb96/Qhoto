@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 친구 api
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -53,7 +56,7 @@ public class FriendController {
     /**
      * 이미 친구인 경우 Exception handler
      * @param e
-     * @return ErrorResponse
+     * @return {@link ErrorResponse}
      */
     @ExceptionHandler(AlreadyFriendException.class)
     protected ResponseEntity<ErrorResponse> alreadyFriendException(AlreadyFriendException e) {
@@ -61,17 +64,33 @@ public class FriendController {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ALREADY_FRIEND);
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
-    
+
+    /**
+     * 친구 목록 api
+     * @param user
+     * @return {@link List<FriendRes>}
+     */
     @GetMapping
     public ResponseEntity<List<FriendRes>> readFriends(@AuthenticationPrincipal User user){
         return new ResponseEntity<>(friendService.getFriends(user),HttpStatus.OK);
     }
 
+    /**
+     * 내가 받은 요청 확인 api
+     * @param user
+     * @return
+     */
     @GetMapping("/receive")
     public ResponseEntity<List<FriendRes>> readReceives(@AuthenticationPrincipal User user){
         return new ResponseEntity<>(friendService.getReceives(user), HttpStatus.OK);
     }
 
+    /**
+     * 닉네임으로 유저 감색
+     * @param user
+     * @param nickName
+     * @return {@link FriendInfoRes}
+     */
     @GetMapping("/find/{nickName}")
     public ResponseEntity<FriendInfoRes> readUsers(@AuthenticationPrincipal User user, @PathVariable String nickName) {
         FriendInfoRes friend = friendService.getUserByNickName(user, nickName);

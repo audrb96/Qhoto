@@ -7,10 +7,7 @@ import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
-import com.qhoto.qhoto_api.dto.response.CommentRes;
-import com.qhoto.qhoto_api.dto.response.FeedAllDto;
-import com.qhoto.qhoto_api.dto.response.FeedDetailRes;
-import com.qhoto.qhoto_api.dto.response.FeedFriendDto;
+import com.qhoto.qhoto_api.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * 피드 api
+ */
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -153,7 +153,7 @@ public class FeedController {
 
     /**
      * 필터 api
-     * @return QuestOptionRes
+     * @return {@link QuestOptionRes}
      */
     @GetMapping("/option")
     public ResponseEntity<?> readOptionList(){
