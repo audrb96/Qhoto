@@ -1,6 +1,7 @@
 package com.qhoto.qhoto_api.domain;
 
 import com.qhoto.qhoto_api.domain.type.QuestStatus;
+import com.qhoto.qhoto_api.domain.type.converter.QuestStatusConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,9 +31,11 @@ public class ActiveWeekly {
     private Quest quest;
 
     @Column(name = "weekly_quest_status",nullable = false)
-    @Enumerated(STRING)
+    @Convert(converter = QuestStatusConverter.class)
     private QuestStatus status;
 
-
+    public void changeStatus(QuestStatus questStatus) {
+        this.status = questStatus;
+    }
 
 }

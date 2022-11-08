@@ -46,14 +46,19 @@ public class UserController {
         return ResponseEntity.ok(userService.myInfo(user));
     }
 
+    @GetMapping("/info/{userId}")
+    public ResponseEntity<?> readUserInfo(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getUserInfo(userId));
+    }
+
     @PutMapping("/user")
     public ResponseEntity<String> modifyUser(@AuthenticationPrincipal User user, @Validated ModifyUserReq modifyUserReq) throws IOException {
         userService.modifyUser(modifyUserReq, user);
         return ResponseEntity.ok().body("success");
     }
     @GetMapping("/mypage")
-    public ResponseEntity<?> readMyFeed(){
-        return new ResponseEntity<>(userService.getMyFeed(),HttpStatus.OK);
+    public ResponseEntity<?> readMyFeed(@AuthenticationPrincipal User user){
+        return new ResponseEntity<>(userService.getMyFeed(user),HttpStatus.OK);
     }
 
     @GetMapping("/valid/{nickname}")

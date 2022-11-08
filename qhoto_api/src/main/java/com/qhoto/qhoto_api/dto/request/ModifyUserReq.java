@@ -19,4 +19,6 @@ public class ModifyUserReq {
     private String phone;
 
     private MultipartFile file;
+
+    private Boolean profileOpen;
 }

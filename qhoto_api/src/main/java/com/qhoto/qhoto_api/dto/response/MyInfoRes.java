@@ -21,4 +21,5 @@ public class MyInfoRes {
     private String nickname;
     private String phone;
     private Boolean profileOpen;
+    private String description;
 }

@@ -60,6 +60,11 @@ public class GlobalExceptionHandler {
                 case "Pattern" :
                     code = ErrorCode.INVALID_PATTERN.getCode();
                     status = ErrorCode.INVALID_PATTERN.getStatus();
+                    break;
+                case "TypeMismatch" :
+                    code = ErrorCode.TYPE_MISMATCH_VALUE.getCode();
+                    status = ErrorCode.TYPE_MISMATCH_VALUE.getStatus();
+                    break;
             }
         }
         return new ErrorResponse(message, code, status );

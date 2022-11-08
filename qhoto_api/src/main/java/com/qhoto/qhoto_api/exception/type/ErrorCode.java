@@ -10,7 +10,8 @@ public enum ErrorCode {
     INTER_SERVER_ERROR(500,"C002", "Internal server error"),
     NOTNULL_INPUT_VALUE(400,"C003", "NotNull input value"),
     INVALID_PATTERN(400, "C004", "Invalid Pattern"),
-    NO_REQUEST_BODY(400,"C004", "No Request Body"),
+    NO_REQUEST_BODY(400,"C005", "No Request Body"),
+    TYPE_MISMATCH_VALUE(400,"C006", "TypeMismatch value"),
     //user
     INVALID_GOOGLE_TOKEN(400,"U001", "Invalid Google Token"),
     INVALID_ACCESS_TOKEN(401, "U002", "Invalid Access Token"),

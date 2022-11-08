@@ -1,11 +1,13 @@
 package com.qhoto.qhoto_api.domain.type;
 
-public enum QuestStatus {
-    A("사용가능"), D("사용불가");
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    private String value;
+@Getter
+@RequiredArgsConstructor
+public enum QuestStatus implements LegacyCommonType{
+    AVAILABLE("사용가능", "A"), DISABLE("사용불가", "D");
 
-    QuestStatus(String value) {
-        this.value = value;
-    }
+    private final String desc;
+    private final String legacyCode;
 }

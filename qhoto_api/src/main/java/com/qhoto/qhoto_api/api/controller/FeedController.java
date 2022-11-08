@@ -28,14 +28,14 @@ public class FeedController {
 
 
 
-//    @GetMapping
-//    public ResponseEntity<?> readAllFeed(@ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
-//        return new ResponseEntity<>(feedService.getAllFeed(feedAllReq, pageable),HttpStatus.OK);
-//    }
+    @GetMapping("/all")
+    public ResponseEntity<?> readFeed(@ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
+        return new ResponseEntity<>(feedService.getFeed(feedAllReq, pageable),HttpStatus.OK);
+    }
 
     @GetMapping("/all/{feedId}")
-    public ResponseEntity<?> readFeedDetail(@PathVariable Long feedId){
-        return new ResponseEntity<>(feedService.getFeedDetail(feedId), HttpStatus.OK);
+    public ResponseEntity<?> readFeedDetail(@AuthenticationPrincipal User user, @PathVariable Long feedId){
+        return new ResponseEntity<>(feedService.getFeedDetail(feedId, user), HttpStatus.OK);
     }
 
     @GetMapping("/friend")

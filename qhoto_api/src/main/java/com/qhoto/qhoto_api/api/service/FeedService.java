@@ -1,6 +1,5 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.qhoto.qhoto_api.api.repository.*;
 import com.qhoto.qhoto_api.domain.*;
 import com.qhoto.qhoto_api.domain.type.CommentStatus;
@@ -17,6 +16,7 @@ import com.qhoto.qhoto_api.exception.NoQuestByIdException;
 import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class FeedService {
@@ -56,26 +57,26 @@ public class FeedService {
         return feedRepository.findByCondition(feedAllReq, pageable);
     }
 
-    public FeedDetailRes getFeedDetail(Long feedId){
+    public FeedDetailRes getFeedDetail(Long feedId, User userInfo){
 
         Feed feed = feedRepository.findFeedById(feedId).orElseThrow(() -> new NoFeedByIdException("no feed by id"));
-        Long userId = 1L;
-        User user = userRepository.findUserById(userId).orElseThrow(()-> new NoUserByIdException("no user by id"));
+        User user = userRepository.findUserById(feed.getUser().getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         List<CommentRes> commentResList = getCommentList(feedId);
 
         FeedDetailRes feedDetailRes = FeedDetailRes.builder()
                 .feedId(feedId)
-                .userId(userId)
+                .userId(user.getId())
                 .userImage(user.getImage())
                 .nickName(user.getNickname())
                 .feedImage(feed.getImage())
                 .feedTime(feed.getTime())
                 .questName(feed.getQuest().getName())
-                .questType(feed.getQuest().getQuestType().toString())
+                .questType(feed.getQuest().getQuestType().getCode())
                 .questPoint(feed.getQuest().getScore())
-                .expPoint(expRepository.findPointByUserId(userId).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .expPoint(expRepository.findPointByUserId(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .likeCount(feedLikeRepository.countAllById(feedId).orElseThrow(()-> new NoFeedByIdException("no feed by id")))
-                .likeStatus((feedLikeRepository.findById(userId).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
+                // '내'가 눌렀는지 확인해야 하므로 userInfo에서 가져옴
+                .likeStatus((feedLikeRepository.findById(userInfo.getId()).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
                 .commentList(commentResList)
                 .build();
 
@@ -100,11 +101,10 @@ public class FeedService {
     }
 
 
-    public void postFeed(CreateFeedReq createFeedReq, User userInfo) throws IOException {
+    public void postFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
-
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
-        String dirName = "/feed/image/"+user.getEmail();
+        String dirName = "feed/image/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
 
     }
@@ -113,14 +113,14 @@ public class FeedService {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));;
 
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
-        String dirName = "/feed/video/input/"+user.getEmail();
+        String dirName = "feed/video/input/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
 
     }
 
     private void S3upload(CreateFeedReq createFeedReq, Quest quest, User user, String dirName) throws IOException {
         s3Utils.upload(createFeedReq.getFeedImage(),dirName);
-        dirName = S3Utils.CLOUD_FRONT_DOMAIN_NAME+dirName;
+        dirName = S3Utils.CLOUD_FRONT_DOMAIN_NAME+"/"+dirName;
         Feed feed = Feed.builder()
                 .user(user)
                 .quest(quest)
@@ -129,7 +129,7 @@ public class FeedService {
                 .activeMonthly(activeMonthlyRepository.findMonthlyById(createFeedReq.getActiveMonthlyId()))
                 .image(dirName+"/"+createFeedReq.getFeedImage().getOriginalFilename())
                 .time(LocalDateTime.now())
-                .status(FeedStatus.U)
+                .status(FeedStatus.USING)
                 .questName(quest.getName())
                 .location(createFeedReq.getLocation())
                 .typeCode(quest.getQuestType().getCode())
@@ -152,7 +152,7 @@ public class FeedService {
                 .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .context(createCommentReq.getCommentContext())
                 .time(LocalDateTime.now())
-                .status(CommentStatus.U)
+                .status(CommentStatus.USING)
                 .build();
 
         commentRepository.save(comment);
@@ -165,7 +165,7 @@ public class FeedService {
 
     public void putComment(Long commentId){
         Comment comment = commentRepository.findCommentById(commentId);
-        comment.changeCommentStatus(CommentStatus.D);
+        comment.changeCommentStatus(CommentStatus.DISABLE);
     }
 
     public void postLike(LikeReq likeReq, User user){
