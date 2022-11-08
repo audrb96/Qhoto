@@ -27,7 +27,11 @@ import RNFetchBlob from 'rn-fetch-blob';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAppDispatch} from '../../store';
 import userSlice from '../../slices/user';
-import {editMyProfileApi, getUserInfoApi} from '../../api/mypage';
+import {
+  editMyProfileApi,
+  getUserInfoApi,
+  getUserPointApi,
+} from '../../api/mypage';
 
 function MyPage({navigation}: null) {
   const dispatch = useAppDispatch();
@@ -49,7 +53,80 @@ function MyPage({navigation}: null) {
   let nextColorName = '';
   let minPoint = 0;
   let maxPoint = 0;
-  const userPoint = 1500;
+  // const userPoint = 1500;
+  const [userPoint, setUserPoint] = useState(0);
+
+  const [userInfo, setUserInfo] = useState({
+    email: '',
+    joinDate: '',
+    userImage: '',
+    phone: '',
+    description: '',
+    nickname: '',
+    contactAgreeDate: '',
+    profileOpen: true,
+  });
+
+  useEffect(() => {
+    getUserInfoApi(
+      (res: any) => {
+        let {
+          email,
+          joinDate,
+          nickname,
+          phone,
+          profileOpen,
+          description,
+          userImage,
+          contactAgreeDate,
+        } = res.data;
+
+        setUserInfo({
+          email,
+          joinDate,
+          nickname,
+          phone,
+          profileOpen,
+          description,
+          userImage,
+          contactAgreeDate,
+        });
+
+        dispatch(
+          userSlice.actions.setUser({
+            email: userInfo.email,
+            joinDate: userInfo.joinDate,
+            userImage: userInfo.userImage,
+            phone: userInfo.phone,
+            nickname: userInfo.nickname,
+            description: userInfo.description,
+            contactAgreeDate: userInfo.contactAgreeDate,
+            profileOpen: userInfo.profileOpen,
+            loggedIn: true,
+          }),
+        );
+        console.log('getUserInfo-res : ', res);
+        // Todo: back 에서 point 주면 redux 에 넣어야 함
+        // Todo: 유저 point state 관리도 해줘야함
+      },
+      (err: any) => console.log('getUserInfo-err : ', err),
+    );
+    getUserPointApi(
+      res => {
+        console.log('getUserPointApi - res', res.data.exp.Total.point);
+        setUserPoint(res.data.exp.Total.point);
+        dispatch(
+          userSlice.actions.setUser({
+            userPoint: res.data.exp.Total.point,
+            loggedIn: true,
+          }),
+        );
+      },
+      (err: any) => {
+        console.log('getUserPointApi - err', err);
+      },
+    );
+  }, []);
 
   // Todo: 이것도 컴포넌트화 가능??
   // 타입스크립트방식으로 해도 지저분하긴함..
@@ -200,63 +277,6 @@ function MyPage({navigation}: null) {
       style={styles.rightIcon} // Todo 해결!!!: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
     />
   );
-
-  const [userInfo, setUserInfo] = useState({
-    email: '',
-    joinDate: '',
-    userImage: '',
-    phone: '',
-    description: '',
-    nickname: '',
-    contactAgreeDate: '',
-    profileOpen: true,
-  });
-
-  useEffect(() => {
-    getUserInfoApi(
-      (res: any) => {
-        let {
-          email,
-          joinDate,
-          nickname,
-          phone,
-          profileOpen,
-          description,
-          userImage,
-          contactAgreeDate,
-        } = res.data;
-
-        setUserInfo({
-          email,
-          joinDate,
-          nickname,
-          phone,
-          profileOpen,
-          description,
-          userImage,
-          contactAgreeDate,
-        });
-
-        dispatch(
-          userSlice.actions.setUser({
-            email: userInfo.email,
-            joinDate: userInfo.joinDate,
-            userImage: userInfo.userImage,
-            phone: userInfo.phone,
-            nickname: userInfo.nickname,
-            description: userInfo.description,
-            contactAgreeDate: userInfo.contactAgreeDate,
-            profileOpen: userInfo.profileOpen,
-            loggedIn: true,
-          }),
-        );
-        console.log('getUserInfo-res : ', res);
-        // Todo: back 에서 point 주면 redux 에 넣어야 함
-        // Todo: 유저 point state 관리도 해줘야함
-      },
-      (err: any) => console.log('getUserInfo-err : ', err),
-    );
-  }, []);
 
   return (
     <SafeAreaView>

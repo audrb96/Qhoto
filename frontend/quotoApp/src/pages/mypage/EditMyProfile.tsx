@@ -71,7 +71,7 @@ function EditMyProfile({navigation, route}) {
       text,
       (res: any) => {
         console.log('duplicateTestApi - res', res);
-        setDuplicated(res.data);
+        setDuplicated(res.data); // Boolean
       },
       (err: any) => console.log('duplicateTestApi - err', err),
     );
@@ -79,17 +79,27 @@ function EditMyProfile({navigation, route}) {
 
   let message = '';
   let messageType = 'able';
+
+  // const [message, setMessage] = useState('');
+  // const [messageType, setMessageType] = useState('able');
   if (!editable) {
     message = '';
+    // setMessage('');
   } else if (newNickname === nickname) {
     message = '사용가능합니다.';
     messageType = 'able';
+    // setMessage('사용가능합니다');
+    // setMessageType('able');
   } else if (!duplicated) {
     message = '사용가능합니다.';
     messageType = 'able';
+    // setMessage('사용가능합니다');
+    // setMessageType('able');
   } else if (duplicated) {
     message = '중복된 닉네임입니다.';
     messageType = 'disable';
+    // setMessage('중복된 닉네임입니다');
+    // setMessageType('disable');
   }
 
   //Icon

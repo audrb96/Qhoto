@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import AllFeed from './AllFeed';
 import SelectedFeed from './SelectedFeed';
 import QhotoHeader from '../../components/QhotoHeader';
+import OtherPage from './../OtherPage';
 
 const AllFeedStack = createStackNavigator();
 function AllFeedStackScreen() {
@@ -19,6 +20,13 @@ function AllFeedStackScreen() {
       <AllFeedStack.Screen
         name="SelectedFeed"
         component={SelectedFeed}
+        options={{
+          header: () => <QhotoHeader leftIcon={false} />,
+        }}
+      />
+      <AllFeedStack.Screen
+        name="OtherPage"
+        component={OtherPage}
         options={{
           header: () => <QhotoHeader leftIcon={false} />,
         }}

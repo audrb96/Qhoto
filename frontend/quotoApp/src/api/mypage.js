@@ -13,11 +13,7 @@ async function getUserInfoApi(success, fail) {
 async function editMyProfileApi(newUserInfo, success, fail) {
   console.log('newUserInfo', newUserInfo);
   await fileApi
-    // .put('/api/user', newUserInfo, {headers: await createHeaders()})
-    // .put('/api/user', {
-    //   params: {file: newUserInfo},
-    //   headers: await createHeaders(),
-    // })
+    // Body
     .put('/api/user', newUserInfo, {headers: await createHeaders()})
     .then(success)
     .catch(fail);
@@ -26,6 +22,7 @@ async function editMyProfileApi(newUserInfo, success, fail) {
 async function duplicateTestApi(nickname, success, fail) {
   await api
     .get(
+      // QueryParams
       `/api/valid/${nickname}`,
       {params: {nickname: nickname}},
       {headers: await createHeaders()},
@@ -34,4 +31,11 @@ async function duplicateTestApi(nickname, success, fail) {
     .catch(fail);
 }
 
-export {getUserInfoApi, editMyProfileApi, duplicateTestApi};
+async function getUserPointApi(success, fail) {
+  await api
+    .get('/api/quest/point', {headers: await createHeaders()})
+    .then(success)
+    .catch(fail);
+}
+
+export {getUserInfoApi, editMyProfileApi, duplicateTestApi, getUserPointApi};

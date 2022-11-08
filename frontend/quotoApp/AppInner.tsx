@@ -19,6 +19,9 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 // https://oblador.github.io/react-native-vector-icons/
 import {HEADER_LOGO} from './src/image';
 import QhotoHeader from './src/components/QhotoHeader';
+import SignUp from './src/pages/SignUp';
+import FriendsFeedStackScreen from './src/pages/FriendsFeedStackScreen';
+import FindFriendStackScreen from './src/pages/FindFriendStackScreen';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
@@ -59,13 +62,13 @@ function AppInner() {
                 if (route.name === 'MyQuest') {
                   iconName = 'exclamation-circle';
                   size = 30;
-                } else if (route.name === 'FriendFeed') {
+                } else if (route.name === 'FriendsFeedStackScreen') {
                   iconName = 'house-user';
                 } else if (route.name === 'AllFeedStackScreen') {
                   iconName = 'search';
-                } else if (route.name === 'FindFriend') {
+                } else if (route.name === 'FindFriendStackScreen') {
                   iconName = 'users';
-                } else if (route.name === 'MyPage') {
+                } else if (route.name === 'MyPageStackScreen') {
                   iconName = 'user-circle';
                   size = 28;
                 }
@@ -89,11 +92,11 @@ function AppInner() {
               tabBarHideOnKeyboard: true,
             })}>
             <Tab.Screen
-              name="FriendFeed"
-              component={FriendsFeed}
+              name="FriendsFeedStackScreen"
+              component={FriendsFeedStackScreen}
               options={{
                 title: '친구 피드',
-                header: () => <QhotoHeader leftIcon={false} />,
+                headerShown: false,
               }}
             />
             <Tab.Screen
@@ -113,15 +116,15 @@ function AppInner() {
               }}
             />
             <Tab.Screen
-              name="FindFriend"
-              component={FindFriend}
+              name="FindFriendStackScreen"
+              component={FindFriendStackScreen}
               options={{
                 title: '친구 찾기',
-                header: () => <QhotoHeader leftIcon={false} />,
+                headerShown: false,
               }}
             />
             <Tab.Screen
-              name="MyPage"
+              name="MyPageStackScreen"
               component={MyPageStackScreen}
               options={{
                 title: '마이페이지',
@@ -135,6 +138,11 @@ function AppInner() {
               name="SignIn"
               component={SignIn}
               options={{title: '로그인', headerShown: false}}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUp}
+              options={{title: '회원가입', headerShown: false}}
             />
           </Stack.Navigator>
         )}
