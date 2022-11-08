@@ -31,6 +31,7 @@ import {KAKAO_LOGIN_BUTTON} from '../image';
 import {LOGIN_LOGO} from '../image';
 
 import {loginKakao, loginGoogle} from '../api/user';
+import {getUserInfoApi} from '../api/mypage';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -54,10 +55,36 @@ function SignIn({navigation}: SignInScreenProps) {
             AsyncStorage.setItem('refreshToken', res.data.refreshToken, () => {
               console.log('refreshToken : ' + res.data.refreshToken);
             });
-            dispatch(
-              userSlice.actions.setUser({
-                loggedIn: true,
-              }),
+            const accessToken = res.data.accessToken;
+            getUserInfoApi(
+              (response: any) => {
+                let {
+                  nickname,
+                  // email,
+                  // joinDate,
+                  // phone,
+                  // profileOpen,
+                  // description,
+                  // userImage,
+                  // contactAgreeDate,
+                } = response.data;
+
+                dispatch(
+                  userSlice.actions.setUser({
+                    nickname: nickname,
+                    // email: email,
+                    // joinDate: joinDate,
+                    // userImage: userImage,
+                    // phone: phone,
+                    // description: description,
+                    // contactAgreeDate: contactAgreeDate,
+                    // profileOpen: profileOpen,
+                    token: accessToken,
+                    loggedIn: true,
+                  }),
+                );
+              },
+              (err: any) => console.log(err),
             );
           },
           (err: any) => {
@@ -98,11 +125,35 @@ function SignIn({navigation}: SignInScreenProps) {
                     },
                   );
                   const accessToken = res.data.accessToken;
-                  dispatch(
-                    userSlice.actions.setUser({
-                      token: accessToken,
-                      loggedIn: true,
-                    }),
+                  getUserInfoApi(
+                    (response: any) => {
+                      let {
+                        nickname,
+                        // email,
+                        // joinDate,
+                        // phone,
+                        // profileOpen,
+                        // description,
+                        // userImage,
+                        // contactAgreeDate,
+                      } = response.data;
+
+                      dispatch(
+                        userSlice.actions.setUser({
+                          nickname: nickname,
+                          // email: email,
+                          // joinDate: joinDate,
+                          // userImage: userImage,
+                          // phone: phone,
+                          // description: description,
+                          // contactAgreeDate: contactAgreeDate,
+                          // profileOpen: profileOpen,
+                          token: accessToken,
+                          loggedIn: true,
+                        }),
+                      );
+                    },
+                    (err: any) => console.log(err),
                   );
                 },
                 (err: any) => {
