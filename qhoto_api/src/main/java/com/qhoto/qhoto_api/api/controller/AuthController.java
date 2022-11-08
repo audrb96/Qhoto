@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+
+/**
+ * Auth 컨트롤러
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +35,12 @@ public class AuthController {
     private final ObjectMapper objectMapper;
     private final AuthProducer authProducer;
     private final RabbitTemplate rabbitTemplate;
+
+    /**
+     * JWT 토큰 재발급 컨트롤러
+     * @param request
+     * @return {@link AccessTokenRes}
+     */
     @PostMapping("/reissue")
     public ResponseEntity<AccessTokenRes> reissueToken(HttpServletRequest request) {
         authProducer.reissueSendTo(request.getHeader("Authorization"));
@@ -38,6 +48,11 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.reissue(receiveToken));
     }
 
+    /**
+     * refreshToken에 해당하는 유저가 없을 때 Exception 처리 handler
+     * @param e
+     * @return {@link ErrorResponse}
+     */
     @ExceptionHandler(NoUserByRefreshTokenException.class)
     protected ResponseEntity<ErrorResponse> noUserByRefreshTokenException(NoUserByRefreshTokenException e) {
         log.error("NoUserByRefreshTokenException", e);
@@ -45,6 +60,11 @@ public class AuthController {
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
 
+    /**
+     * refreshToken 만료 Exception
+     * @param e
+     * @return {@link ErrorResponse}
+     */
     @ExceptionHandler(ExpiredRefreshTokenException.class)
     protected ResponseEntity<ErrorResponse> expiredRefreshTokenException(ExpiredRefreshTokenException e) {
         log.error("ExpiredRefreshTokenException", e);

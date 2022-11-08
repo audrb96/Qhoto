@@ -33,6 +33,11 @@ public class FeedController {
 //        return new ResponseEntity<>(feedService.getAllFeed(feedAllReq, pageable),HttpStatus.OK);
 //    }
 
+    /**
+     *
+     * @param feedId
+     * @return
+     */
     @GetMapping("/all/{feedId}")
     public ResponseEntity<?> readFeedDetail(@PathVariable Long feedId){
         return new ResponseEntity<>(feedService.getFeedDetail(feedId), HttpStatus.OK);
