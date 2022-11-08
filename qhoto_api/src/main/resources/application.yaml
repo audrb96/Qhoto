@@ -14,6 +14,11 @@ spring:
     password: ssafyA707
     port: 5672
 
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
   jpa:
     hibernate:
       ddl-auto: update
