@@ -25,6 +25,7 @@ public enum ErrorCode {
     NO_QUEST_BY_ID(500, "F003","No Quest By QuestId"),
     ALREADY_REQUEST_USER(500,"F004", "Already Request User"),
     ALREADY_FRIEND(500,"F005","Already Friend"),
+    NO_FEED_BY_USER_ID(500, "F006", "No Feed By UserId")
     ;
 
     private final int status;

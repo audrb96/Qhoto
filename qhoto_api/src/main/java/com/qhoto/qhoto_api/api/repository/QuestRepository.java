@@ -13,14 +13,14 @@ public interface QuestRepository extends JpaRepository<Quest,Long> {
 
     Optional<Quest> findQuestById(Long QuestId);
 
-    @Query("select q from Quest q inner join fetch ActiveWeekly a on q.id = a.quest.id where a.status = 'A'")
-    List<Quest> findAllWeeklyByIdAndStatus();
+    @Query("select new com.qhoto.qhoto_api.dto.response.ActiveQuestRes(a.id, q.id, q.difficulty, q.name, q.score, q.questType.code) from Quest q inner join fetch ActiveWeekly a on q.id = a.quest.id where a.status = 'A'")
+    List<ActiveQuestRes> findAllWeeklyByIdAndStatus();
 
     @Query("select new com.qhoto.qhoto_api.dto.response.QuestOptionItemRes(q.id,a.id, q.name, q.questType.name) from Quest q inner join fetch ActiveWeekly a on q.id = a.quest.id where a.status = 'A'")
     List<QuestOptionItemRes> findAllWeeklyByQuestIdAndStatus();
 
-    @Query("select q from Quest q inner join fetch ActiveMonthly a on q.id = a.quest.id where a.status = 'A'")
-    List<Quest> findAllMonthlyByIdAndStatus();
+    @Query("select new com.qhoto.qhoto_api.dto.response.ActiveQuestRes(a.id, q.id, q.difficulty, q.name, q.score, q.questType.code) from Quest q inner join fetch ActiveMonthly a on q.id = a.quest.id where a.status = 'A'")
+    List<ActiveQuestRes> findAllMonthlyByIdAndStatus();
 
     @Query("select new com.qhoto.qhoto_api.dto.response.QuestOptionItemRes(q.id,a.id, q.name, q.questType.name) from Quest q inner join fetch ActiveMonthly a on q.id = a.quest.id where a.status = 'A'")
     List<QuestOptionItemRes> findAllMonthlyByQuestIdAndStatus();

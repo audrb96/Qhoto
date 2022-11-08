@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class QuestListItemRes {
+    private Long activeId;
     private Long questId;
     private String questName;
     private String questType;
@@ -15,7 +16,8 @@ public class QuestListItemRes {
     private String questImage;
 
     @Builder
-    public QuestListItemRes(Long questId, String questName, String questType, int questScore, int questDifficulty, String questImage) {
+    public QuestListItemRes(Long activeId, Long questId, String questName, String questType, int questScore, int questDifficulty, String questImage) {
+        this.activeId = activeId;
         this.questId = questId;
         this.questName = questName;
         this.questType = questType;

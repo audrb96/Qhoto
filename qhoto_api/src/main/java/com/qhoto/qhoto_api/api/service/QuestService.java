@@ -3,9 +3,7 @@ package com.qhoto.qhoto_api.api.service;
 import com.qhoto.qhoto_api.api.repository.ExpRepository;
 import com.qhoto.qhoto_api.api.repository.FeedRepository;
 import com.qhoto.qhoto_api.api.repository.QuestRepository;
-import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.domain.Feed;
-import com.qhoto.qhoto_api.domain.Quest;
 import com.qhoto.qhoto_api.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,42 +18,42 @@ public class QuestService {
 
     private final QuestRepository questRepository;
     private final FeedRepository feedRepository;
-
-    private final UserRepository userRepository;
     private final ExpRepository expRepository;
 
 
     public Map<String, Object> getQuestList(Long userId){
-
         List<ActiveQuestRes> dailyQuest = questRepository.findAllDailyByIdAndStatus();
-        System.out.println(dailyQuest.get(0).getActiveId());
-        List<Quest> weeklyQuest = questRepository.findAllWeeklyByIdAndStatus();
-        List<Quest> monthlyQuest = questRepository.findAllMonthlyByIdAndStatus();
+        List<ActiveQuestRes> weeklyQuest = questRepository.findAllWeeklyByIdAndStatus();
+        List<ActiveQuestRes> monthlyQuest = questRepository.findAllMonthlyByIdAndStatus();
         Optional<Feed> dailyClear = feedRepository.findClearDailyQuest(userId);
         Optional<Feed> weeklyClear = feedRepository.findClearWeeklyQuest(userId);
         Optional<Feed> MonthlyClear = feedRepository.findClearMonthlyQuest(userId);
+
         Map<String, Object> questList = new HashMap<>();
         // dailyQuestList 반환
-//        if(dailyClear.isPresent()) {
-//            Feed today = dailyClear.get();
-//            questList.put("daily", buildQuestListWithClear(today));
-//        }else {
-//            questList.put("daily", buildQuestList(dailyQuest));
-//        }
-//        //weeklyQuestList 반환
-//        if(weeklyClear.isPresent()) {
-//            Feed weekly = weeklyClear.get();
-//            questList.put("weekly", buildQuestListWithClear(weekly));
-//        }else {
-//            questList.put("weekly", buildQuestList(weeklyQuest));
-//        }
-//        //MonthlyQuestList 반환
-//        if(MonthlyClear.isPresent()) {
-//            Feed monthly = MonthlyClear.get();
-//            questList.put("monthly", buildQuestListWithClear(monthly));
-//        }else {
-//            questList.put("monthly", buildQuestList(monthlyQuest));
-//        }
+        if(dailyClear.isPresent()) {
+            Feed today = dailyClear.get();
+            Long activeId = today.getActiveDaily().getId();
+            questList.put("daily", buildQuestListWithClear(today, activeId));
+        }else {
+            questList.put("daily", buildQuestList(dailyQuest));
+        }
+        //weeklyQuestList 반환
+        if(weeklyClear.isPresent()) {
+            Feed weekly = weeklyClear.get();
+            Long activeId = weekly.getActiveWeekly().getId();
+            questList.put("weekly", buildQuestListWithClear(weekly, activeId));
+        }else {
+            questList.put("weekly", buildQuestList(weeklyQuest));
+        }
+        //MonthlyQuestList 반환
+        if(MonthlyClear.isPresent()) {
+            Feed monthly = MonthlyClear.get();
+            Long activeId = monthly.getActiveMonthly().getId();
+            questList.put("monthly", buildQuestListWithClear(monthly, activeId));
+        }else {
+            questList.put("monthly", buildQuestList(monthlyQuest));
+        }
 
         return questList;
     }
@@ -134,30 +132,32 @@ public class QuestService {
     }
 
 
-    public List<QuestListItemRes> buildQuestListWithClear(Feed feed) {
+    public List<QuestListItemRes> buildQuestListWithClear(Feed feed, Long activeId) {
             List<QuestListItemRes> questList = new ArrayList<>();
             questList.add(
                     QuestListItemRes.builder()
+                            .activeId(activeId)
                             .questId(feed.getId())
                             .questName(feed.getQuest().getName())
                             .questType(feed.getTypeName())
                             .questScore(feed.getScore())
                             .questDifficulty(feed.getDifficulty())
                             .questImage(feed.getImage())
-                                .build()
+                            .build()
 
             );
             return questList;
     }
 
-    public List<QuestListItemRes> buildQuestList(List<Quest> quests) {
+    public List<QuestListItemRes> buildQuestList(List<ActiveQuestRes> quests) {
         List<QuestListItemRes> questList = new ArrayList<>();
-        for(Quest quest : quests){
+        for(ActiveQuestRes quest : quests){
             questList.add(
                     QuestListItemRes.builder()
-                            .questId(quest.getId())
-                            .questName(quest.getName())
-                            .questType(quest.getQuestType().getName())
+                            .activeId(quest.getActiveId())
+                            .questId(quest.getQuestId())
+                            .questName(quest.getQuestName())
+                            .questType(quest.getCode())
                             .questScore(quest.getScore())
                             .questDifficulty(quest.getDifficulty())
                             .questImage(null)
