@@ -6,7 +6,7 @@ function apiInstance() {
   const instance = axios.create({
     baseURL: 'https://qhoto-api.com',
     headers: {
-      'Content-type': 'application/json',
+      'Content-Type': 'application/json',
     },
   });
   return instance;
@@ -24,7 +24,9 @@ function fileApiInstance() {
 
 const createHeaders = async () => {
   const accessToken = await AsyncStorage.getItem('accessToken')
+
     .then(token => {
+      console.log(token);
       return {Authorization: `Bearer ${token}`};
     })
     .catch(err => console.log(err));
