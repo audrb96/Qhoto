@@ -8,10 +8,12 @@ import org.springframework.util.StringUtils;
 
 import java.util.EnumSet;
 
+import static org.springframework.util.StringUtils.hasText;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LegacyEnumValueConvertUtils {
     public static <T extends Enum<T> & LegacyCommonType> T ofLegacyCode(Class<T> enumClass, String legacyCode) {
-        if(StringUtils.hasText(legacyCode)) {
+        if(!StringUtils.hasText(legacyCode)) {
             return null;
         }
 
