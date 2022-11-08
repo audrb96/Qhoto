@@ -152,8 +152,8 @@ public class FeedController {
     }
 
     /**
-     *
-     * @return
+     * 필터 api
+     * @return QuestOptionRes
      */
     @GetMapping("/option")
     public ResponseEntity<?> readOptionList(){

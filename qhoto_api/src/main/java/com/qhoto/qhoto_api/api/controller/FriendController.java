@@ -25,12 +25,23 @@ public class FriendController {
 
     private final FriendService friendService;
 
+    /**
+     * 친구 요청 api
+     * @param user
+     * @param friendRequestReq
+     * @return {@link String}
+     */
     @PostMapping
     public ResponseEntity<String> requestFriend(@AuthenticationPrincipal User user, @RequestBody FriendRequestReq friendRequestReq) {
         friendService.friendRequest(friendRequestReq, user);
         return ResponseEntity.ok("request success");
     }
 
+    /**
+     * 이미 요청한 친구 요청일 경우 Exception handler
+     * @param e
+     * @return {@link ErrorResponse}
+     */
     @ExceptionHandler(AlreadyRequestException.class)
     protected ResponseEntity<ErrorResponse>  alreadyRequestException(AlreadyRequestException e) {
       log.error("AlreadyRequestException", e);
@@ -38,13 +49,18 @@ public class FriendController {
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
 
+    /**
+     * 이미 친구인 경우 Exception handler
+     * @param e
+     * @return ErrorResponse
+     */
     @ExceptionHandler(AlreadyFriendException.class)
     protected ResponseEntity<ErrorResponse> alreadyFriendException(AlreadyFriendException e) {
         log.error("AlreadyFriendException",e);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ALREADY_FRIEND);
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
-
+    
     @GetMapping
     public ResponseEntity<List<FriendRes>> readFriends(@AuthenticationPrincipal User user){
         return new ResponseEntity<>(friendService.getFriends(user),HttpStatus.OK);
