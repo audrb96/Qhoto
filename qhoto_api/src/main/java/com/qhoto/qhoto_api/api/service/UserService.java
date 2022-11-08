@@ -1,5 +1,6 @@
 package com.qhoto.qhoto_api.api.service;
 
+import com.qhoto.qhoto_api.api.repository.ExpRepository;
 import com.qhoto.qhoto_api.api.repository.FeedRepository;
 import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.domain.Feed;
@@ -7,6 +8,8 @@ import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.dto.response.MyFeedRes;
 import com.qhoto.qhoto_api.dto.response.MyInfoRes;
+import com.qhoto.qhoto_api.dto.response.UserInfoRes;
+import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +28,7 @@ import java.util.List;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
+    private final ExpRepository expRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
@@ -48,6 +52,21 @@ public class UserService implements UserDetailsService {
                 .description(user.getDescription())
                 .build();
     }
+    public UserInfoRes getUserInfo(Long userId) {
+        User user = userRepository.findUserById(userId).orElseThrow(()-> new NoUserByIdException("no user by Id"));
+
+        UserInfoRes userInfoRes = UserInfoRes.builder()
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .image(user.getImage())
+                .profileOpen(user.getProfileOpen())
+                .point(expRepository.findPointByUserId(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .description(user.getDescription())
+                .build();
+
+        return userInfoRes;
+    }
+
 
 
     public List<MyFeedRes> getMyFeed(User user){
