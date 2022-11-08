@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,4 +20,6 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     Optional<FriendRequest> findByRequestUserAndResponseUserAndStatusNot(User reqUser, User ResUser, RequestStatus status);
     Optional<FriendRequest> findByRequestUserAndResponseUserAndStatus(User reqUser, User ResUser, RequestStatus status);
 
+    @Query("select f from FriendRequest f where (f.requestUser.id=:userId and f.responseUser.id=:friendId) or (f.requestUser.id=:friendId and f.responseUser.id=:userId)")
+    List<FriendRequest> findByUserIdAndFriendId(@Param("userId") Long id, @Param("friendId") Long friendId);
 }
