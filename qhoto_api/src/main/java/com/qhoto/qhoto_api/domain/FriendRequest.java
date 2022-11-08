@@ -36,6 +36,9 @@ public class FriendRequest {
     @Column(name = "request_time",nullable = false)
     private LocalDateTime time;
 
+    public void changeStatus(RequestStatus requestStatus) {
+        this.status = requestStatus;
+    }
 
 
 }

@@ -14,10 +14,16 @@ public enum ErrorCode {
     //user
     INVALID_GOOGLE_TOKEN(400,"U001", "Invalid Google Token"),
     INVALID_ACCESS_TOKEN(401, "U002", "Invalid Access Token"),
+    NOT_FOUND_USER(500, "U003", "No User By UserId"),
+    NO_USER_BY_REFRESH_TOKEN(500, "U004", "No User By RefreshToken"),
+    NO_USER_BY_NICKNAME(500, "U005", "No User By UserNickName"),
+    EXPIRED_REFRESH_TOKEN(500,"A001", "Expired Refresh Token"),
     //feed
     NO_FEED_BY_ID(500, "F001", "No Feed By FeedId"),
     NO_USER_BY_ID(500, "F002", "No User By UserId"),
-    NO_QUEST_BY_ID(500, "F003","No Quest By QuestId")
+    NO_QUEST_BY_ID(500, "F003","No Quest By QuestId"),
+    ALREADY_REQUEST_USER(500,"F004", "Already Request User"),
+    ALREADY_FRIEND(500,"F005","Already Friend"),
     ;
 
     private final int status;

@@ -2,34 +2,31 @@ package com.qhoto.qhoto_api.exception.handler;
 
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.exception.NoFeedByIdException;
-import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import com.qhoto.qhoto_api.exception.NoUserByIdException;
+import com.qhoto.qhoto_api.exception.NoUserByNickNameException;
+import com.qhoto.qhoto_api.exception.NotFoundUserException;
+import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.BindException;
 import java.sql.SQLException;
+
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BindException.class)
-    protected ResponseEntity<ErrorResponse> handleInvalidParameterException(BindException e) {
-        log.error("handleInvalidParameterException", e);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
-        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
-    }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class, BindException.class})
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(BindException e, HttpServletRequest request) {
         log.error("handleMethodArgumentNotValidException", e);
         ErrorResponse errorResponse = makeErrorResponse(e.getBindingResult());
 
@@ -83,9 +80,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoUserByIdException.class)
     protected ResponseEntity<ErrorResponse> noUserByIdException(NoUserByIdException e){
+        log.error("noUserByIdException", e);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_USER_BY_ID);
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
 
+    }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    protected ResponseEntity<ErrorResponse> NotFoundUserException(NotFoundUserException e) {
+        log.error("NotFoundUserException", e);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_FOUND_USER);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+    }
+
+    @ExceptionHandler(NoUserByNickNameException.class)
+    protected ResponseEntity<ErrorResponse> NoUserByNickNameException(NoUserByNickNameException e) {
+        log.error("NoUserByNickNameException", e);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_USER_BY_NICKNAME);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
 
 }

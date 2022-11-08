@@ -11,5 +11,5 @@ import lombok.Data;
 public class LoginRes {
 
     private String accessToken;
-    private User user;
+    private String refreshToken;
 }

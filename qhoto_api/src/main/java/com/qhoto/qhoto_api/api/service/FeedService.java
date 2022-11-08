@@ -36,7 +36,6 @@ import java.util.Map;
 public class FeedService {
 
 
-    private final AmazonS3Client amazonS3Client;
     private final S3Utils s3Utils;
     private final CommentRepository commentRepository;
     private final FeedRepository feedRepository;
@@ -52,9 +51,6 @@ public class FeedService {
     private final ExpRepository expRepository;
 
 
-//    public Page<FeedAllDto> getAllFeed(FeedAllReq feedAllReq, Pageable pageable){
-//        return feedRepository.findAllByCondition(feedAllReq, pageable);
-//    }
 
     public Page<FeedAllDto> getFeed(FeedAllReq feedAllReq, Pageable pageable) {
         return feedRepository.findByCondition(feedAllReq, pageable);
@@ -104,18 +100,21 @@ public class FeedService {
     }
 
 
-    public void postFeed(CreateFeedReq createFeedReq) throws IOException {
+    public void postFeed(CreateFeedReq createFeedReq, User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
-//        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
-//        String dirName = "/feed/image/"+user.getEmail();
-//        S3upload(createFeedReq, quest, user, dirName);
+
+        User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+        String dirName = "/feed/image/"+user.getEmail();
+        S3upload(createFeedReq, quest, user, dirName);
+
     }
 
-    public void postVideoFeed(CreateFeedReq createFeedReq) throws IOException {
+    public void postVideoFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));;
-//        User user = userRepository.findUserById(createFeedReq.getUserId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
-//        String dirName = "/feed/video/input/"+user.getEmail();
-//        S3upload(createFeedReq, quest, user, dirName);
+
+        User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+        String dirName = "/feed/video/input/"+user.getEmail();
+        S3upload(createFeedReq, quest, user, dirName);
 
     }
 

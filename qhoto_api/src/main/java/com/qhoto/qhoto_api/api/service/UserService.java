@@ -5,8 +5,14 @@ import com.qhoto.qhoto_api.api.repository.FriendRequestRepository;
 import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.domain.User;
+import com.qhoto.qhoto_api.domain.type.RequestStatus;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
+import com.qhoto.qhoto_api.dto.response.FriendInfoRes;
 import com.qhoto.qhoto_api.dto.response.MyFeedRes;
+import com.qhoto.qhoto_api.dto.response.MyInfoRes;
+import com.qhoto.qhoto_api.dto.response.UserRes;
+import com.qhoto.qhoto_api.exception.NoUserByNickNameException;
+import com.qhoto.qhoto_api.exception.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -35,6 +42,21 @@ public class UserService implements UserDetailsService {
         userRepository.modifyUserByCon(modifyUserReq, userInfo);
     }
 
+    public MyInfoRes myInfo(User user) {
+        return MyInfoRes.builder()
+                .authProvider(user.getAuthProvider())
+                .contactAgree(user.getContactAgree())
+                .contactAgreeDate(user.getContactAgreeDate())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .JoinDate(user.getJoinDate())
+                .phone(user.getPhone())
+                .profileOpen(user.getProfileOpen())
+                .UserImage(user.getImage())
+                .build();
+    }
+
+
     public List<MyFeedRes> getMyFeed(){
         Long userId = 2L;
         List<Feed> feedList = feedRepository.findAllByUserId(userId);
@@ -52,20 +74,10 @@ public class UserService implements UserDetailsService {
 
     }
 
-//    public UserRes getUserByNickName(Long userId, String nickName) {
-//        Optional<UserRes> user = userRepository.findUserByNickname(nickName);
-//        user.orElseThrow(()-> new );
-//        String isFriend = friendRequestRepository.findRequestStatusById(userId, user.getId()).getStatus().toString();
 
-//        UserRes friend = UserRes.builder()
-//                        .userId(user.getId())
-//                        .isFriend(isFriend)
-//                        .nickName(user.getNickname())
-//                        .email(user.getEmail())
-//                        .profileImg(user.getImage())
-//                        .point()
-//                        .build();
+    public Boolean confirmUser(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
 
-//        return
-//    }
+
 }
