@@ -8,11 +8,10 @@ import com.qhoto.qhoto_api.domain.FriendRequest;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.RequestStatus;
 import com.qhoto.qhoto_api.dto.request.FriendRequestReq;
+import com.qhoto.qhoto_api.dto.response.FriendInfoRes;
 import com.qhoto.qhoto_api.dto.response.FriendRes;
-import com.qhoto.qhoto_api.exception.AlreadyFriendException;
-import com.qhoto.qhoto_api.exception.AlreadyRequestException;
-import com.qhoto.qhoto_api.exception.NobodyRequestException;
-import com.qhoto.qhoto_api.exception.NotFoundUserException;
+import com.qhoto.qhoto_api.dto.response.UserRes;
+import com.qhoto.qhoto_api.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -111,6 +110,23 @@ public class FriendService {
                     .build());
         }
         return friendResList;
+    }
+
+    public FriendInfoRes getUserByNickName(User user, String nickName) {
+        UserRes friend = userRepository.findUserByNickname(nickName);
+        Optional.ofNullable(friend.getUserId()).orElseThrow(()-> new NoUserByNickNameException("유저를 찾을 수 없습니다."));
+        FriendInfoRes friendInfo = FriendInfoRes.builder()
+                .userId(friend.getUserId())
+                .nickName(friend.getNickName())
+                .email(friend.getEmail())
+                .profileImg(friend.getProfileImg())
+                .point(friend.getPoint())
+                .build();
+        RequestStatus status = friendRequestRepository.findRequestStatusById(user.getId(), friend.getUserId()).orElse(null);
+
+        friendInfo.updateIsFriend(status);
+
+        return friendInfo;
     }
 
 

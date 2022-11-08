@@ -1,6 +1,7 @@
 package com.qhoto.qhoto_api.api.repository;
 
 import com.qhoto.qhoto_api.domain.User;
+import com.qhoto.qhoto_api.dto.response.UserRes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,6 +27,10 @@ public interface UserRepository extends JpaRepository<User, Long>,UserRepository
     @Query("update User u set u.refreshToken=:token where u.id=:id")
     void updateRefreshToken(@Param("id") Long id, @Param("token") String token);
 
+
+    @Query("select u.id as userId, u.nickname as nickName, u.email as email, u.image as profileImg, sum(e.point) as point from User u inner join fetch Exp e on u.id = e.user.id where u.nickname = :nickName")
+    UserRes findUserByNickname(@Param("nickName") String nickName);
+
     boolean existsByNickname(String nickname);
 
     @Query("select u from User u inner join fetch Friend f on u.id=f.followee.id where f.follower.id=:id")
@@ -33,5 +38,6 @@ public interface UserRepository extends JpaRepository<User, Long>,UserRepository
 
     @Query("select u from User u inner join fetch FriendRequest r on r.requestUser.id=u.id where r.responseUser.id=:id and r.status='R'")
     List<User> findReceiveById(@Param("id") Long id);
+
 
 }

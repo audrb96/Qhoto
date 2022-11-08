@@ -33,4 +33,5 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
     @Query("select f from Feed f where f.user.id=:userId order by f.time desc")
     List<Feed> findAllByUserId(@Param("userId") Long userId);
 
+
 }

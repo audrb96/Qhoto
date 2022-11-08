@@ -103,14 +103,15 @@ public class FeedService {
 
     public void postFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
-        log.info("quest = {}", quest.getDuration());
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "feed/image/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);
+
     }
 
     public void postVideoFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));;
+
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "feed/video/input/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName);

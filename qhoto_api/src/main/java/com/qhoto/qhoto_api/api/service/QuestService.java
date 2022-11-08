@@ -1,6 +1,9 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.*;
+import com.qhoto.qhoto_api.api.repository.ExpRepository;
+import com.qhoto.qhoto_api.api.repository.FeedRepository;
+import com.qhoto.qhoto_api.api.repository.QuestRepository;
+import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.domain.Quest;
 import com.qhoto.qhoto_api.dto.response.*;
@@ -22,7 +25,8 @@ public class QuestService {
     private final ExpRepository expRepository;
 
 
-    public Map<String, Object> getQuestList(Long userId)  {
+    public Map<String, Object> getQuestList(Long userId){
+
         List<Quest> dailyQuest = questRepository.findAllDailyByIdAndStatus();
         List<Quest> weeklyQuest = questRepository.findAllWeeklyByIdAndStatus();
         List<Quest> monthlyQuest = questRepository.findAllMonthlyByIdAndStatus();
