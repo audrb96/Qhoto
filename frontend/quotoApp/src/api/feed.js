@@ -36,7 +36,6 @@ async function setFeedDisLike(Id, success, fail) {
 }
 
 async function setComment(params, success, fail) {
-  console.log(params);
   await api
     .post(
       '/api/feed/comment',
@@ -49,4 +48,20 @@ async function setComment(params, success, fail) {
     .catch(fail);
 }
 
-export {getAllFeeds, getSelectedFeed, setFeedLike, setFeedDisLike, setComment};
+async function setFeedMission(success, fail) {
+  await api
+    .get('/api/feed/option', {
+      headers: await createHeaders(),
+    })
+    .then(success)
+    .catch(fail);
+}
+
+export {
+  getAllFeeds,
+  getSelectedFeed,
+  setFeedLike,
+  setFeedDisLike,
+  setComment,
+  setFeedMission,
+};
