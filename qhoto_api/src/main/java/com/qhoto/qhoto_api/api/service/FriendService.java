@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.qhoto.qhoto_api.domain.type.RequestStatus.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,29 +39,29 @@ public class FriendService {
     public void friendRequest(FriendRequestReq friendRequestReq, User reqUser) {
         Optional<User> resUser = userRepository.findUserById(friendRequestReq.getResUserId());
 
-        Optional<FriendRequest> friendRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatusNot(reqUser,resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")), D);
-        Optional<FriendRequest> isAcceptRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatus(resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")),reqUser, R);
+        Optional<FriendRequest> friendRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatusNot(reqUser,resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")), DISCONNECTED);
+        Optional<FriendRequest> isAcceptRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatus(resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")),reqUser, REQUEST);
 
 
         if(friendRequest.isPresent()) {
             switch (friendRequest.get().getStatus()) {
-                case R:
+                case REQUEST:
                     throw new AlreadyRequestException("이미 요청한 상대입니다.");
-                case F:
+                case FRIEND:
                     throw new AlreadyFriendException("이미 친구인 상대입니다.");
-                case G:
+                case GET:
                     makeFriend(reqUser, resUser, isAcceptRequest.orElseThrow(() -> new NobodyRequestException("친구를 요청한 사람이 없는데 받은 사람만 있습니다.")),friendRequest.get());
                     break;
             }
         } else {
-            saveRequest(reqUser, resUser.get(),R);
-            saveRequest(resUser.get(),reqUser,G);
+            saveRequest(reqUser, resUser.get(), REQUEST);
+            saveRequest(resUser.get(),reqUser,GET);
         }
     }
 
     private void makeFriend(User reqUser, Optional<User> resUser, FriendRequest isAcceptRequest, FriendRequest friendRequest) {
-        isAcceptRequest.changeStatus(F);
-        friendRequest.changeStatus(F);
+        isAcceptRequest.changeStatus(FRIEND);
+        friendRequest.changeStatus(FRIEND);
         Friend friend1 = Friend.builder()
                 .follower(reqUser)
                 .followee(resUser.get())

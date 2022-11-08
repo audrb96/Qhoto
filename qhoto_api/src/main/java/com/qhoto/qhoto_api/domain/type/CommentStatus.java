@@ -1,11 +1,16 @@
 package com.qhoto.qhoto_api.domain.type;
 
-public enum CommentStatus {
-    U("사용"), D("삭제");
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    private String value;
+@Getter
+@RequiredArgsConstructor
+public enum CommentStatus implements LegacyCommonType {
+    USING("사용중","U" ), DISABLE("삭제","D");
 
-    CommentStatus(String value) {
-        this.value = value;
-    }
+    private final String desc;
+    private final String legacyCode;
+
+
+
 }

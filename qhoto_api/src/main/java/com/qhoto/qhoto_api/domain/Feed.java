@@ -2,6 +2,8 @@ package com.qhoto.qhoto_api.domain;
 
 import com.qhoto.qhoto_api.domain.type.QuestDuration;
 import com.qhoto.qhoto_api.domain.type.FeedStatus;
+import com.qhoto.qhoto_api.domain.type.converter.FeedStatusConverter;
+import com.qhoto.qhoto_api.domain.type.converter.QuestDurationConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -48,7 +50,7 @@ public class Feed {
     @Column(name = "feed_time",nullable = false)
     private LocalDateTime time;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = FeedStatusConverter.class)
     @Column(name = "feed_status", nullable = false)
     private FeedStatus status;
 
@@ -70,7 +72,7 @@ public class Feed {
     @Column(name = "quest_dfficulty",nullable = false)
     private Integer difficulty;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = QuestDurationConverter.class)
     @Column(name = "quest_duration",nullable = false)
     private QuestDuration duration;
 

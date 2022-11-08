@@ -125,7 +125,7 @@ public class FeedService {
                 .activeMonthly(activeMonthlyRepository.findMonthlyById(createFeedReq.getActiveMonthlyId()))
                 .image(dirName+"/"+createFeedReq.getFeedImage().getOriginalFilename())
                 .time(LocalDateTime.now())
-                .status(FeedStatus.U)
+                .status(FeedStatus.USING)
                 .questName(quest.getName())
                 .location(createFeedReq.getLocation())
                 .typeCode(quest.getQuestType().getCode())
@@ -148,7 +148,7 @@ public class FeedService {
                 .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .context(createCommentReq.getCommentContext())
                 .time(LocalDateTime.now())
-                .status(CommentStatus.U)
+                .status(CommentStatus.USING)
                 .build();
 
         commentRepository.save(comment);
@@ -161,7 +161,7 @@ public class FeedService {
 
     public void putComment(Long commentId){
         Comment comment = commentRepository.findCommentById(commentId);
-        comment.changeCommentStatus(CommentStatus.D);
+        comment.changeCommentStatus(CommentStatus.DISABLE);
     }
 
     public void postLike(LikeReq likeReq, User user){
