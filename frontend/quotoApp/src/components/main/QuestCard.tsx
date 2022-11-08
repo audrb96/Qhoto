@@ -8,6 +8,8 @@ import CardTemplate from './CardTemplate';
 interface Props {
   questType: string;
   questList: Quest[];
+  questIdx: number;
+  setQuestIdx: Function;
 }
 
 interface Quest {
@@ -22,7 +24,7 @@ interface Quest {
 const QuestCard: React.FC<Props> = props => {
   const viewRef: any = useRef();
 
-  const {questType, questList} = props;
+  const {questType, questList, questIdx, setQuestIdx} = props;
   const [nextQuestIdx, setNextQuestIdx] = useState(2);
   const [frontCard, setFrontCard] = useState(questList[0]);
   const [backCard, setBackCard] = useState(questList[1]);
@@ -34,6 +36,7 @@ const QuestCard: React.FC<Props> = props => {
     } else {
       setBackCard({...questList[nextQuestIdx]});
     }
+    setQuestIdx((questIdx + 1) % 3);
     setNextQuestIdx((nextQuestIdx + 1) % 3);
     setIsFront(!isFront);
   };
