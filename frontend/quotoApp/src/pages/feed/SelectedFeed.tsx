@@ -19,6 +19,7 @@ import {
   setComment,
   getSelectedFeed,
 } from '../../api/feed';
+import Video from 'react-native-video';
 
 function SelectedFeed({parentFunction, props}) {
   const [text, onChangeText] = useState('');
@@ -51,7 +52,7 @@ function SelectedFeed({parentFunction, props}) {
   const userInfo = useSelector((state: RootState) => state.user);
 
   useEffect(() => {}, [feed.commentList]);
-
+  console.log(feed.feedType);
   if (feed.userId) {
     return (
       <ScrollView style={{backgroundColor: 'white'}}>
@@ -113,18 +114,33 @@ function SelectedFeed({parentFunction, props}) {
             <Text>{feed.questName}</Text>
           </View>
         </View>
+
         <View style={{flex: 0.8, marginTop: 10}}>
-          <Image
-            style={{
-              width: '100%',
-              height: 300,
-              resizeMode: 'stretch',
-              borderRadius: 20,
-            }}
-            source={{
-              uri: feed.feedImage,
-            }}
-          />
+          {feed.feedType === 'VIDEO' ? (
+            <Video
+              source={{
+                uri: feed.feedImage,
+              }}
+              style={{width: '100%', height: 300, borderRadius: 20}}
+              // fullscreen={true}
+              resizeMode={'cover'}
+              repeat={true}
+              // controls={true}
+            />
+          ) : (
+            <Image
+              style={{
+                width: '100%',
+                height: 300,
+                resizeMode: 'stretch',
+                borderRadius: 20,
+              }}
+              source={{
+                uri: feed.feedImage,
+              }}
+            />
+          )}
+
           <View style={{flexDirection: 'row', marginTop: 5}}>
             <TouchableOpacity
               style={{flex: 0.12}}

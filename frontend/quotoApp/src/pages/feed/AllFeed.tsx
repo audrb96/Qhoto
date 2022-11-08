@@ -16,6 +16,7 @@ import SelectedFeed from './SelectedFeed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getAllFeeds, getSelectedFeed, setFeedMission} from '../../api/feed';
 import MissionModal from './MissionModal';
+import Video from 'react-native-video';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -97,35 +98,78 @@ function AllFeed({navigation}) {
       />
     </TouchableOpacity>
   );
-  const Item = ({content, width, height}) => (
-    <View
-      style={{
-        width,
-        height,
-        backgroundColor: 'gray',
-      }}>
-      <TouchableOpacity
-        onPress={() => {
-          getSelectedFeed(
-            content.feedId,
-            res => {
-              setComment(res.data);
-            },
-            err => {
-              console.log(err);
-            },
-          );
-          setModalVisible(true);
+
+  // content.feedId = 14, 33이 있다.
+  const Item = ({content, width, height}) =>
+    content.feedType === 'VIDEO' ? (
+      <View
+        style={{
+          width,
+          height,
+          backgroundColor: 'gray',
         }}>
-        <Image
-          style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
-          source={{
-            uri: content.feedImage,
-          }}
-        />
-      </TouchableOpacity>
-    </View>
-  );
+        {/* <Text>{content.feedImage}</Text> */}
+
+        <TouchableOpacity
+          onPress={() => {
+            getSelectedFeed(
+              content.feedId,
+              res => {
+                setComment(res.data);
+              },
+              err => {
+                console.log(err);
+              },
+            );
+            setModalVisible(true);
+          }}>
+          <Video
+            source={{
+              uri: content.feedImage,
+            }}
+            style={{width: '100%', height: '100%'}}
+            // fullscreen={true}
+            // resizeMode={'contain'}
+            resizeMode={'cover'}
+            // resizeMode={'stretch'}
+            repeat={true}
+            // controls={true}
+            paused={true}
+          />
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <View
+        style={{
+          width,
+          height,
+          backgroundColor: 'gray',
+        }}>
+        {/* <Text>{content.feedImage}</Text> */}
+
+        <TouchableOpacity
+          onPress={() => {
+            getSelectedFeed(
+              content.feedId,
+              res => {
+                setComment(res.data);
+              },
+              err => {
+                console.log(err);
+              },
+            );
+            setModalVisible(true);
+          }}>
+          <Image
+            style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
+            source={{
+              uri: content.feedImage,
+            }}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+
   const [containerWidth, setContainerWidth] = useState(0);
   const numColumns = 3;
   const parentFunction = () => {
