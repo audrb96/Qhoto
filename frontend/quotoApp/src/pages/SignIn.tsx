@@ -69,7 +69,7 @@ function SignIn({navigation}: SignInScreenProps) {
   };
 
   AsyncStorage.getItem('accessToken', (err, result) => {
-    console.log(result);
+    console.log('accessToken', result);
   });
 
   const signInWithGoogle = async () => {
