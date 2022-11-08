@@ -1,8 +1,10 @@
 package com.qhoto.qhoto_api.domain;
 
+import com.qhoto.qhoto_api.domain.type.FeedType;
 import com.qhoto.qhoto_api.domain.type.QuestDuration;
 import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import com.qhoto.qhoto_api.domain.type.converter.FeedStatusConverter;
+import com.qhoto.qhoto_api.domain.type.converter.FeedTypeConverter;
 import com.qhoto.qhoto_api.domain.type.converter.QuestDurationConverter;
 import lombok.*;
 
@@ -75,5 +77,10 @@ public class Feed {
     @Convert(converter = QuestDurationConverter.class)
     @Column(name = "quest_duration",nullable = false)
     private QuestDuration duration;
+
+    @Convert(converter = FeedTypeConverter.class)
+    @Column(name = "feed_type", nullable = false)
+    private FeedType feedType;
+
 
 }
