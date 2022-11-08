@@ -43,9 +43,7 @@ public class AuthController {
      */
     @PostMapping("/reissue")
     public ResponseEntity<AccessTokenRes> reissueToken(HttpServletRequest request) {
-        authProducer.reissueSendTo(request.getHeader("Authorization"));
-        String receiveToken = (String) rabbitTemplate.receiveAndConvert("AUTH_REISSUE");
-        return ResponseEntity.ok().body(authService.reissue(receiveToken));
+        return ResponseEntity.ok().body(authService.reissue(request.getHeader("Authorization")));
     }
 
     /**

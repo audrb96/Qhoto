@@ -1,11 +1,9 @@
 package com.qhoto.qhoto_api.api.controller;
 
-import com.qhoto.qhoto_api.api.repository.UserRepository;
 import com.qhoto.qhoto_api.api.service.LoginService;
 import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
-import com.qhoto.qhoto_api.dto.response.FriendRes;
 import com.qhoto.qhoto_api.dto.response.LoginRes;
 import com.qhoto.qhoto_api.dto.response.MyFeedRes;
 import com.qhoto.qhoto_api.dto.response.MyInfoRes;
@@ -71,11 +69,15 @@ public class UserController {
 
     /**
      * 회원 정보 수정 api
-     * @param user
-     * @param modifyUserReq
+     * @param userId
      * @return {@link String}
      * @throws IOException
      */
+    @GetMapping("/info/{userId}")
+    public ResponseEntity<?> readUserInfo(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getUserInfo(userId));
+    }
+
     @PutMapping("/user")
     public ResponseEntity<String> modifyUser(@AuthenticationPrincipal User user, @Validated ModifyUserReq modifyUserReq) throws IOException {
         userService.modifyUser(modifyUserReq, user);
@@ -87,8 +89,8 @@ public class UserController {
      * @return {@link List<MyFeedRes>}
      */
     @GetMapping("/mypage")
-    public ResponseEntity<List<MyFeedRes>> readMyFeed(){
-        return new ResponseEntity<>(userService.getMyFeed(),HttpStatus.OK);
+    public ResponseEntity<?> readMyFeed(@AuthenticationPrincipal User user){
+        return new ResponseEntity<>(userService.getMyFeed(user),HttpStatus.OK);
     }
 
     /**
