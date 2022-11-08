@@ -14,6 +14,7 @@ import {
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/reducer';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import QhotoHeader from '../../components/QhotoHeader';
@@ -26,7 +27,11 @@ import RNFetchBlob from 'rn-fetch-blob';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAppDispatch} from '../../store';
 import userSlice from '../../slices/user';
-import {getUserInfo} from '../../api/mypage';
+import {
+  editMyProfileApi,
+  getUserInfoApi,
+  getUserPointApi,
+} from '../../api/mypage';
 
 function MyPage({navigation}: null) {
   const dispatch = useAppDispatch();
@@ -38,7 +43,7 @@ function MyPage({navigation}: null) {
     navigation.navigate('QuestLog');
   };
   const goToEditMyProfile = () => {
-    navigation.navigate('EditMyProfile');
+    navigation.navigate('EditMyProfile', {userInfo: userInfo});
   };
 
   // // Todo: 왜 userPoint 만 못가져옴?? 숫자라서 그런가??
@@ -48,10 +53,83 @@ function MyPage({navigation}: null) {
   let nextColorName = '';
   let minPoint = 0;
   let maxPoint = 0;
-  const userPoint = 1500;
+  // const userPoint = 1500;
+  const [userPoint, setUserPoint] = useState(0);
+
+  const [userInfo, setUserInfo] = useState({
+    email: '',
+    joinDate: '',
+    userImage: '',
+    phone: '',
+    description: '',
+    nickname: '',
+    contactAgreeDate: '',
+    profileOpen: true,
+  });
+
+  useEffect(() => {
+    getUserInfoApi(
+      (res: any) => {
+        let {
+          email,
+          joinDate,
+          nickname,
+          phone,
+          profileOpen,
+          description,
+          userImage,
+          contactAgreeDate,
+        } = res.data;
+
+        setUserInfo({
+          email,
+          joinDate,
+          nickname,
+          phone,
+          profileOpen,
+          description,
+          userImage,
+          contactAgreeDate,
+        });
+
+        dispatch(
+          userSlice.actions.setUser({
+            email: userInfo.email,
+            joinDate: userInfo.joinDate,
+            userImage: userInfo.userImage,
+            phone: userInfo.phone,
+            nickname: userInfo.nickname,
+            description: userInfo.description,
+            contactAgreeDate: userInfo.contactAgreeDate,
+            profileOpen: userInfo.profileOpen,
+            loggedIn: true,
+          }),
+        );
+        console.log('getUserInfo-res : ', res);
+        // Todo: back 에서 point 주면 redux 에 넣어야 함
+        // Todo: 유저 point state 관리도 해줘야함
+      },
+      (err: any) => console.log('getUserInfo-err : ', err),
+    );
+    getUserPointApi(
+      res => {
+        console.log('getUserPointApi - res', res.data.exp.Total.point);
+        setUserPoint(res.data.exp.Total.point);
+        dispatch(
+          userSlice.actions.setUser({
+            userPoint: res.data.exp.Total.point,
+            loggedIn: true,
+          }),
+        );
+      },
+      (err: any) => {
+        console.log('getUserPointApi - err', err);
+      },
+    );
+  }, []);
 
   // Todo: 이것도 컴포넌트화 가능??
-  // Todo: 타입스크립트방식으로 해도 지저분하긴함..
+  // 타입스크립트방식으로 해도 지저분하긴함..
   if (userPoint < 50) {
     backgroundColor = '#F94720';
     colorName = '레드';
@@ -165,6 +243,7 @@ function MyPage({navigation}: null) {
       })
 
       .catch(err => {
+        console.log(err);
         console.log(err.message);
       });
   };
@@ -189,8 +268,8 @@ function MyPage({navigation}: null) {
       <Text style={{color: 'black'}}>완료</Text>
     </TouchableOpacity>
   ) : (
-    <FontAwesome5
-      name="edit"
+    <Ionicons
+      name="settings-outline"
       size={30}
       color="#3B28B1"
       // onPress={() => setEditable(true)}
@@ -199,65 +278,9 @@ function MyPage({navigation}: null) {
     />
   );
 
-  let [email, setEmail] = useState(
-    useSelector((state: RootState) => state.user.email),
-  );
-  let [joinDate, setJoinDate] = useState(
-    useSelector((state: RootState) => state.user.joinDate),
-  );
-  let [userImage, setUserImage] = useState(
-    useSelector((state: RootState) => state.user.userImage),
-  );
-  let [nickname, setNickname] = useState(
-    useSelector((state: RootState) => state.user.nickname),
-  );
-  let [phone, setPhone] = useState(
-    useSelector((state: RootState) => state.user.phone),
-  );
-  let [profileOpen, setProfileOpen] = useState(
-    useSelector((state: RootState) => state.user.profileOpen),
-  );
-
-  // const joinDate = useSelector((state: RootState) => state.user.joinDate);
-  // const userImage = useSelector((state: RootState) => state.user.userImage);
-  // const nickname = useSelector((state: RootState) => state.user.nickname);
-  // const email = useSelector((state: RootState) => state.user.email);
-
-  useEffect(() => {
-    getUserInfo(
-      // token,
-      (res: any) => {
-        let {email, joinDate, nickname, phone, profileOpen, userImage} =
-          res.data;
-        setEmail(email);
-        setJoinDate(joinDate);
-        setUserImage(userImage);
-        setNickname(nickname);
-        setPhone(phone);
-        setProfileOpen(profileOpen);
-        dispatch(
-          userSlice.actions.setUser({
-            email: email,
-            joinDate: joinDate,
-            nickname: nickname,
-            phone: phone,
-            profileOpen: profileOpen,
-            userImage: userImage,
-            loggedIn: true,
-          }),
-        );
-        console.log('getUserInfo-res : ', res);
-        console.log('');
-        // Todo: back 에서 point 주면 redux 에 넣어야 함
-        // Todo: 유저 point state 관리도 해줘야함
-      },
-      (err: any) => console.log('getUserInfo-err : ', err),
-    );
-  }, []);
-
   return (
     <SafeAreaView>
-      <QhotoHeader rightIcon={rightIcon} />
+      <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
       <View // 로그아웃 ~ 수정버튼
         style={{
           flexDirection: 'row',
@@ -274,7 +297,7 @@ function MyPage({navigation}: null) {
           <View style={{flex: 1, alignItems: 'center'}}>
             <View>
               <ImageModal
-                source={{uri: userImage}}
+                source={{uri: userInfo.userImage}}
                 resizeMode="cover"
                 modalImageResizeMode="contain"
                 style={{
@@ -293,16 +316,12 @@ function MyPage({navigation}: null) {
               </TouchableOpacity>
             </View>
 
-            <Text style={{fontSize: 16, color: 'black'}}>{nickname}</Text>
-            {editable === false ? (
-              <Text style={{fontSize: 12, color: 'black'}}>{introduction}</Text>
-            ) : (
-              <TextInput
-                style={{color: 'black'}}
-                value={introduction}
-                onChangeText={text => setIntroduction(text)}
-              />
-            )}
+            <Text style={{fontSize: 16, color: 'black'}}>
+              {userInfo.nickname}
+            </Text>
+            <Text style={{fontSize: 12, color: 'black'}}>
+              {userInfo.description}
+            </Text>
           </View>
         </View>
       </View>
@@ -391,11 +410,11 @@ function MyPage({navigation}: null) {
           <FontAwesome5 name="angle-right" size={18} color={'#3B28B1'} />
         </TouchableOpacity>
         <Text style={{color: 'black'}}> URI: {imageUri}</Text>
-        <Text style={{color: 'black'}}> joinDate: {joinDate}</Text>
-        <Text style={{color: 'black'}}> phone: {phone}</Text>
+        <Text style={{color: 'black'}}> joinDate: {userInfo.joinDate}</Text>
+        <Text style={{color: 'black'}}> phone: {userInfo.phone}</Text>
         <Text style={{color: 'black'}}>
           {' '}
-          profileOpen: {profileOpen === true ? 'true' : 'false'}
+          profileOpen: {userInfo.profileOpen === true ? 'true' : 'false'}
         </Text>
       </View>
 

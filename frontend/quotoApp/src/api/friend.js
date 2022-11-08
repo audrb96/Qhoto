@@ -3,16 +3,27 @@ import {apiInstance, createHeaders} from '.';
 const api = apiInstance();
 
 // 친구검색(친구조회 = 유저검색)
-async function findFriendApi(success, fail) {
+async function findFriendApi(nickname, success, fail) {
   await api
-    .get('/api/me', {headers: await createHeaders()})
+    .get(
+      `/api/friend/${nickname}`,
+      {params: {nickname: nickname}},
+      {headers: await createHeaders()},
+    )
+    .then(success)
+    .catch(fail);
+}
+
+// 친구요청(친구요청 + 요청수락)
+async function addFriendApi(resUserId, success, fail) {
+  await api
+    .post('/api/friend', resUserId, {headers: await createHeaders()})
     .then(success)
     .catch(fail);
 }
 
 // 친구목록
 async function friendListApi(success, fail) {
-  console.log('되냐');
   await api
     .get('/api/friend', {headers: await createHeaders()})
     .then(success)
@@ -27,4 +38,4 @@ async function receiveListApi(success, fail) {
     .catch(fail);
 }
 
-export {findFriendApi, friendListApi, receiveListApi};
+export {findFriendApi, addFriendApi, friendListApi, receiveListApi};
