@@ -1,18 +1,13 @@
 package com.qhoto.qhoto_api.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qhoto.qhoto_api.api.service.AuthService;
 import com.qhoto.qhoto_api.dto.response.AccessTokenRes;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.exception.ExpiredRefreshTokenException;
 import com.qhoto.qhoto_api.exception.NoUserByRefreshTokenException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
-import com.qhoto.qhoto_api.producer.AuthProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,9 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
-    private final ObjectMapper objectMapper;
-    private final AuthProducer authProducer;
-    private final RabbitTemplate rabbitTemplate;
 
     /**
      * JWT 토큰 재발급 컨트롤러
