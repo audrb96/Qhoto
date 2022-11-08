@@ -1,4 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
+
+import {RootState} from '../../store/reducer';
+import {useSelector} from 'react-redux';
 import {
   Text,
   View,
@@ -10,7 +13,12 @@ import {
 import {Avatar} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {setFeedLike, setFeedDisLike} from '../../api/feed';
+import {
+  setFeedLike,
+  setFeedDisLike,
+  setComment,
+  getSelectedFeed,
+} from '../../api/feed';
 
 function SelectedFeed({parentFunction, props}) {
   const [text, onChangeText] = useState('');
@@ -39,6 +47,10 @@ function SelectedFeed({parentFunction, props}) {
   ];
   const feed = props;
   const lastNameRef = useRef();
+
+  const userInfo = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {}, [feed.commentList]);
 
   if (feed.userId) {
     return (
@@ -117,18 +129,21 @@ function SelectedFeed({parentFunction, props}) {
             <TouchableOpacity
               style={{flex: 0.12}}
               onPress={() => {
+                console.log('피드아이디');
+                console.log(feed.feedId);
                 isLike === 'LIKE'
                   ? setFeedDisLike(
-                      4,
+                      feed.feedId,
                       res => {
                         setLike('UNLIKE');
                       },
                       err => {
-                        console.log(err);
+                        console.log('에러');
+                        console.log(err.response);
                       },
                     )
                   : setFeedLike(
-                      4,
+                      feed.feedId,
                       res => {
                         setLike('LIKE');
                       },
@@ -153,7 +168,7 @@ function SelectedFeed({parentFunction, props}) {
         </View>
 
         <TextInput
-          style={isFocused ? {borderBottomWidth: 1} : {}}
+          style={isFocused || text ? {borderBottomWidth: 1} : {}}
           onFocus={() => setIsFocused(true)}
           onBlur={() => {
             setIsFocused(false);
@@ -174,6 +189,24 @@ function SelectedFeed({parentFunction, props}) {
                   height: 30,
                   justifyContent: 'center',
                   alignItems: 'center',
+                }}
+                onPress={() => {
+                  setComment(
+                    [feed.feedId, text],
+                    res => {
+                      console.log('댓글입력완료');
+
+                      console.log(feed.commentList);
+                      feed.commentList.push({
+                        commentContext: text,
+                        userId: userInfo.nickname,
+                      });
+                      onChangeText('');
+                    },
+                    err => {
+                      console.log(err);
+                    },
+                  );
                 }}>
                 <Text>댓글</Text>
               </TouchableOpacity>

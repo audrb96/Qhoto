@@ -19,20 +19,34 @@ async function getSelectedFeed(feedId, success, fail) {
     .catch(fail);
 }
 
-async function setFeedLike(test, success, fail) {
+async function setFeedLike(Id, success, fail) {
   await api
-    .post('/api/feed/like', {feedId: test}, {headers: await createHeaders()})
+    .post('/api/feed/like', {feedId: Id}, {headers: await createHeaders()})
     .then(success)
     .catch(fail);
 }
-async function setFeedDisLike(test, success, fail) {
+async function setFeedDisLike(Id, success, fail) {
   await api
     .delete('/api/feed/like', {
       headers: await createHeaders(),
-      data: {feedId: test},
+      data: {feedId: Id},
     })
     .then(success)
     .catch(fail);
 }
 
-export {getAllFeeds, getSelectedFeed, setFeedLike, setFeedDisLike};
+async function setComment(params, success, fail) {
+  console.log(params);
+  await api
+    .post(
+      '/api/feed/comment',
+      {feedId: params[0], commentContext: params[1]},
+      {
+        headers: await createHeaders(),
+      },
+    )
+    .then(success)
+    .catch(fail);
+}
+
+export {getAllFeeds, getSelectedFeed, setFeedLike, setFeedDisLike, setComment};
