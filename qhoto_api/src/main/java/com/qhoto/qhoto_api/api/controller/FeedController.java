@@ -26,13 +26,16 @@ public class FeedController {
 
     private final FeedService feedService;
 
-
-
     @GetMapping("/all")
     public ResponseEntity<?> readFeed(@ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
         return new ResponseEntity<>(feedService.getFeed(feedAllReq, pageable),HttpStatus.OK);
     }
 
+    /**
+     *
+     * @param feedId
+     * @return
+     */
     @GetMapping("/all/{feedId}")
     public ResponseEntity<?> readFeedDetail(@AuthenticationPrincipal User user, @PathVariable Long feedId){
         return new ResponseEntity<>(feedService.getFeedDetail(feedId, user), HttpStatus.OK);
