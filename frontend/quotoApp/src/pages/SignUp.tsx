@@ -53,6 +53,16 @@ function SignUp({navigation}: SignUpScreenProps) {
     //     '비밀번호는 영문,숫자,특수문자($@^!%*#?&)를 모두 포함하여 8자 이상 입력해야합니다.',
     //   );
     // }
+
+    // async function editMyProfileApi(newUserInfo, success, fail) {
+    //   console.log('newUserInfo', newUserInfo);
+    //   await fileApi
+    //     // Body
+    //     .put('/api/user', newUserInfo, {headers: await createHeaders()})
+    //     .then(success)
+    //     .catch(fail);
+    // }
+
     console.log(phone, name, nickname);
     Alert.alert('알림', '회원가입 되었습니다.');
   }, [phone, name, nickname]);

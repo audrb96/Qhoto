@@ -1,5 +1,6 @@
 import React, {useCallback, useRef, useState, useEffect} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   ImageBackground,
@@ -14,6 +15,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FlatList, TextInput} from 'react-native-gesture-handler';
 import {Avatar, List} from 'react-native-paper';
 import ImageModal from 'react-native-image-modal';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 import {
   findFriendApi,
   friendListApi,
@@ -28,6 +31,14 @@ function FindFriend() {
   const [selectedId, setSelectedId] = useState(null);
 
   const [targetId, setTargetId] = useState('');
+  const [searchResult, setSearchResult] = useState({
+    userId: 0,
+    isFriend: '',
+    nickName: '',
+    email: '',
+    profileImg: '',
+    point: 0,
+  });
   const emailRef = useRef<TextInput | null>(null);
   const nameRef = useRef<TextInput | null>(null);
 
@@ -47,6 +58,43 @@ function FindFriend() {
       },
     );
   }, []);
+
+  let iconName = '';
+  let iconOrder = '';
+  const relationIcon = () => {
+    if (searchResult.isFriend === 'GET') {
+      // 내가 받음
+      iconName = 'user-check';
+      iconOrder = '친구 수락';
+    } else if (searchResult.isFriend === 'REQUEST') {
+      // 내가 보낸(아직 받지않은)
+      iconName = 'user-check';
+      iconOrder = '친구 요청';
+    } else if (searchResult.isFriend === 'FRIEND') {
+      iconName = 'user-friends';
+      iconOrder = '친구';
+    } else if (searchResult.isFriend === 'DISCONNECTED') {
+      iconName = 'user-plus';
+      iconOrder = '친구 요청';
+    } else if (searchResult.isFriend === null) {
+      iconName = 'user-plus';
+      iconOrder = '친구 요청';
+    }
+    return (
+      <FontAwesome5
+        name={iconName}
+        size={30}
+        color="#3B28B1"
+        // style={{
+        //   position: 'absolute',
+        //   width: 40,
+        //   height: 40,
+        //   top: -10,
+        //   left: 20,
+        // }}
+      />
+    );
+  };
 
   // 친구 리스트
   useEffect(() => {
@@ -68,10 +116,14 @@ function FindFriend() {
       nickname,
       (res: any) => {
         console.log('findFriendApi - res', res);
+        setSearchResult(res.data);
       },
       (err: any) => {
-        console.log('findFriendApi - err', err);
         console.log('findFriendApi - err', err.response);
+        console.log('findFriendApi - err', err.response.data.code);
+        if (err.response.data.code === 'U005') {
+          Alert.alert('알림', '해당 닉네임을 가진 유저가 없어');
+        }
       },
     );
   };
@@ -267,7 +319,7 @@ function FindFriend() {
                 }}>
                 <View>
                   <ImageModal
-                    source={{uri: 'http://placeimg.com/480/480/any'}}
+                    source={{uri: searchResult.profileImg}}
                     resizeMode="cover"
                     modalImageResizeMode="contain"
                     style={{
@@ -283,26 +335,25 @@ function FindFriend() {
                   <Avatar.Image
                     // badge
                     size={22}
-                    source={{uri: 'http://placeimg.com/480/480/any'}}
+                    source={{uri: searchResult.profileImg}} // Todo
                   />
-                  <Text style={{color: 'black'}}>{DATA[0].nickname}</Text>
+                  <Text style={{color: 'black'}}>{searchResult.nickName}</Text>
                 </View>
                 <Text style={{color: 'black'}}>
-                  {DATA[0].profileId.split('@', 1)[0]}
+                  {searchResult.email.split('@', 1)[0]}
                 </Text>
                 <TouchableOpacity
                   style={{
-                    width: 30,
-                    height: 30,
-                    backgroundColor: 'red',
+                    height: 40,
+                    backgroundColor: 'yellow',
                   }}
-                  onPress={() => addFriend(DATA[0].id)}>
-                  <AntDesign
-                    name="adduser"
-                    size={30}
-                    color={'#3B28B1'}
-                    // Todo: 검색한 유저와의 친구상태에 따라 아이콘 달라야 함
-                  />
+                  onPress={() => addFriend(searchResult.userId)}>
+                  <View style={{flexDirection: 'row'}}>
+                    {relationIcon()}
+                    <Text style={{color: 'black', fontSize: 15}}>
+                      {iconOrder}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             </View>

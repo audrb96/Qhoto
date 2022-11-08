@@ -49,8 +49,11 @@ function SignIn({navigation}: SignInScreenProps) {
           token.accessToken,
           (res: any) => {
             AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
-              console.log(res.data.accessToken);
+              console.log('토큰 저장 완료', res.data);
               console.log('토큰 저장 완료');
+              if (res.data.isJoined === 'false') {
+                navigation.navigate('SignUp');
+              }
             });
             const accessToken = res.data.accessToken;
             dispatch(
