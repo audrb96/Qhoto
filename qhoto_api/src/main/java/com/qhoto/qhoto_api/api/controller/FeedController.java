@@ -76,7 +76,7 @@ public class FeedController {
     @PostMapping("/upload/image")
     public ResponseEntity<HttpStatus> createFeed(@AuthenticationPrincipal User user ,@Validated CreateFeedReq createFeedReq) throws IOException {
         log.info("createFeedReq = {}",createFeedReq);
-//        feedService.postFeed(createFeedReq,user);
+        feedService.postFeed(createFeedReq,user);
         return ResponseEntity.ok().build();
     }
 
@@ -89,7 +89,7 @@ public class FeedController {
      */
     @PostMapping("/upload/video")
     public ResponseEntity<HttpStatus> createVideoFeed(@AuthenticationPrincipal User user,@Validated CreateFeedReq createFeedReq) throws IOException {
-//        feedService.postVideoFeed(createFeedReq,user);
+        feedService.postVideoFeed(createFeedReq,user);
         return ResponseEntity.ok().build();
     }
 
