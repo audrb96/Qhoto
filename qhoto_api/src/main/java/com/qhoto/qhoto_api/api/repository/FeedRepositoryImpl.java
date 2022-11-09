@@ -56,6 +56,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .where(feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
                         feedTypeEq(feedAllReq.getDuration())
                 )
+                .orderBy(feed.time.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -68,7 +69,9 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .from(feed,feedLike,comment)
                 .where(feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
                         feedTypeEq(feedAllReq.getDuration())
-                );
+                )
+                .orderBy(feed.time.desc())
+                ;
         return PageableExecutionUtils.getPage(feedList, pageable, countQuery::fetchCount);
     }
 
@@ -86,6 +89,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike,feed).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
                         ExpressionUtils.as(JPAExpressions.select(feedLike.count()).from(feedLike).where(feedLike.feed.id.eq(feed.id)),"likeCount"),
                         user.nickname,
+                        comment.user.nickname,
                         comment.user.image,
                         user.image,
                         comment.time,
@@ -100,6 +104,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         feedTypeEq(feedAllReq.getDuration())
                         ,user.id.in(JPAExpressions.select(friend.followee.id).from(friend).where(friend.follower.id.eq(userId)))
                 ).groupBy(feed.id)
+                .orderBy(feed.time.desc())
                 .fetch();
 
         JPAQuery<FeedFriendDto> countQuery = jpaQueryFactory
@@ -114,6 +119,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike,feed).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
                         ExpressionUtils.as(JPAExpressions.select(feedLike.count()).from(feedLike).where(feedLike.feed.id.eq(feed.id)),"likeCount"),
                         user.nickname,
+                        comment.user.nickname,
                         comment.user.image,
                         user.image,
                         comment.time,
@@ -127,7 +133,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
                         feedTypeEq(feedAllReq.getDuration())
                         ,user.id.in(JPAExpressions.select(friend.followee.id).from(friend).where(friend.follower.id.eq(userId)))
-                ).groupBy(feed.id);
+                ).groupBy(feed.id)
+                .orderBy(feed.time.desc());
         return PageableExecutionUtils.getPage(feedFriendList, pageable, countQuery::fetchCount);
     }
 
