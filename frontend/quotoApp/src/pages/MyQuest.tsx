@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   Pressable,
@@ -12,16 +12,16 @@ import Carousel from 'react-native-reanimated-carousel';
 import {launchCamera} from 'react-native-image-picker';
 import Modal from 'react-native-modal';
 import PhotoEditor from 'react-native-photo-editor';
-import RNFS from 'react-native-fs';
 
 import QuestCard from '../components/main/QuestCard';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getQuestList, uploadVideo, uploadPhoto} from '../api/quest';
 
 const questTypes = ['DAILY', 'WEEKLY', 'MONTHLY'];
 
 interface Quest {
+  activeId: number;
   questId: number;
   questName: string;
   questType: string;
@@ -31,33 +31,60 @@ interface Quest {
 }
 
 const {width, height} = Dimensions.get('window');
-console.log(RNFS.DocumentDirectoryPath);
 
-function Settings() {
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [photo, setPhoto] = React.useState('');
+function MyQuest() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [questTypeIdx, setQuestTypeIdx] = useState(0);
+  const [dailyQuestIdx, setDailyQuestIdx] = useState(0);
+  const [weeklyQuestIdx, setWeeklyQuestIdx] = useState(0);
+  const [monthlyQuestIdx, setMonthlyQuestIdx] = useState(0);
+  const [dailyQuestList, setDailyQuestList] = useState<Quest[]>();
+  const [weeklyQuestList, setWeeklyQuestList] = useState<Quest[]>();
+  const [monthlyQuestList, setMonthlyQuestList] = useState<Quest[]>();
+
+  const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
+
+  useEffect(() => {
+    getQuestList(
+      (res: any) => {
+        console.log(res.data);
+        setDailyQuestList(res.data.daily);
+        setWeeklyQuestList(res.data.weekly);
+        setMonthlyQuestList(res.data.monthly);
+      },
+      (err: any) => {
+        console.log(err.response);
+      },
+    );
+  }, []);
 
   const questLists: Quest[][] = [
     [
       {
+        activeId: 1,
         questId: 1,
-        questName: '일회용기 쓰지 않기',
+        // questName: '일회용기 쓰지 않기',
+        questName: '1',
         questType: '환경',
         questScore: 100,
         questDifficulty: 1,
         questImage: '',
       },
       {
+        activeId: 2,
         questId: 2,
-        questName: '하루 3km 뛰기',
+        // questName: '하루 3km 뛰기',
+        questName: '2',
         questType: '건강',
         questScore: 200,
         questDifficulty: 2,
         questImage: '',
       },
       {
+        activeId: 3,
         questId: 3,
-        questName: '보라색이 들어간 옷 입기',
+        // questName: '보라색이 들어간 옷 입기',
+        questName: '3',
         questType: '색깔',
         questScore: 300,
         questDifficulty: 3,
@@ -66,24 +93,30 @@ function Settings() {
     ],
     [
       {
+        activeId: 4,
         questId: 4,
-        questName: '고양이 사진찍기',
+        // questName: '고양이 사진찍기',
+        questName: '1',
         questType: '일상',
         questScore: 200,
         questDifficulty: 1,
         questImage: '',
       },
       {
+        activeId: 5,
         questId: 5,
-        questName: '하루 한끼 비건식단으로 먹어보기',
+        // questName: '하루 한끼 비건식단으로 먹어보기',
+        questName: '2',
         questType: '건강',
         questScore: 400,
         questDifficulty: 2,
         questImage: '',
       },
       {
+        activeId: 6,
         questId: 6,
-        questName: '친구에게 꽃 선물해주기',
+        // questName: '친구에게 꽃 선물해주기',
+        questName: '3',
         questType: '이색',
         questScore: 600,
         questDifficulty: 3,
@@ -92,24 +125,30 @@ function Settings() {
     ],
     [
       {
+        activeId: 7,
         questId: 7,
-        questName: '다같이 단풍산 등산하기',
+        // questName: '다같이 단풍산 등산하기',
+        questName: '1',
         questType: '건강',
         questScore: 300,
         questDifficulty: 1,
         questImage: '',
       },
       {
+        activeId: 8,
         questId: 8,
-        questName: '할로윈 페스티벌 참여해보기',
+        // questName: '할로윈 페스티벌 참여해보기',
+        questName: '2',
         questType: '이색',
         questScore: 600,
         questDifficulty: 2,
         questImage: '',
       },
       {
+        activeId: 9,
         questId: 9,
-        questName: '브라질리언 왁싱 받아보기',
+        // questName: '브라질리언 왁싱 받아보기',
+        questName: '3',
         questType: '일상',
         questScore: 900,
         questDifficulty: 3,
@@ -118,56 +157,19 @@ function Settings() {
     ],
   ];
 
-  const savePhoto = (uri: string) => {
-    let photoPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
-    console.log(RNFS.DocumentDirectoryPath + '/photo.jpg');
-    RNFS.moveFile(uri, photoPath)
-      .then(() => {
-        PhotoEditor.Edit({
-          path: RNFS.DocumentDirectoryPath + '/photo.jpg',
-          // stickers: [
-          //   'sticker0',
-          //   'sticker1',
-          //   'sticker2',
-          //   'sticker3',
-          //   'sticker4',
-          //   'sticker5',
-          //   'sticker6',
-          //   'sticker7',
-          //   'sticker8',
-          //   'sticker9',
-          //   'sticker10',
-          // ],
-          // hiddenControls: [
-          //   'clear',
-          //   'crop',
-          //   'draw',
-          //   'save',
-          //   'share',
-          //   'sticker',
-          //   'text',
-          // ],
-          colors: undefined,
-          onDone: async res => {
-            // const response = await RNFS.readFile(
-            //   RNFS.DocumentDirectoryPath + '/photo.jpg',
-            // );
-            console.log(res);
-            // setPhoto(response);
-            setModalVisible(false);
-          },
-          onCancel: () => {
-            console.log('on cancel');
-          },
-        });
-      })
-      .catch(err => {
-        console.log(err.message);
-      });
+  const selectQuestList = (index: number) => {
+    if (index === 0) {
+      return dailyQuestList;
+    } else if (index === 1) {
+      return weeklyQuestList;
+    } else if (index === 2) {
+      return monthlyQuestList;
+    }
   };
 
   const handlePhotoClick = () => {
     launchCamera({...options, mediaType: 'photo'}, onPickImage);
+    setModalVisible(false);
   };
 
   const handleVideoClick = () => {
@@ -175,6 +177,7 @@ function Settings() {
   };
 
   const options = {
+    mediaType: 'video',
     videoQuality: 'high',
     durationLimit: 10,
     maxWidth: 768,
@@ -187,10 +190,138 @@ function Settings() {
     if (res.didCancel || !res) {
       return;
     }
-    savePhoto(res.assets[0].uri);
+    if (res.assets[0].type == 'image/jpeg') savePhoto(res.assets[0].uri);
+    else if (res.assets[0].type == 'video/mp4') saveVideo(res.assets[0].uri);
   };
 
-  return (
+  const saveVideo = (uri: string) => {
+    console.log(uri);
+    const uriPath = uri.split('//').pop();
+    const videoName = uri.split('/').pop();
+
+    const data = new FormData();
+    data.append('feedImage', {
+      name: videoName,
+      type: 'video/mp4',
+      uri: 'file://' + uriPath,
+    });
+    data.append('location', '멀티캠퍼스');
+
+    if (questTypeIdx === 0) {
+      data.append('activeDailyId', dailyQuestList[dailyQuestIdx].activeId);
+      data.append('questId', dailyQuestList[dailyQuestIdx].questId);
+    } else if (questTypeIdx === 1) {
+      data.append('activeWeeklyId', weeklyQuestList[weeklyQuestIdx].activeId);
+      data.append('questId', weeklyQuestList[weeklyQuestIdx].questId);
+    } else if (questTypeIdx === 2) {
+      data.append(
+        'activeMonthlyId',
+        monthlyQuestList[monthlyQuestIdx].activeId,
+      );
+      data.append('questId', monthlyQuestList[monthlyQuestIdx].questId);
+    }
+
+    uploadVideo(
+      data,
+      (res: any) => {
+        getQuestList(
+          (res: any) => {
+            console.log(res.data);
+            setDailyQuestList(res.data.daily);
+            setWeeklyQuestList(res.data.weekly);
+            setMonthlyQuestList(res.data.monthly);
+          },
+          (err: any) => {
+            console.log(err.response);
+          },
+        );
+      },
+      (err: any) => console.log(err.response.data),
+    );
+  };
+
+  const savePhoto = (uri: string) => {
+    const uriPath = uri.split('//').pop();
+    const imageName = uri.split('/').pop();
+
+    PhotoEditor.Edit({
+      path: uriPath,
+      // stickers: [
+      //   'sticker0',
+      //   'sticker1',
+      //   'sticker2',
+      //   'sticker3',
+      //   'sticker4',
+      //   'sticker5',
+      //   'sticker6',
+      //   'sticker7',
+      //   'sticker8',
+      //   'sticker9',
+      //   'sticker10',
+      // ],
+      // hiddenControls: [
+      //   'clear',
+      //   'crop',
+      //   'draw',
+      //   'save',
+      //   'share',
+      //   'sticker',
+      //   'text',
+      // ],
+      colors: undefined,
+      onDone: async res => {
+        const data = new FormData();
+        data.append('feedImage', {
+          name: imageName,
+          type: 'image/jpeg',
+          uri: 'file://' + uriPath,
+        });
+        data.append('location', '멀티캠퍼스');
+
+        if (questTypeIdx === 0) {
+          data.append('activeDailyId', dailyQuestList[dailyQuestIdx].activeId);
+          data.append('questId', dailyQuestList[dailyQuestIdx].questId);
+        } else if (questTypeIdx === 1) {
+          data.append(
+            'activeWeeklyId',
+            weeklyQuestList[weeklyQuestIdx].activeId,
+          );
+          data.append('questId', weeklyQuestList[weeklyQuestIdx].questId);
+        } else if (questTypeIdx === 2) {
+          data.append(
+            'activeMonthlyId',
+            monthlyQuestList[monthlyQuestIdx].activeId,
+          );
+          data.append('questId', monthlyQuestList[monthlyQuestIdx].questId);
+        }
+
+        await uploadPhoto(
+          data,
+          (res: any) => {
+            getQuestList(
+              (res: any) => {
+                console.log(res.data);
+                setDailyQuestList(res.data.daily);
+                setWeeklyQuestList(res.data.weekly);
+                setMonthlyQuestList(res.data.monthly);
+              },
+              (err: any) => {
+                console.log(err.response);
+              },
+            );
+          },
+          (err: any) => console.log(err.response.data),
+        );
+      },
+      onCancel: () => {
+        console.log('on cancel');
+      },
+    });
+  };
+
+  return dailyQuestList === undefined ||
+    weeklyQuestList == undefined ||
+    monthlyQuestList === undefined ? null : (
     <View style={styles.body}>
       <View style={styles.questCardContainer}>
         <Carousel
@@ -203,12 +334,21 @@ function Settings() {
             parallaxScrollingOffset: 160,
           }}
           data={questTypes}
-          scrollAnimationDuration={1000}
-          onSnapToItem={index => console.log('current index:', index)}
+          scrollAnimationDuration={500}
+          onSnapToItem={index => setQuestTypeIdx(index)}
           renderItem={({index}) => (
             <QuestCard
               questType={questTypes[index]}
-              questList={questLists[index]}
+              questList={selectQuestList(index)}
+              questIdx={
+                index === 0
+                  ? dailyQuestIdx
+                  : index === 1
+                  ? weeklyQuestIdx
+                  : monthlyQuestIdx
+              }
+              setQuestIdx={functions[index]}
+              isComplete={selectQuestList(index)?.length === 1 ? true : false}
             />
           )}
         />
@@ -224,7 +364,6 @@ function Settings() {
             style={styles.questButton}
             onPress={() => {
               setModalVisible(!modalVisible);
-              // const result = launchCamera(options, onPickImage);
             }}>
             <Icon name="camera" color="white" size={50} />
           </Pressable>
@@ -293,4 +432,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default MyQuest;

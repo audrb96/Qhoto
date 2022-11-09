@@ -8,9 +8,13 @@ import CardTemplate from './CardTemplate';
 interface Props {
   questType: string;
   questList: Quest[];
+  questIdx: number;
+  setQuestIdx: Function;
+  isComplete: boolean;
 }
 
 interface Quest {
+  activeId: number;
   questId: number;
   questName: string;
   questType: string;
@@ -22,10 +26,12 @@ interface Quest {
 const QuestCard: React.FC<Props> = props => {
   const viewRef: any = useRef();
 
-  const {questType, questList} = props;
+  const {questType, questList, questIdx, setQuestIdx, isComplete} = props;
   const [nextQuestIdx, setNextQuestIdx] = useState(2);
   const [frontCard, setFrontCard] = useState(questList[0]);
-  const [backCard, setBackCard] = useState(questList[1]);
+  const [backCard, setBackCard] = useState(
+    isComplete ? questList[0] : questList[1],
+  );
   const [isFront, setIsFront] = useState(true);
 
   const handleFlip = () => {
@@ -34,6 +40,7 @@ const QuestCard: React.FC<Props> = props => {
     } else {
       setBackCard({...questList[nextQuestIdx]});
     }
+    setQuestIdx((questIdx + 1) % 3);
     setNextQuestIdx((nextQuestIdx + 1) % 3);
     setIsFront(!isFront);
   };
@@ -42,7 +49,7 @@ const QuestCard: React.FC<Props> = props => {
     viewRef.current.flipLeft();
   };
 
-  return (
+  return frontCard === undefined || backCard === undefined ? null : (
     <View style={styles.container}>
       <Text style={styles.questType}>{questType}</Text>
       <GestureFlipView
@@ -52,17 +59,19 @@ const QuestCard: React.FC<Props> = props => {
         onFlipEnd={handleFlip}
         style={{flex: 1}}
         ref={(ref: any) => (viewRef.current = ref)}>
-        {/* {renderFront()}
-        {renderBack()} */}
         <CardTemplate
           questName={frontCard.questName}
           questType={frontCard.questType}
+          questImage={frontCard.questImage}
           handleRerollClick={handleRerollClick}
+          isComplete={isComplete}
         />
         <CardTemplate
           questName={backCard.questName}
           questType={backCard.questType}
+          questImage={frontCard.questImage}
           handleRerollClick={handleRerollClick}
+          isComplete={isComplete}
         />
       </GestureFlipView>
     </View>

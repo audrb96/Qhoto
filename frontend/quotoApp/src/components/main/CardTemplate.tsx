@@ -1,34 +1,43 @@
 import React from 'react';
-import {Dimensions, StyleSheet, View, Text} from 'react-native';
-import {Card} from 'react-native-paper';
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  Text,
+  ImageBackground,
+} from 'react-native';
+
+import info from '../info';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface Props {
   questName: string;
   questType: string;
+  questImage: string;
   handleRerollClick: any;
+  isComplete: boolean;
 }
 
 const {width, height} = Dimensions.get('window');
 
-const questTypes: {[key: string]: {iconName: string; colorCode: string}} = {
-  건강: {iconName: 'running', colorCode: '#C25445'},
-  일상: {iconName: 'sun', colorCode: '#ECB21D'},
-  환경: {iconName: 'leaf', colorCode: '#70A348'},
-  이색: {iconName: 'star', colorCode: '#2271CE'},
-  색깔: {iconName: 'palette', colorCode: '#592CB8'},
-};
+const questTypes: {
+  [key: string]: {typeName: string; iconName: string; colorCode: string};
+} = info.questTypes;
 
 const CardTemplate: React.FC<Props> = props => {
-  const {questName, questType, handleRerollClick} = props;
+  const {questName, questType, questImage, handleRerollClick, isComplete} =
+    props;
 
   return (
     <View style={styles.card}>
-      <Icon
-        name="sync"
-        style={styles.rerollIcon}
-        onPress={handleRerollClick}></Icon>
+      {isComplete ? null : (
+        <Icon
+          name="sync"
+          style={styles.rerollIcon}
+          onPress={handleRerollClick}
+        />
+      )}
       <View style={styles.labelContainer}>
         <View
           style={[
@@ -39,7 +48,7 @@ const CardTemplate: React.FC<Props> = props => {
           ]}>
           <Text style={styles.labelContent}>
             <Icon name={questTypes[questType].iconName} size={15} />
-            &nbsp;&nbsp; {questType} 퀘스트
+            &nbsp;&nbsp; {questTypes[questType].typeName} 퀘스트
           </Text>
         </View>
       </View>

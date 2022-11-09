@@ -31,6 +31,7 @@ import {KAKAO_LOGIN_BUTTON} from '../image';
 import {LOGIN_LOGO} from '../image';
 
 import {loginKakao, loginGoogle} from '../api/user';
+import {getUserInfoApi} from '../api/mypage';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -43,37 +44,63 @@ function SignIn({navigation}: SignInScreenProps) {
 
   const signInWithKakao = async (): Promise<void> => {
     await login().then((token: any) => {
-      console.log(11, token);
       if (token) {
         loginKakao(
           token.accessToken,
-          (res: any) => {
-            AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
-              console.log('토큰 저장 완료', res.data);
-              console.log('토큰 저장 완료');
-              // if (res.data.isJoined === 'false') {
-              //   return navigation.navigate('SignUp');
-              // }
-            });
-            const accessToken = res.data.accessToken;
-            dispatch(
-              userSlice.actions.setUser({
-                token: accessToken,
-                loggedIn: true,
-              }),
+          async (res: any) => {
+            await AsyncStorage.setItem(
+              'accessToken',
+              res.data.accessToken,
+              () => {
+                console.log('accessToken : ' + res.data.accessToken);
+              },
+            );
+
+            await AsyncStorage.setItem(
+              'refreshToken',
+              res.data.refreshToken,
+              () => {
+                console.log('refreshToken : ' + res.data.refreshToken);
+              },
+            );
+
+            getUserInfoApi(
+              (response: any) => {
+                let {
+                  nickname,
+                  // email,
+                  // joinDate,
+                  // phone,
+                  // profileOpen,
+                  // description,
+                  // userImage,
+                  // contactAgreeDate,
+                } = response.data;
+
+                dispatch(
+                  userSlice.actions.setUser({
+                    nickname: nickname,
+                    // email: email,
+                    // joinDate: joinDate,
+                    // userImage: userImage,
+                    // phone: phone,
+                    // description: description,
+                    // contactAgreeDate: contactAgreeDate,
+                    // profileOpen: profileOpen,
+                    loggedIn: true,
+                  }),
+                );
+              },
+              (err: any) => console.log(err),
             );
           },
           (err: any) => {
-            console.log(err);
+            console.log(err.response);
           },
         );
       }
     });
   };
-
-  AsyncStorage.getItem('accessToken', (err, result) => {
-    console.log('accessToken', result);
-  });
 
   const signInWithGoogle = async () => {
     GoogleSignin.configure({
@@ -90,23 +117,49 @@ function SignIn({navigation}: SignInScreenProps) {
               loginGoogle(
                 userInfo.idToken,
                 (res: any) => {
-                  console.log('구글로그인', res);
-                  if (res.data.isJoined === false) {
-                    return navigation.navigate('SignUp');
-                  }
                   AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
                     () => {
-                      console.log('토큰 저장 완료');
+                      console.log('accessToken : ' + res.data.accessToken);
                     },
                   );
-                  const accessToken = res.data.accessToken;
-                  dispatch(
-                    userSlice.actions.setUser({
-                      token: accessToken,
-                      loggedIn: true,
-                    }),
+                  AsyncStorage.setItem(
+                    'refreshToken',
+                    res.data.refreshToken,
+                    () => {
+                      console.log('refreshToken : ' + res.data.refreshToken);
+                    },
+                  );
+
+                  getUserInfoApi(
+                    (response: any) => {
+                      let {
+                        nickname,
+                        // email,
+                        // joinDate,
+                        // phone,
+                        // profileOpen,
+                        // description,
+                        // userImage,
+                        // contactAgreeDate,
+                      } = response.data;
+
+                      dispatch(
+                        userSlice.actions.setUser({
+                          nickname: nickname,
+                          // email: email,
+                          // joinDate: joinDate,
+                          // userImage: userImage,
+                          // phone: phone,
+                          // description: description,
+                          // contactAgreeDate: contactAgreeDate,
+                          // profileOpen: profileOpen,
+                          loggedIn: true,
+                        }),
+                      );
+                    },
+                    (err: any) => console.log(err),
                   );
                 },
                 (err: any) => {
@@ -134,7 +187,10 @@ function SignIn({navigation}: SignInScreenProps) {
         />
         <Pressable style={{marginTop: 10}} onPress={signInWithKakao}>
           <View style={{elevation: 5}}>
-            <Image source={KAKAO_LOGIN_BUTTON} />
+            <Image
+              source={KAKAO_LOGIN_BUTTON}
+              style={styles.kakaoLoginButton}
+            />
           </View>
         </Pressable>
       </View>
@@ -156,6 +212,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  kakaoLoginButton: {
+    elevation: 5,
   },
 });
 
