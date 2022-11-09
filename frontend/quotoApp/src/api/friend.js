@@ -5,11 +5,8 @@ const api = apiInstance();
 // 친구검색(친구조회 = 유저검색)
 async function findFriendApi(nickname, success, fail) {
   await api
-    .get(
-      `/api/friend/${nickname}`,
-      {params: {nickname: nickname}},
-      {headers: await createHeaders()},
-    )
+    // path variable
+    .get(`/api/friend/find/${nickname}`, {headers: await createHeaders()})
     .then(success)
     .catch(fail);
 }

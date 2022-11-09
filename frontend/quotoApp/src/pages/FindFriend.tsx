@@ -1,5 +1,6 @@
 import React, {useCallback, useRef, useState, useEffect} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   ImageBackground,
@@ -14,6 +15,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FlatList, TextInput} from 'react-native-gesture-handler';
 import {Avatar, List} from 'react-native-paper';
 import ImageModal from 'react-native-image-modal';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import QhotoHeader from './../components/QhotoHeader';
+
 import {
   findFriendApi,
   friendListApi,
@@ -23,11 +27,19 @@ import {
 
 const {width, height} = Dimensions.get('window');
 
-function FindFriend() {
+function FindFriend({navigation, route}) {
   const [text, onChangeText] = useState('');
   const [selectedId, setSelectedId] = useState(null);
 
   const [targetId, setTargetId] = useState('');
+  const [searchResult, setSearchResult] = useState({
+    userId: 0,
+    isFriend: '',
+    nickName: '',
+    email: '',
+    profileImg: '',
+    point: 0,
+  });
   const emailRef = useRef<TextInput | null>(null);
   const nameRef = useRef<TextInput | null>(null);
 
@@ -48,19 +60,42 @@ function FindFriend() {
     );
   }, []);
 
-  // 친구 리스트
-  useEffect(() => {
-    friendListApi(
-      (res: any) => {
-        console.log('friendListApi - res', res);
-        setFriendList(res.data);
-      },
-      (err: any) => {
-        console.log('friendListApi - err', err);
-        console.log('friendListApi - err', err.response);
-      },
+  let iconName = '';
+  let iconOrder = '';
+  const relationIcon = () => {
+    if (searchResult.isFriend === 'GET') {
+      // 내가 받음
+      iconName = 'user-check';
+      iconOrder = '친구 수락';
+    } else if (searchResult.isFriend === 'REQUEST') {
+      // 내가 보낸(아직 받지않은)
+      iconName = 'user-check';
+      iconOrder = '친구 요청';
+    } else if (searchResult.isFriend === 'FRIEND') {
+      iconName = 'user-friends';
+      iconOrder = '친구';
+    } else if (searchResult.isFriend === 'DISCONNECTED') {
+      iconName = 'user-plus';
+      iconOrder = '친구 요청';
+    } else if (searchResult.isFriend === null) {
+      iconName = 'user-plus';
+      iconOrder = '친구 요청';
+    }
+    return (
+      <FontAwesome5
+        name={iconName}
+        size={30}
+        color="#3B28B1"
+        // style={{
+        //   position: 'absolute',
+        //   width: 40,
+        //   height: 40,
+        //   top: -10,
+        //   left: 20,
+        // }}
+      />
     );
-  }, []);
+  };
 
   // 친구검색
   const findFriend = nickname => {
@@ -68,10 +103,14 @@ function FindFriend() {
       nickname,
       (res: any) => {
         console.log('findFriendApi - res', res);
+        setSearchResult(res.data);
       },
       (err: any) => {
-        console.log('findFriendApi - err', err);
         console.log('findFriendApi - err', err.response);
+        console.log('findFriendApi - err', err.response.data.code);
+        if (err.response.data.code === 'U005') {
+          Alert.alert('알림', '해당 닉네임을 가진 유저가 없어');
+        }
       },
     );
   };
@@ -115,7 +154,8 @@ function FindFriend() {
   };
 
   const onChangeTargetId = useCallback(targetId => {
-    let reg = /[\{\}\[\]\/?,;:|\)*~`!^\-+<>@\#$%&\\\=\(\'\"]/gi;
+    let reg =
+      /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\{\}\[\]\/?,;:|\)*~`!^\-+<>@\#$%&\\\=\(\'\"]/gi;
 
     setTargetId(targetId.trim());
     if (reg.test(targetId.slice(-1))) {
@@ -197,26 +237,36 @@ function FindFriend() {
     );
   };
 
-  const renderFriendList = ({item}: any) => {
-    // const backgroundColor = item.userId === selectedId ? 'green' : 'orange';
-    // const color = item.userId === selectedId ? 'white' : 'black';
-    const recieve = false;
+  // const renderFriendList = ({item}: any) => {
+  //   // const backgroundColor = item.userId === selectedId ? 'green' : 'orange';
+  //   // const color = item.userId === selectedId ? 'white' : 'black';
+  //   const recieve = false;
 
-    return (
-      <Item
-        item={item}
-        onPress={() => setSelectedId(item.userId)}
-        // backgroundColor={{backgroundColor}}
-        // textColor={{color}}
-        iconType={recieve}
-      />
-    );
-  };
+  //   return (
+  //     <Item
+  //       item={item}
+  //       onPress={() => setSelectedId(item.userId)}
+  //       // backgroundColor={{backgroundColor}}
+  //       // textColor={{color}}
+  //       iconType={recieve}
+  //     />
+  //   );
+  // };
 
   // 아코디언 오픈 / 클로즈
   const [openSearchFriend, setOpenSearchFriend] = useState(true);
   const [openReceiveList, setOpenReceiveList] = useState(true);
   const [openFriendList, setOpenFriendList] = useState(true);
+
+  const leftIcon = (
+    <FontAwesome5
+      name="angle-left"
+      size={30}
+      color="#3B28B1"
+      onPress={() => navigation.goBack()}
+      style={styles.leftIcon}
+    />
+  );
 
   //
   return (
@@ -224,6 +274,7 @@ function FindFriend() {
     // Todo: View - FlatList 로 스크롤이 되게 하든지
     // Todo: ScrollView 와 다른 반복문으로 사용하든지
     <ScrollView style={{flex: 1}}>
+      <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
       <View style={{marginVertical: 5}}>
         <List.Accordion
           // Todo: 각자 스마트폰 설정 폰트로 보이는지 확인
@@ -241,6 +292,7 @@ function FindFriend() {
               placeholder="닉네임을 입력해주세요"
               placeholderTextColor="#666666"
               value={targetId}
+              keyboardType="decimal-pad"
               ref={emailRef}
               onSubmitEditing={() => nameRef.current?.focus()}
             />
@@ -267,7 +319,7 @@ function FindFriend() {
                 }}>
                 <View>
                   <ImageModal
-                    source={{uri: 'http://placeimg.com/480/480/any'}}
+                    source={{uri: searchResult.profileImg}}
                     resizeMode="cover"
                     modalImageResizeMode="contain"
                     style={{
@@ -283,26 +335,25 @@ function FindFriend() {
                   <Avatar.Image
                     // badge
                     size={22}
-                    source={{uri: 'http://placeimg.com/480/480/any'}}
+                    source={{uri: searchResult.profileImg}} // Todo
                   />
-                  <Text style={{color: 'black'}}>{DATA[0].nickname}</Text>
+                  <Text style={{color: 'black'}}>{searchResult.nickName}</Text>
                 </View>
                 <Text style={{color: 'black'}}>
-                  {DATA[0].profileId.split('@', 1)[0]}
+                  {searchResult.email.split('@', 1)[0]}
                 </Text>
                 <TouchableOpacity
                   style={{
-                    width: 30,
-                    height: 30,
-                    backgroundColor: 'red',
+                    height: 40,
+                    backgroundColor: 'yellow',
                   }}
-                  onPress={() => addFriend(DATA[0].id)}>
-                  <AntDesign
-                    name="adduser"
-                    size={30}
-                    color={'#3B28B1'}
-                    // Todo: 검색한 유저와의 친구상태에 따라 아이콘 달라야 함
-                  />
+                  onPress={() => addFriend(searchResult.userId)}>
+                  <View style={{flexDirection: 'row'}}>
+                    {relationIcon()}
+                    <Text style={{color: 'black', fontSize: 15}}>
+                      {iconOrder}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             </View>
@@ -328,7 +379,7 @@ function FindFriend() {
         </List.Accordion>
       </View>
 
-      <View style={{marginVertical: 5}}>
+      {/* <View style={{marginVertical: 5}}>
         <List.Accordion
           // Todo: Customizing
           // Todo: 각자 스마트폰 설정 폰트로 보이는지 확인
@@ -344,7 +395,7 @@ function FindFriend() {
             extraData={selectedId}
           />
         </List.Accordion>
-      </View>
+      </View> */}
     </ScrollView>
   );
 }
@@ -355,6 +406,11 @@ const styles = StyleSheet.create({
     padding: 5,
     width: width * 0.9,
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  leftIcon: {
+    position: 'absolute',
+    top: -10,
+    right: -20,
   },
 });
 export default FindFriend;
