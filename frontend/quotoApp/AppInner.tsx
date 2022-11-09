@@ -21,7 +21,7 @@ import {HEADER_LOGO} from './src/image';
 import QhotoHeader from './src/components/QhotoHeader';
 import SignUp from './src/pages/SignUp';
 import FriendsFeedStackScreen from './src/pages/FriendsFeedStackScreen';
-import FindFriendStackScreen from './src/pages/FindFriendStackScreen';
+import FriendListStackScreen from './src/pages/FriendListStackScreen';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
@@ -66,7 +66,7 @@ function AppInner() {
                   iconName = 'house-user';
                 } else if (route.name === 'AllFeedStackScreen') {
                   iconName = 'search';
-                } else if (route.name === 'FindFriendStackScreen') {
+                } else if (route.name === 'FriendListStackScreen') {
                   iconName = 'users';
                 } else if (route.name === 'MyPageStackScreen') {
                   iconName = 'user-circle';
@@ -116,10 +116,10 @@ function AppInner() {
               }}
             />
             <Tab.Screen
-              name="FindFriendStackScreen"
-              component={FindFriendStackScreen}
+              name="FriendListStackScreen"
+              component={FriendListStackScreen}
               options={{
-                title: '친구 찾기',
+                title: '친구 목록',
                 headerShown: false,
               }}
             />

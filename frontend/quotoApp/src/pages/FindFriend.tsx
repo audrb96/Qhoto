@@ -16,6 +16,7 @@ import {FlatList, TextInput} from 'react-native-gesture-handler';
 import {Avatar, List} from 'react-native-paper';
 import ImageModal from 'react-native-image-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import QhotoHeader from './../components/QhotoHeader';
 
 import {
   findFriendApi,
@@ -26,7 +27,7 @@ import {
 
 const {width, height} = Dimensions.get('window');
 
-function FindFriend() {
+function FindFriend({navigation, route}) {
   const [text, onChangeText] = useState('');
   const [selectedId, setSelectedId] = useState(null);
 
@@ -96,20 +97,6 @@ function FindFriend() {
     );
   };
 
-  // 친구 리스트
-  useEffect(() => {
-    friendListApi(
-      (res: any) => {
-        console.log('friendListApi - res', res);
-        setFriendList(res.data);
-      },
-      (err: any) => {
-        console.log('friendListApi - err', err);
-        console.log('friendListApi - err', err.response);
-      },
-    );
-  }, []);
-
   // 친구검색
   const findFriend = nickname => {
     findFriendApi(
@@ -167,7 +154,8 @@ function FindFriend() {
   };
 
   const onChangeTargetId = useCallback(targetId => {
-    let reg = /[\{\}\[\]\/?,;:|\)*~`!^\-+<>@\#$%&\\\=\(\'\"]/gi;
+    let reg =
+      /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\{\}\[\]\/?,;:|\)*~`!^\-+<>@\#$%&\\\=\(\'\"]/gi;
 
     setTargetId(targetId.trim());
     if (reg.test(targetId.slice(-1))) {
@@ -249,26 +237,36 @@ function FindFriend() {
     );
   };
 
-  const renderFriendList = ({item}: any) => {
-    // const backgroundColor = item.userId === selectedId ? 'green' : 'orange';
-    // const color = item.userId === selectedId ? 'white' : 'black';
-    const recieve = false;
+  // const renderFriendList = ({item}: any) => {
+  //   // const backgroundColor = item.userId === selectedId ? 'green' : 'orange';
+  //   // const color = item.userId === selectedId ? 'white' : 'black';
+  //   const recieve = false;
 
-    return (
-      <Item
-        item={item}
-        onPress={() => setSelectedId(item.userId)}
-        // backgroundColor={{backgroundColor}}
-        // textColor={{color}}
-        iconType={recieve}
-      />
-    );
-  };
+  //   return (
+  //     <Item
+  //       item={item}
+  //       onPress={() => setSelectedId(item.userId)}
+  //       // backgroundColor={{backgroundColor}}
+  //       // textColor={{color}}
+  //       iconType={recieve}
+  //     />
+  //   );
+  // };
 
   // 아코디언 오픈 / 클로즈
   const [openSearchFriend, setOpenSearchFriend] = useState(true);
   const [openReceiveList, setOpenReceiveList] = useState(true);
   const [openFriendList, setOpenFriendList] = useState(true);
+
+  const leftIcon = (
+    <FontAwesome5
+      name="angle-left"
+      size={30}
+      color="#3B28B1"
+      onPress={() => navigation.goBack()}
+      style={styles.leftIcon}
+    />
+  );
 
   //
   return (
@@ -276,6 +274,7 @@ function FindFriend() {
     // Todo: View - FlatList 로 스크롤이 되게 하든지
     // Todo: ScrollView 와 다른 반복문으로 사용하든지
     <ScrollView style={{flex: 1}}>
+      <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
       <View style={{marginVertical: 5}}>
         <List.Accordion
           // Todo: 각자 스마트폰 설정 폰트로 보이는지 확인
@@ -293,6 +292,7 @@ function FindFriend() {
               placeholder="닉네임을 입력해주세요"
               placeholderTextColor="#666666"
               value={targetId}
+              keyboardType="decimal-pad"
               ref={emailRef}
               onSubmitEditing={() => nameRef.current?.focus()}
             />
@@ -379,7 +379,7 @@ function FindFriend() {
         </List.Accordion>
       </View>
 
-      <View style={{marginVertical: 5}}>
+      {/* <View style={{marginVertical: 5}}>
         <List.Accordion
           // Todo: Customizing
           // Todo: 각자 스마트폰 설정 폰트로 보이는지 확인
@@ -395,7 +395,7 @@ function FindFriend() {
             extraData={selectedId}
           />
         </List.Accordion>
-      </View>
+      </View> */}
     </ScrollView>
   );
 }
@@ -406,6 +406,11 @@ const styles = StyleSheet.create({
     padding: 5,
     width: width * 0.9,
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  leftIcon: {
+    position: 'absolute',
+    top: -10,
+    right: -20,
   },
 });
 export default FindFriend;

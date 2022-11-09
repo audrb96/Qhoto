@@ -125,7 +125,7 @@ function SignUp({navigation}: SignUpScreenProps) {
           textContentType="telephoneNumber" // Todo
           value={phone}
           returnKeyType="send"
-          keyboardType="number-pad"
+          keyboardType="decimal-pad"
           ref={phoneRef}
           blurOnSubmit={false} // Todo
           onSubmitEditing={onSubmit}
