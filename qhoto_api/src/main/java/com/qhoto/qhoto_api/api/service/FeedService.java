@@ -54,16 +54,21 @@ public class FeedService {
 
 
 
+    // 전체 피드 불러오기
     public Page<FeedAllDto> getFeed(User user,FeedAllReq feedAllReq, Pageable pageable) {
         return feedRepository.findByCondition(user,feedAllReq, pageable);
     }
 
+    // 피드 세부 사항 불러오기
     public FeedDetailRes getFeedDetail(Long feedId, User userInfo){
 
+        // 피드 정보 얻기
         Feed feed = feedRepository.findFeedById(feedId).orElseThrow(() -> new NoFeedByIdException("no feed by id"));
+        // 유저 정보 얻기
         User user = userRepository.findUserById(feed.getUser().getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
+        // 댓글리스트 불러오기
         List<CommentRes> commentResList = getCommentList(feedId);
-
+        // 피드 세부 정보 생성
         FeedDetailRes feedDetailRes = FeedDetailRes.builder()
                 .feedId(feedId)
                 .userId(user.getId())
@@ -84,9 +89,12 @@ public class FeedService {
         return feedDetailRes;
     }
 
+    // 댓글리스트 불러오기
     private List<CommentRes> getCommentList(Long feedId) {
+        // 댓글 정보 얻기
         List<Comment> commentList = commentRepository.findListById(feedId);
         List<CommentRes> commentResList = new ArrayList<>();
+        // 댓글리스트 생성
         for (Comment comment : commentList) {
             commentResList.add(CommentRes.builder()
                     .userId(comment.getUser().getId())
@@ -98,13 +106,17 @@ public class FeedService {
         return commentResList;
     }
 
+    // 친구 피드 불러오기
     public Page<FeedFriendDto> getFriendFeed(User user,FeedAllReq feedAllReq, Pageable pageable){
         return feedRepository.findByConditionAndUserId(feedAllReq, pageable, user.getId());
     }
 
 
+    // 사진 피드 작성하기
     public void postFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
+        // 퀘스트 정보 받아오기
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
+        //
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "feed/image/"+user.getEmail();
         S3upload(createFeedReq, quest, user, dirName, FeedType.IMAGE);

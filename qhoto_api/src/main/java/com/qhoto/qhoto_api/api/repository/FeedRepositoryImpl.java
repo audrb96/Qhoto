@@ -101,6 +101,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         ))
                 .from(feed,user,comment)
                 .rightJoin(comment.user, user)
+                .rightJoin(comment.feed, feed)
                 .rightJoin(feed.user, user)
                 .where(
                         feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
@@ -132,6 +133,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 ))
                 .from(feed,user,comment)
                 .rightJoin(comment.user, user)
+                .rightJoin(comment.feed, feed)
                 .rightJoin(feed.user, user)
                 .where(
                         feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
