@@ -7,27 +7,31 @@ import QhotoHeader from '../components/QhotoHeader';
 import FriendsFeed from './feed/FriendsFeed';
 import OtherPage from './OtherPage';
 import FindFriend from './FindFriend';
+import FriendList from './FriendList';
 
-const FindFriendStack = createStackNavigator();
-function FindFriendStackScreen() {
+const FriendListStack = createStackNavigator();
+function FriendListStackScreen() {
   return (
-    <FindFriendStack.Navigator>
-      <FindFriendStack.Screen
+    <FriendListStack.Navigator>
+      <FriendListStack.Screen
+        name="FriendList"
+        component={FriendList}
+        options={{headerShown: false}}
+      />
+      <FriendListStack.Screen
         name="FindFriend"
         component={FindFriend}
-        options={{
-          header: () => <QhotoHeader leftIcon={false} />,
-        }}
+        options={{headerShown: false}}
       />
-      <FindFriendStack.Screen
+      <FriendListStack.Screen
         name="OtherPage"
         component={OtherPage}
         options={{
-          header: () => <QhotoHeader leftIcon={false} />,
+          header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
         }}
       />
-    </FindFriendStack.Navigator>
+    </FriendListStack.Navigator>
   );
 }
 
-export default FindFriendStackScreen;
+export default FriendListStackScreen;
