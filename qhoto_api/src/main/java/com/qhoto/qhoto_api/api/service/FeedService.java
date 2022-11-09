@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +71,7 @@ public class FeedService {
                 .userImage(user.getImage())
                 .nickName(user.getNickname())
                 .feedImage(feed.getImage())
-                .feedTime(feed.getTime())
+                .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .questName(feed.getQuest().getName())
                 .questType(feed.getQuest().getQuestType().getCode())
                 .questPoint(feed.getQuest().getScore())
