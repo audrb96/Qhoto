@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   Pressable,
@@ -16,11 +16,12 @@ import PhotoEditor from 'react-native-photo-editor';
 import QuestCard from '../components/main/QuestCard';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {uploadVideo, uploadPhoto} from '../api/quest';
+import {getQuestList, uploadVideo, uploadPhoto} from '../api/quest';
 
 const questTypes = ['DAILY', 'WEEKLY', 'MONTHLY'];
 
 interface Quest {
+  activeId: number;
   questId: number;
   questName: string;
   questType: string;
@@ -31,18 +32,36 @@ interface Quest {
 
 const {width, height} = Dimensions.get('window');
 
-function Settings() {
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [questTypeIdx, setQuestTypeIdx] = React.useState(0);
-  const [dailyQuestIdx, setDailyQuestIdx] = React.useState(0);
-  const [weeklyQuestIdx, setWeeklyQuestIdx] = React.useState(0);
-  const [monthlyQuestIdx, setMonthlyQuestIdx] = React.useState(0);
+function MyQuest() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [questTypeIdx, setQuestTypeIdx] = useState(0);
+  const [dailyQuestIdx, setDailyQuestIdx] = useState(0);
+  const [weeklyQuestIdx, setWeeklyQuestIdx] = useState(0);
+  const [monthlyQuestIdx, setMonthlyQuestIdx] = useState(0);
+  const [dailyQuestList, setDailyQuestList] = useState<Quest[]>();
+  const [weeklyQuestList, setWeeklyQuestList] = useState<Quest[]>();
+  const [monthlyQuestList, setMonthlyQuestList] = useState<Quest[]>();
 
   const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
+
+  useEffect(() => {
+    getQuestList(
+      (res: any) => {
+        console.log(res.data);
+        setDailyQuestList(res.data.daily);
+        setWeeklyQuestList(res.data.weekly);
+        setMonthlyQuestList(res.data.monthly);
+      },
+      (err: any) => {
+        console.log(err.response);
+      },
+    );
+  }, []);
 
   const questLists: Quest[][] = [
     [
       {
+        activeId: 1,
         questId: 1,
         // questName: '일회용기 쓰지 않기',
         questName: '1',
@@ -52,6 +71,7 @@ function Settings() {
         questImage: '',
       },
       {
+        activeId: 2,
         questId: 2,
         // questName: '하루 3km 뛰기',
         questName: '2',
@@ -61,6 +81,7 @@ function Settings() {
         questImage: '',
       },
       {
+        activeId: 3,
         questId: 3,
         // questName: '보라색이 들어간 옷 입기',
         questName: '3',
@@ -72,6 +93,7 @@ function Settings() {
     ],
     [
       {
+        activeId: 4,
         questId: 4,
         // questName: '고양이 사진찍기',
         questName: '1',
@@ -81,6 +103,7 @@ function Settings() {
         questImage: '',
       },
       {
+        activeId: 5,
         questId: 5,
         // questName: '하루 한끼 비건식단으로 먹어보기',
         questName: '2',
@@ -90,6 +113,7 @@ function Settings() {
         questImage: '',
       },
       {
+        activeId: 6,
         questId: 6,
         // questName: '친구에게 꽃 선물해주기',
         questName: '3',
@@ -101,6 +125,7 @@ function Settings() {
     ],
     [
       {
+        activeId: 7,
         questId: 7,
         // questName: '다같이 단풍산 등산하기',
         questName: '1',
@@ -110,6 +135,7 @@ function Settings() {
         questImage: '',
       },
       {
+        activeId: 8,
         questId: 8,
         // questName: '할로윈 페스티벌 참여해보기',
         questName: '2',
@@ -119,6 +145,7 @@ function Settings() {
         questImage: '',
       },
       {
+        activeId: 9,
         questId: 9,
         // questName: '브라질리언 왁싱 받아보기',
         questName: '3',
@@ -129,6 +156,16 @@ function Settings() {
       },
     ],
   ];
+
+  const selectQuestList = (index: number) => {
+    if (index === 0) {
+      return dailyQuestList;
+    } else if (index === 1) {
+      return weeklyQuestList;
+    } else if (index === 2) {
+      return monthlyQuestList;
+    }
+  };
 
   const handlePhotoClick = () => {
     launchCamera({...options, mediaType: 'photo'}, onPickImage);
@@ -168,16 +205,37 @@ function Settings() {
       type: 'video/mp4',
       uri: 'file://' + uriPath,
     });
-
-    // data.append('activeDailyId', null);
-    data.append('activeWeeklyId', 11);
-    // data.append('activeMonthlyId', null);
-    data.append('questId', 46);
     data.append('location', '멀티캠퍼스');
+
+    if (questTypeIdx === 0) {
+      data.append('activeDailyId', dailyQuestList[dailyQuestIdx].activeId);
+      data.append('questId', dailyQuestList[dailyQuestIdx].questId);
+    } else if (questTypeIdx === 1) {
+      data.append('activeWeeklyId', weeklyQuestList[weeklyQuestIdx].activeId);
+      data.append('questId', weeklyQuestList[weeklyQuestIdx].questId);
+    } else if (questTypeIdx === 2) {
+      data.append(
+        'activeMonthlyId',
+        monthlyQuestList[monthlyQuestIdx].activeId,
+      );
+      data.append('questId', monthlyQuestList[monthlyQuestIdx].questId);
+    }
 
     uploadVideo(
       data,
-      (res: any) => console.log('res.data'),
+      (res: any) => {
+        getQuestList(
+          (res: any) => {
+            console.log(res.data);
+            setDailyQuestList(res.data.daily);
+            setWeeklyQuestList(res.data.weekly);
+            setMonthlyQuestList(res.data.monthly);
+          },
+          (err: any) => {
+            console.log(err.response);
+          },
+        );
+      },
       (err: any) => console.log(err.response.data),
     );
   };
@@ -218,17 +276,41 @@ function Settings() {
           type: 'image/jpeg',
           uri: 'file://' + uriPath,
         });
-
-        // data.append('activeDailyId', null);
-        data.append('activeWeeklyId', 11);
-        // data.append('activeMonthlyId', null);
-        data.append('questId', 46);
         data.append('location', '멀티캠퍼스');
+
+        if (questTypeIdx === 0) {
+          data.append('activeDailyId', dailyQuestList[dailyQuestIdx].activeId);
+          data.append('questId', dailyQuestList[dailyQuestIdx].questId);
+        } else if (questTypeIdx === 1) {
+          data.append(
+            'activeWeeklyId',
+            weeklyQuestList[weeklyQuestIdx].activeId,
+          );
+          data.append('questId', weeklyQuestList[weeklyQuestIdx].questId);
+        } else if (questTypeIdx === 2) {
+          data.append(
+            'activeMonthlyId',
+            monthlyQuestList[monthlyQuestIdx].activeId,
+          );
+          data.append('questId', monthlyQuestList[monthlyQuestIdx].questId);
+        }
 
         await uploadPhoto(
           data,
-          (res: any) => console.log(res),
-          (err: any) => console.log(err),
+          (res: any) => {
+            getQuestList(
+              (res: any) => {
+                console.log(res.data);
+                setDailyQuestList(res.data.daily);
+                setWeeklyQuestList(res.data.weekly);
+                setMonthlyQuestList(res.data.monthly);
+              },
+              (err: any) => {
+                console.log(err.response);
+              },
+            );
+          },
+          (err: any) => console.log(err.response.data),
         );
       },
       onCancel: () => {
@@ -237,7 +319,9 @@ function Settings() {
     });
   };
 
-  return (
+  return dailyQuestList === undefined ||
+    weeklyQuestList == undefined ||
+    monthlyQuestList === undefined ? null : (
     <View style={styles.body}>
       <View style={styles.questCardContainer}>
         <Carousel
@@ -255,7 +339,7 @@ function Settings() {
           renderItem={({index}) => (
             <QuestCard
               questType={questTypes[index]}
-              questList={questLists[index]}
+              questList={selectQuestList(index)}
               questIdx={
                 index === 0
                   ? dailyQuestIdx
@@ -264,6 +348,7 @@ function Settings() {
                   : monthlyQuestIdx
               }
               setQuestIdx={functions[index]}
+              isComplete={selectQuestList(index)?.length === 1 ? true : false}
             />
           )}
         />
@@ -347,4 +432,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default MyQuest;
