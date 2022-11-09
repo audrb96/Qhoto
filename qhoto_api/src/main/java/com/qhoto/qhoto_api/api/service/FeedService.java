@@ -76,7 +76,7 @@ public class FeedService {
                 .userImage(user.getImage())
                 .nickName(user.getNickname())
                 .feedImage(feed.getImage())
-                .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .feedTime(feed.getTime())
                 .questName(feed.getQuest().getName())
                 .questType(feed.getQuest().getQuestType().getCode())
                 .questPoint(feed.getQuest().getScore())
