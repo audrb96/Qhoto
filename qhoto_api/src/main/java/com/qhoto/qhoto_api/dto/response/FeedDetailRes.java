@@ -19,7 +19,7 @@ public class FeedDetailRes {
     private final String userImage;
     private final String nickName;
     private final String feedImage;
-    private final String feedTime;
+    private final LocalDateTime feedTime;
     private final String questName;
     private final String questType;
     private final int questPoint;
