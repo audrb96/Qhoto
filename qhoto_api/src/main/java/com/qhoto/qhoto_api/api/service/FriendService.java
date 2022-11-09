@@ -33,15 +33,18 @@ public class FriendService {
     private final FriendRequestRepository friendRequestRepository;
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
-
+    // 친구 요청 서비스
     @Transactional
     public void friendRequest(FriendRequestReq friendRequestReq, User reqUser) {
+        // 요청을 받는 사용자
         Optional<User> resUser = userRepository.findUserById(friendRequestReq.getResUserId());
 
+        // 이전에 요청을 보내는 사용자와 관련된 request가 있는지 확인
         Optional<FriendRequest> friendRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatusNot(reqUser,resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")), DISCONNECTED);
+        // 요청을 받는 사용자가 이전에 보내는 사용자에게 요청을 보냈었는지 확인
         Optional<FriendRequest> isAcceptRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatus(resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")),reqUser, REQUEST);
 
-
+        // 이전에 있던 요청 정보를 확인
         if(friendRequest.isPresent()) {
             switch (friendRequest.get().getStatus()) {
                 case REQUEST:
@@ -49,18 +52,22 @@ public class FriendService {
                 case FRIEND:
                     throw new AlreadyFriendException("이미 친구인 상대입니다.");
                 case GET:
+                    // 요청을 보낸 사용자가 받은 요청이 있다면 친구를 만들어준다.
                     makeFriend(reqUser, resUser, isAcceptRequest.orElseThrow(() -> new NobodyRequestException("친구를 요청한 사람이 없는데 받은 사람만 있습니다.")),friendRequest.get());
                     break;
             }
         } else {
+            // 새로운 요청 저장
             saveRequest(reqUser, resUser.get(), REQUEST);
             saveRequest(resUser.get(),reqUser,GET);
         }
     }
-
+    //친구를 만들어 준다.
     private void makeFriend(User reqUser, Optional<User> resUser, FriendRequest isAcceptRequest, FriendRequest friendRequest) {
+        //친구 요청의 상태를 이미 친구가 된것으로 변경
         isAcceptRequest.changeStatus(FRIEND);
         friendRequest.changeStatus(FRIEND);
+
         Friend friend1 = Friend.builder()
                 .follower(reqUser)
                 .followee(resUser.get())
@@ -71,10 +78,11 @@ public class FriendService {
                 .followee(reqUser)
                 .build();
 
+        //친구 테이블에 서로 친구가 된 것을 저장
         friendRepository.save(friend1);
         friendRepository.save(friend2);
     }
-
+    //요청 저장 메소드
     private FriendRequest saveRequest(User reqUser, User resUser,RequestStatus status) {
         FriendRequest savedRequest = FriendRequest.builder()
                 .requestUser(reqUser)

@@ -139,10 +139,11 @@ public class QuestService {
                             .activeId(activeId)
                             .questId(feed.getId())
                             .questName(feed.getQuest().getName())
-                            .questType(feed.getTypeName())
+                            .questType(feed.getTypeCode())
                             .questScore(feed.getScore())
                             .questDifficulty(feed.getDifficulty())
                             .questImage(feed.getImage())
+                            .feedType(feed.getFeedType())
                             .build()
 
             );
@@ -179,6 +180,5 @@ public class QuestService {
 
         return QP;
     }
-//
 
 }

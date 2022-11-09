@@ -19,23 +19,39 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
     private final S3Utils s3Utils;
     private final EntityManager em;
 
+    //회원 정보 수정
     @Override
     @Transactional
     public void modifyUserByCon(ModifyUserReq modifyUserReq, User userInfo) throws IOException {
+        //updateClause 생성
         JPAUpdateClause updateClause = new JPAUpdateClause(em, user);
+
+        //닉네임 수정
         if(hasText(modifyUserReq.getNickname())) updateClause.set(user.nickname, modifyUserReq.getNickname());
+
+        //자기소개 수정
         if(hasText(modifyUserReq.getDescription())) updateClause.set(user.description, modifyUserReq.getDescription());
+
+        //사용자 프로필 이미지 수정
         if(modifyUserReq.getFile() != null) {
-//            String profileDir = "/user/" + userInfo.getEmail();
-            String profileDir = "user/" + "audrb96@gmail.com";
+            String profileDir = "user/" + userInfo.getEmail();
+            //S3에 사용
             s3Utils.upload(modifyUserReq.getFile(), profileDir);
+            //DB에 저장할 이미지 URL
             String imageUrl = S3Utils.CLOUD_FRONT_DOMAIN_NAME + profileDir +"/"+ modifyUserReq.getFile().getOriginalFilename();
             updateClause.set(user.image, imageUrl);
         }
+
+        //전화번호 수정
         if(hasText(modifyUserReq.getPhone())) updateClause.set(user.phone, modifyUserReq.getPhone());
+
+        //프로필 Open 여부 수정
         if(modifyUserReq.getProfileOpen() != null) updateClause.set(user.profileOpen, modifyUserReq.getProfileOpen());
 
-//        updateClause.where(user.id.eq(userInfo.getId())).execute();
+        //사용자 이름 수정
+        if(hasText(modifyUserReq.getName())) updateClause.set(user.name, modifyUserReq.getName());
+
+        //DB update 실행
         updateClause.where(user.id.eq(userInfo.getId())).execute();
     }
 }
