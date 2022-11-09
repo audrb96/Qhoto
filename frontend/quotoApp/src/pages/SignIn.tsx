@@ -47,15 +47,23 @@ function SignIn({navigation}: SignInScreenProps) {
       if (token) {
         loginKakao(
           token.accessToken,
-          (res: any) => {
-            AsyncStorage.setItem('accessToken', res.data.accessToken, () => {
-              console.log('accessToken : ' + res.data.accessToken);
-            });
+          async (res: any) => {
+            await AsyncStorage.setItem(
+              'accessToken',
+              res.data.accessToken,
+              () => {
+                console.log('accessToken : ' + res.data.accessToken);
+              },
+            );
 
-            AsyncStorage.setItem('refreshToken', res.data.refreshToken, () => {
-              console.log('refreshToken : ' + res.data.refreshToken);
-            });
-            const accessToken = res.data.accessToken;
+            await AsyncStorage.setItem(
+              'refreshToken',
+              res.data.refreshToken,
+              () => {
+                console.log('refreshToken : ' + res.data.refreshToken);
+              },
+            );
+
             getUserInfoApi(
               (response: any) => {
                 let {
@@ -79,7 +87,6 @@ function SignIn({navigation}: SignInScreenProps) {
                     // description: description,
                     // contactAgreeDate: contactAgreeDate,
                     // profileOpen: profileOpen,
-                    token: accessToken,
                     loggedIn: true,
                   }),
                 );
@@ -124,7 +131,7 @@ function SignIn({navigation}: SignInScreenProps) {
                       console.log('refreshToken : ' + res.data.refreshToken);
                     },
                   );
-                  const accessToken = res.data.accessToken;
+
                   getUserInfoApi(
                     (response: any) => {
                       let {
@@ -148,7 +155,6 @@ function SignIn({navigation}: SignInScreenProps) {
                           // description: description,
                           // contactAgreeDate: contactAgreeDate,
                           // profileOpen: profileOpen,
-                          token: accessToken,
                           loggedIn: true,
                         }),
                       );
@@ -181,7 +187,10 @@ function SignIn({navigation}: SignInScreenProps) {
         />
         <Pressable style={{marginTop: 10}} onPress={signInWithKakao}>
           <View style={{elevation: 5}}>
-            <Image source={KAKAO_LOGIN_BUTTON} />
+            <Image
+              source={KAKAO_LOGIN_BUTTON}
+              style={styles.kakaoLoginButton}
+            />
           </View>
         </Pressable>
       </View>
@@ -203,6 +212,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  kakaoLoginButton: {
+    elevation: 5,
   },
 });
 

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {apiInstance, createHeaders, fileApiInstance} from '.';
+import {apiInstance, fileApiInstance} from '.';
 
 const api = apiInstance();
 const fileApi = fileApiInstance();
@@ -75,11 +75,8 @@ fileApi.interceptors.response.use(
   },
 );
 
-async function getQuestList(idToken, success, fail) {
-  await api
-    .post(`/api/login/google`, {idToken: idToken})
-    .then(success)
-    .catch(fail);
+async function getQuestList(success, fail) {
+  await api.get(`/api/quest`).then(success).catch(fail);
 }
 
 async function uploadPhoto(feed, success, fail) {
