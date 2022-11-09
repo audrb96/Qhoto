@@ -39,8 +39,8 @@ public class FeedController {
      * @return {@link Page<FeedAllDto>}
      */
     @GetMapping("/all")
-    public ResponseEntity<Page<FeedAllDto>> readFeed(@ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
-        return new ResponseEntity<>(feedService.getFeed(feedAllReq, pageable),HttpStatus.OK);
+    public ResponseEntity<Page<FeedAllDto>> readFeed(@AuthenticationPrincipal User user, @ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
+        return new ResponseEntity<>(feedService.getFeed(user,feedAllReq, pageable),HttpStatus.OK);
     }
 
     /**
