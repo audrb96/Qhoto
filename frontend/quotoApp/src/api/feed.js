@@ -64,6 +64,15 @@ async function getAllFeeds(params, success, fail) {
     .then(success)
     .catch(fail);
 }
+async function getFriendsFeeds(params, success, fail) {
+  await api
+    .get('/api/feed/friend', {
+      params: {condition: params[1], duration: params[0]},
+      headers: await createHeaders(),
+    })
+    .then(success)
+    .catch(fail);
+}
 
 async function getSelectedFeed(feedId, success, fail) {
   await api.get(`/api/feed/all/${feedId}`).then(success).catch(fail);
@@ -90,6 +99,7 @@ async function setFeedMission(success, fail) {
 export {
   getAllFeeds,
   getSelectedFeed,
+  getFriendsFeeds,
   setFeedLike,
   setFeedDisLike,
   setComment,

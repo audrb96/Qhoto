@@ -23,9 +23,7 @@ function AllFeed({navigation}) {
   const [missionVisible, setMissionVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [Feeds, setFeeds] = useState([]);
-  // 활성화된 퀘스트의 아이디
   const [condition, setCondition] = useState([10, 11, 12]);
-  // duration = D, W, M
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
   const [missionFilter, setmissionFilter] = useState([]);
