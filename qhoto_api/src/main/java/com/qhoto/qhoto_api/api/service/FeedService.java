@@ -91,6 +91,7 @@ public class FeedService {
         for (Comment comment : commentList) {
             commentResList.add(CommentRes.builder()
                     .userId(comment.getUser().getId())
+                    .nickName(comment.getUser().getNickname())
                     .commentContext(comment.getContext())
                     .commentTime(comment.getTime())
                     .build());

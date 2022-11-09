@@ -2,6 +2,8 @@ package com.qhoto.qhoto_api.api.controller;
 
 import com.qhoto.qhoto_api.api.service.QuestService;
 import com.qhoto.qhoto_api.domain.User;
+import com.qhoto.qhoto_api.dto.response.IsClearRes;
+import com.qhoto.qhoto_api.dto.response.QuestLevelRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Map;
+
+/**
+ * 퀘스트 api
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/quest")
@@ -17,30 +24,55 @@ public class QuestController {
 
     private final QuestService questService;
 
+    /**
+     * 모든 퀘스트 리스트 불러오기 api
+     * @param user
+     * @return {@link Map<String, Object> }
+     */
     @GetMapping("")
-    public ResponseEntity<?> readAllQuestList(@AuthenticationPrincipal User user) {
+    public ResponseEntity<Map<String, Object>> readAllQuestList(@AuthenticationPrincipal User user) {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getQuestList(userId), HttpStatus.OK);
     }
 
+    /**
+     * 데일리 퀘스트를 clear 했는지 확인 api
+     * @param user
+     * @return {@link IsClearRes}
+     */
     @GetMapping("/isClear/daily")
-    public ResponseEntity<?> readDailyIsClear(@AuthenticationPrincipal User user) {
+    public ResponseEntity<IsClearRes> readDailyIsClear(@AuthenticationPrincipal User user) {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getDailyIsClear(userId), HttpStatus.OK);
     }
 
+    /**
+     * 위클리 퀘스트를 clear 했는지 확인 api
+     * @param user
+     * @return {@link IsClearRes}
+     */
     @GetMapping("/isClear/weekly")
     public ResponseEntity<?> readWeeklyIsClear(@AuthenticationPrincipal User user) {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getWeeklyIsClear(userId), HttpStatus.OK);
     }
 
+    /**
+     * 먼슬리 퀘스트를 clear 했는지 확인 api
+     * @param user
+     * @return {@link IsClearRes}
+     */
     @GetMapping("/isClear/monthly")
     public ResponseEntity<?> readMonthlyIsClear(@AuthenticationPrincipal User user) {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getMonthlyIsClear(userId), HttpStatus.OK);
     }
 
+    /**
+     * 나의 퀘스트 포인트 정보를 확인
+     * @param user
+     * @return {@link QuestLevelRes}
+     */
     @GetMapping("/point")
     public ResponseEntity<?> readQuestLevel(@AuthenticationPrincipal User user) {
         Long userId = user.getId();

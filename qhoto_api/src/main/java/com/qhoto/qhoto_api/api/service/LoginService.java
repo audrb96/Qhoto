@@ -71,6 +71,7 @@ public class LoginService {
                     .accessToken((String) userMap.get("accessToken"))
                     .refreshToken((String) userMap.get("refreshToken"))
                     .isJoined((Boolean) userMap.get("isJoined"))
+                    .isModified((Boolean) userMap.get("isModified"))
                     .build();
 
         }
@@ -95,6 +96,7 @@ public class LoginService {
                 .accessToken((String) userMap.get("accessToken"))
                 .refreshToken((String) userMap.get("refreshToken"))
                 .isJoined((Boolean) userMap.get("isJoined"))
+                .isModified((Boolean) userMap.get("isModified"))
                 .build();
     }
 
@@ -106,12 +108,16 @@ public class LoginService {
         String accessToken;
         String refreshToken;
         boolean isJoined = false;
+        boolean isModified = false;
         if(findUser.isPresent()) {
             user = findUser.get();
             accessToken = jwtTokenProvider.createAccessToken(email, user.getAuthorities());
             refreshToken = jwtTokenProvider.createRefreshToken();
             userRepository.updateRefreshToken(user.getId(), refreshToken);
             isJoined = true;
+            if(!user.getPhone().equals("010-0000-0000")) {
+                isModified = true;
+            }
         } else {
             user = createUser(email, name, pictureUrl,authProvider);
             accessToken = jwtTokenProvider.createAccessToken(email, user.getAuthorities());
@@ -123,6 +129,7 @@ public class LoginService {
         map.put("refreshToken",refreshToken);
         map.put("accessToken", accessToken);
         map.put("isJoined",isJoined);
+        map.put("isModified", isModified);
         return map;
 
     }
