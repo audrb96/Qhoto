@@ -54,8 +54,8 @@ public class FeedService {
 
 
 
-    public Page<FeedAllDto> getFeed(FeedAllReq feedAllReq, Pageable pageable) {
-        return feedRepository.findByCondition(feedAllReq, pageable);
+    public Page<FeedAllDto> getFeed(User user,FeedAllReq feedAllReq, Pageable pageable) {
+        return feedRepository.findByCondition(user,feedAllReq, pageable);
     }
 
     public FeedDetailRes getFeedDetail(Long feedId, User userInfo){
@@ -76,7 +76,7 @@ public class FeedService {
                 .questPoint(feed.getQuest().getScore())
                 .expPoint(expRepository.findPointByUserId(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .likeCount(feedLikeRepository.countAllById(feedId).orElseThrow(()-> new NoFeedByIdException("no feed by id")))
-                .likeStatus((feedLikeRepository.findById(userInfo.getId()).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
+                .likeStatus((feedLikeRepository.findById(userInfo.getId(),feed.getId()).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
                 .commentList(commentResList)
                 .feedType(feed.getFeedType())
                 .build();

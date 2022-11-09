@@ -1,5 +1,6 @@
 package com.qhoto.qhoto_api.api.repository;
 
+import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.QuestDuration;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.response.FeedAllDto;
@@ -8,9 +9,11 @@ import com.qhoto.qhoto_api.dto.response.QFeedAllDto;
 import com.qhoto.qhoto_api.dto.response.QFeedFriendDto;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -45,7 +48,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
 //        return null;
 //    }
     @Override
-    public Page<FeedAllDto> findByCondition(FeedAllReq feedAllReq, Pageable pageable) {
+    public Page<FeedAllDto> findByCondition(User user, FeedAllReq feedAllReq, Pageable pageable) {
         List<FeedAllDto> feedList = jpaQueryFactory
                 .select(new QFeedAllDto(
                         feed.id,
@@ -70,7 +73,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .where(feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
                         feedTypeEq(feedAllReq.getDuration())
                 )
-                .orderBy(feed.time.desc())
+                .orderBy(orderFirstByUserId(user.getId()),feed.time.desc())
                 ;
         return PageableExecutionUtils.getPage(feedList, pageable, countQuery::fetchCount);
     }
@@ -102,9 +105,10 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .where(
                         feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
                         feedTypeEq(feedAllReq.getDuration())
-                        ,user.id.in(JPAExpressions.select(friend.followee.id).from(friend).where(friend.follower.id.eq(userId)))
-                ).groupBy(feed.id)
-                .orderBy(feed.time.desc())
+                        ,user.id.in(JPAExpressions.select(friend.followee.id).from(friend).where(friend.follower.id.eq(userId))).or(user.id.eq(userId))
+                )
+                .groupBy(feed.id)
+                .orderBy(orderFirstByUserId(userId),feed.time.desc())
                 .fetch();
 
         JPAQuery<FeedFriendDto> countQuery = jpaQueryFactory
@@ -136,6 +140,12 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 ).groupBy(feed.id)
                 .orderBy(feed.time.desc());
         return PageableExecutionUtils.getPage(feedFriendList, pageable, countQuery::fetchCount);
+    }
+
+    private OrderSpecifier<?> orderFirstByUserId(Long userId) {
+        NumberExpression<Integer> sortRank = new CaseBuilder()
+                .when(user.id.eq(userId)).then(1).otherwise(2);
+        return sortRank.asc();
     }
 
 
