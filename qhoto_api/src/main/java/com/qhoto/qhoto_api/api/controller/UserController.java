@@ -7,6 +7,7 @@ import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.dto.response.LoginRes;
 import com.qhoto.qhoto_api.dto.response.MyFeedRes;
 import com.qhoto.qhoto_api.dto.response.MyInfoRes;
+import com.qhoto.qhoto_api.dto.response.UserInfoRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -68,9 +69,9 @@ public class UserController {
     }
 
     /**
-     * 회원 정보 수정 api
+     * 회원 정보 확인 api
      * @param userId
-     * @return {@link String}
+     * @return {@link UserInfoRes}
      * @throws IOException
      */
     @GetMapping("/info/{userId}")
@@ -78,6 +79,13 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserInfo(userId));
     }
 
+    /**
+     * 회원정보 수정 api
+     * @param user
+     * @param modifyUserReq
+     * @return {@link String}
+     * @throws IOException
+     */
     @PutMapping("/user")
     public ResponseEntity<String> modifyUser(@AuthenticationPrincipal User user, @Validated ModifyUserReq modifyUserReq) throws IOException {
         userService.modifyUser(modifyUserReq, user);

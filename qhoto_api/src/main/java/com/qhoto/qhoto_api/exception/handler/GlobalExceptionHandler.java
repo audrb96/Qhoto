@@ -1,10 +1,7 @@
 package com.qhoto.qhoto_api.exception.handler;
 
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
-import com.qhoto.qhoto_api.exception.NoFeedByIdException;
-import com.qhoto.qhoto_api.exception.NoUserByIdException;
-import com.qhoto.qhoto_api.exception.NoUserByNickNameException;
-import com.qhoto.qhoto_api.exception.NotFoundUserException;
+import com.qhoto.qhoto_api.exception.*;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -76,6 +73,13 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_FEED_BY_ID);
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
+    @ExceptionHandler(NoFeedByUserIdException.class)
+    protected ResponseEntity<ErrorResponse> NoFeedByUserIdException(NoFeedByIdException e) {
+        log.error("noFeedByIdException", e);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_FEED_BY_USER_ID);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+    }
+
 
     @ExceptionHandler(SQLException.class)
     protected ResponseEntity handleSQLException(SQLException e) {
