@@ -75,7 +75,7 @@ public class UserController {
      * @throws IOException
      */
     @GetMapping("/info/{userId}")
-    public ResponseEntity<?> readUserInfo(@PathVariable Long userId){
+    public ResponseEntity<UserInfoRes> readUserInfo(@PathVariable Long userId){
         return ResponseEntity.ok(userService.getUserInfo(userId));
     }
 

@@ -44,6 +44,7 @@ public class UserService implements UserDetailsService {
                 .authProvider(user.getAuthProvider())
                 .contactAgree(user.getContactAgree())
                 .contactAgreeDate(user.getContactAgreeDate())
+                .name(user.getName())
                 .nickname(user.getNickname())
                 .email(user.getEmail())
                 .JoinDate(user.getJoinDate())
@@ -58,6 +59,7 @@ public class UserService implements UserDetailsService {
 
         UserInfoRes userInfoRes = UserInfoRes.builder()
                 .email(user.getEmail())
+                .userName(user.getUsername())
                 .nickname(user.getNickname())
                 .image(user.getImage())
                 .profileOpen(user.getProfileOpen())
