@@ -41,6 +41,4 @@ app:
   auth:
     token:
       secret-key: "c3NhZnlBNzA3"
-      refresh-cookie-key: "refresh"
-
 
