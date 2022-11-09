@@ -49,7 +49,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
         List<FeedAllDto> feedList = jpaQueryFactory
                 .select(new QFeedAllDto(
                         feed.id,
-                        feed.image
+                        feed.image,
+                        feed.feedType
                         ))
                 .from(feed)
                 .where(feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
@@ -61,7 +62,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
         JPAQuery<FeedAllDto> countQuery = jpaQueryFactory
                 .select(Projections.constructor(FeedAllDto.class,
                         feed.id,
-                        feed.image
+                        feed.image,
+                        feed.feedType
                         ))
                 .from(feed,feedLike,comment)
                 .where(feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
@@ -86,7 +88,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         user.nickname,
                         user.image,
                         comment.time,
-                        comment.context
+                        comment.context,
+                        feed.feedType
                         ))
                 .from(feed,user,comment)
                 .rightJoin(comment.user, user)
@@ -112,7 +115,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         user.nickname,
                         user.image,
                         comment.time,
-                        comment.context
+                        comment.context,
+                        feed.feedType
                 ))
                 .from(feed,user,comment)
                 .rightJoin(comment.user, user)

@@ -130,4 +130,10 @@ public class FriendService {
     }
 
 
+    @Transactional
+    public void putConnection(User user, Long friendId) {
+        List<FriendRequest> friendRequest = friendRequestRepository.findByUserIdAndFriendId(user.getId(),friendId);
+        friendRepository.deleteByUserIdAndFriendId(user.getId(),friendId);
+        friendRequest.stream().forEach((request) -> request.changeStatus(DISCONNECTED));
+    }
 }

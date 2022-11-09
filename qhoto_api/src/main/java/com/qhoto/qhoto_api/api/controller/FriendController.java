@@ -62,5 +62,10 @@ public class FriendController {
         return new ResponseEntity<>(friend, HttpStatus.OK);
     }
 
+    @PostMapping("/disconnect/{userId}")
+    public ResponseEntity<HttpStatus> updateConnection(@AuthenticationPrincipal User user, @PathVariable Long userId){
+        friendService.putConnection(user, userId);
+        return ResponseEntity.ok().build();
+    }
 
 }
