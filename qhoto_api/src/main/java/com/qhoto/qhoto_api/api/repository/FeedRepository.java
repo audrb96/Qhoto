@@ -25,7 +25,7 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
     @Query("select count(f) from Feed f where f.typeCode = :typeCode and f.user.id = :userId")
     int findAllFeedByTypeCodeAndUserId(@Param("typeCode")String typeCode,@Param("userId") Long userId);
 
-     @Query(value = "select ifnull(type_code, 'TOTAL') as code, ifnull(quest_duration, 'ALL') as duration, count(*) as count from feed where user_id= :userId group by type_code, quest_duration with rollup order by code", nativeQuery = true)
+    @Query(value = "select ifnull(type_code, 'TOTAL') as code, ifnull(quest_duration, 'ALL') as duration, count(*) as count from feed where user_id= :userId group by type_code, quest_duration with rollup order by code", nativeQuery = true)
     List<QuestAggregateRes> findAllQuestWithRollUp(@Param("userId") Long userId);
 
     Optional<Feed> findFeedById(Long feedId);
