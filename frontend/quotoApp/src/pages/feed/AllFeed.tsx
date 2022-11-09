@@ -14,10 +14,13 @@ import QhotoHeader from '../../components/QhotoHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectedFeed from './SelectedFeed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getAllFeeds, getSelectedFeed} from '../../api/feed';
+import {getAllFeeds, getSelectedFeed, setFeedMission} from '../../api/feed';
+import MissionModal from './MissionModal';
+import Video from 'react-native-video';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [missionVisible, setMissionVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [Feeds, setFeeds] = useState([]);
   // 활성화된 퀘스트의 아이디
@@ -25,6 +28,7 @@ function AllFeed({navigation}) {
   // duration = D, W, M
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
+  const [missionFilter, setmissionFilter] = useState([]);
 
   useEffect(() => {
     let change_condition = '';
@@ -53,7 +57,32 @@ function AllFeed({navigation}) {
   const rightIcon = (
     <TouchableOpacity
       onPress={() => {
-        console.log('펼치기');
+        console.log('미션필터펼치기');
+        setFeedMission(
+          res => {
+            let missions = [];
+            if (duration === 'D') {
+              res.data.options.dailyOptions.map(item => {
+                missions.push(item.questName);
+              });
+              setmissionFilter(missions);
+            } else if (duration === 'W') {
+              res.data.options.weeklyOptions.map(item => {
+                missions.push(item.questName);
+              });
+              setmissionFilter(missions);
+            } else if (duration === 'M') {
+              res.data.options.monthlyOptions.map(item => {
+                missions.push(item.questName);
+              });
+              setmissionFilter(missions);
+            }
+          },
+          err => {
+            console.log(err);
+          },
+        );
+        setMissionVisible(true);
       }}>
       <Ionicons
         name="options-outline"
@@ -69,39 +98,85 @@ function AllFeed({navigation}) {
       />
     </TouchableOpacity>
   );
-  const Item = ({content, width, height}) => (
-    <View
-      style={{
-        width,
-        height,
-        backgroundColor: 'gray',
-      }}>
-      <TouchableOpacity
-        onPress={() => {
-          getSelectedFeed(
-            content.feedId,
-            res => {
-              setComment(res.data);
-            },
-            err => {
-              console.log(err);
-            },
-          );
-          setModalVisible(true);
+
+  // content.feedId = 14, 33이 있다.
+  const Item = ({content, width, height}) =>
+    content.feedType === 'VIDEO' ? (
+      <View
+        style={{
+          width,
+          height,
+          backgroundColor: 'gray',
         }}>
-        <Image
-          style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
-          source={{
-            uri: content.feedImage,
-          }}
-        />
-      </TouchableOpacity>
-    </View>
-  );
+        {/* <Text>{content.feedImage}</Text> */}
+
+        <TouchableOpacity
+          onPress={() => {
+            getSelectedFeed(
+              content.feedId,
+              res => {
+                setComment(res.data);
+              },
+              err => {
+                console.log(err);
+              },
+            );
+            setModalVisible(true);
+          }}>
+          <Video
+            source={{
+              uri: content.feedImage,
+            }}
+            style={{width: '100%', height: '100%'}}
+            // fullscreen={true}
+            // resizeMode={'contain'}
+            resizeMode={'cover'}
+            // resizeMode={'stretch'}
+            repeat={true}
+            // controls={true}
+            paused={true}
+          />
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <View
+        style={{
+          width,
+          height,
+          backgroundColor: 'gray',
+        }}>
+        {/* <Text>{content.feedImage}</Text> */}
+
+        <TouchableOpacity
+          onPress={() => {
+            getSelectedFeed(
+              content.feedId,
+              res => {
+                setComment(res.data);
+              },
+              err => {
+                console.log(err);
+              },
+            );
+            setModalVisible(true);
+          }}>
+          <Image
+            style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
+            source={{
+              uri: content.feedImage,
+            }}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+
   const [containerWidth, setContainerWidth] = useState(0);
   const numColumns = 3;
   const parentFunction = () => {
     setModalVisible(!modalVisible);
+  };
+  const missionvisibleFunction = () => {
+    setMissionVisible(!missionVisible);
   };
 
   return (
@@ -178,6 +253,21 @@ function AllFeed({navigation}) {
               />
             </Pressable>
           </Pressable>
+        </Modal>
+      </View>
+
+      <View>
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={missionVisible}
+          onRequestClose={() => {
+            setMissionVisible(!missionVisible);
+          }}>
+          <MissionModal
+            parentFunction={missionvisibleFunction}
+            props={missionFilter}
+          />
         </Modal>
       </View>
     </SafeAreaView>
