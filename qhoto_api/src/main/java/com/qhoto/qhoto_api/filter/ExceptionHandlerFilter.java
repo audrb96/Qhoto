@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+//JWT 토큰 검증 실패 filter
 @Slf4j
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
     @Override
@@ -26,6 +26,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     }
 
+    /**
+     * ErrorResponse 설정 method
+     * @param response
+     * @param errorCode
+     */
     public void setErrorResponse(HttpServletResponse response,ErrorCode errorCode){
         response.setStatus(errorCode.getStatus());
         response.setContentType("application/json");
