@@ -13,7 +13,7 @@ public class FeedFriendDto {
     private final Long userId;
     private final String userImage;
     private final String feedImage;
-    private final LocalDateTime feedTime;
+    private final String feedTime;
     private final String questName;
     private final String questType;
     private final int questPoint;
@@ -24,14 +24,14 @@ public class FeedFriendDto {
     private final String nickname;
     private final String commentNickname;
     private final String commentUserImage;
-    private final LocalDateTime time;
+    private final String time;
     private final String context;
     private final FeedType feedType;
 
 
     @QueryProjection
     @Builder
-    public FeedFriendDto(Long feedId, Long userId, String feedImage, LocalDateTime feedTime, String questName, String questType, int questPoint, int expPoint, String likeStatus, Long likeCount, String nickname, String commentNickname, String commentUserImage, String userImage, LocalDateTime time, String context, FeedType feedType) {
+    public FeedFriendDto(Long feedId, Long userId, String feedImage, String feedTime, String questName, String questType, int questPoint, int expPoint, String likeStatus, Long likeCount, String nickname, String commentNickname, String commentUserImage, String userImage, String time, String context, FeedType feedType) {
         this.feedId = feedId;
         this.userId = userId;
         this.feedImage = feedImage;
