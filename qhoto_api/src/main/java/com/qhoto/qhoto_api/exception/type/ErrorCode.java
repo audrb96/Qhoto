@@ -2,7 +2,6 @@ package com.qhoto.qhoto_api.exception.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 @RequiredArgsConstructor
 @Getter
 public enum ErrorCode {

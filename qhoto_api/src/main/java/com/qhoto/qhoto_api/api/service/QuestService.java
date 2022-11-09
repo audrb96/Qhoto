@@ -20,8 +20,6 @@ public class QuestService {
 
     private final QuestRepository questRepository;
     private final FeedRepository feedRepository;
-
-    private final UserRepository userRepository;
     private final ExpRepository expRepository;
 
 
