@@ -30,6 +30,7 @@ public class QuestService {
         Optional<Feed> MonthlyClear = feedRepository.findClearMonthlyQuest(userId);
 
         Map<String, Object> questList = new HashMap<>();
+
         // dailyQuestList 반환
         if(dailyClear.isPresent()) {
             Feed today = dailyClear.get();
@@ -38,6 +39,7 @@ public class QuestService {
         }else {
             questList.put("daily", buildQuestList(dailyQuest));
         }
+
         //weeklyQuestList 반환
         if(weeklyClear.isPresent()) {
             Feed weekly = weeklyClear.get();
@@ -46,6 +48,7 @@ public class QuestService {
         }else {
             questList.put("weekly", buildQuestList(weeklyQuest));
         }
+
         //MonthlyQuestList 반환
         if(MonthlyClear.isPresent()) {
             Feed monthly = MonthlyClear.get();
@@ -83,8 +86,10 @@ public class QuestService {
     public QuestLevelRes getQuestLevel(Long userId) {
         // QusetLevelRes에 담아줄 Map 생성
         Map<String, QuestPointRes> questPoint = new HashMap<>();
+
         // 퀘스트 타입 별 point 집계
         List<QuestCountRes> allExp = expRepository.findPointByTypeCodeAndUserId(userId);
+
         // 퀘스트 typeCode / questDuration 별로 count 집계
         List<QuestAggregateRes> questCounts = feedRepository.findAllQuestWithRollUp(userId);
         int totalPoint = 0;
@@ -92,6 +97,7 @@ public class QuestService {
         int totalDaily = 0;
         int totalWeekly = 0;
         int totalMonthly = 0;
+
         // 퀘스트 type 별 QuestPoint 및 QuestCount 빌드
         for(QuestCountRes qc : allExp) {
             QuestPointRes QP = QuestPointRes.builder()
@@ -116,12 +122,12 @@ public class QuestService {
             }
             questPoint.put(qc.getTypeCode(), QP);
         }
+
         // 전체 QuestPoint 및 QuestCount 빌드
         if(questPoint.size() != 0) {
             QuestPointRes QPR =  buildQuestPoint(totalPoint, totalCnt, totalDaily, totalWeekly, totalMonthly);
             questPoint.put("Total", QPR);
         }
-
 
         //QuestLevel 빌드
         QuestLevelRes Q = QuestLevelRes.builder()

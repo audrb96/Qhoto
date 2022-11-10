@@ -66,6 +66,9 @@ public class User implements UserDetails {
     @Enumerated(STRING)
     private AuthProvider authProvider;
 
+    @Column(nullable = false)
+    private String expGrade;
+
     private String refreshToken;
 
     public void insertRefreshToken(String refreshToken) {

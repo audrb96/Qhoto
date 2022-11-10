@@ -12,7 +12,6 @@ import java.util.Optional;
 @Repository
 public interface FeedLikeRepository extends JpaRepository<FeedLike, FeedLikePK> {
 
-
     @Query("select count(f) from FeedLike f where f.feed.id=:feedId")
     Optional<Integer> countAllById(@Param("feedId") Long feedId);
 
