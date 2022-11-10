@@ -145,9 +145,9 @@ public class FeedController {
      * @param likeReq
      * @return {@link HttpStatus}
      */
-    @DeleteMapping("/like")
-    public ResponseEntity<HttpStatus> removeLike(@AuthenticationPrincipal User user,@Validated @RequestBody LikeReq likeReq){
-        feedService.deleteLike(likeReq,user);
+    @DeleteMapping("/like/{feedId}")
+    public ResponseEntity<HttpStatus> removeLike(@AuthenticationPrincipal User user, @PathVariable Long feedId){
+        feedService.deleteLike(user, feedId);
         return ResponseEntity.ok().build();
     }
 

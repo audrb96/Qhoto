@@ -164,6 +164,8 @@ public class FeedService {
         Exp exp = expRepository.findAllByTypeCodeAndUserId(quest.getQuestType().getCode(),user.getId());
         // 경험지 변경
         exp.addPoint(quest.getScore());
+        // 유저 테이블 변경
+
         // 피드 저장
         feedRepository.save(feed);
     }
@@ -208,10 +210,10 @@ public class FeedService {
 
     // 피드 좋아요 삭제
     @Modifying
-    public void deleteLike(LikeReq likeReq,User user){
+    public void deleteLike(User user, Long feedId){
         // 피드 좋아요 생성
         FeedLikePK feedLikePK = FeedLikePK.builder()
-                .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
+                .feed(feedRepository.findFeedById(feedId).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .build();
         // 피드 좋아요 삭제
