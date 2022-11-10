@@ -220,7 +220,7 @@ public class FeedService {
 
     public QuestOptionRes getQuestList() {
 
-        // 옵션 리스트
+        // 퀘스트 옵션 리스트 담아줄 Map 생성
         Map<String, List<QuestOptionItemRes>> optionList = new HashMap<>();
         List<QuestOptionItemRes> dailyOptions = questRepository.findAllDailyByQuestIdAndStatus();
         List<QuestOptionItemRes> weeklyOptions = questRepository.findAllWeeklyByQuestIdAndStatus();

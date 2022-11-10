@@ -13,8 +13,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static javax.persistence.EnumType.*;
-import static javax.persistence.GenerationType.*;
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -65,6 +65,12 @@ public class User implements UserDetails {
 
     @Enumerated(STRING)
     private AuthProvider authProvider;
+
+    @Column(nullable = false)
+    private String expGrade;
+
+    @Column(nullable = false)
+    private Integer totalExp;
 
     private String refreshToken;
 
