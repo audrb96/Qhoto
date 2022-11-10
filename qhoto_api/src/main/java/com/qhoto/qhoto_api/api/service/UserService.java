@@ -36,12 +36,15 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
+
     public void modifyUser(ModifyUserReq modifyUserReq, User userInfo) throws IOException {
         userRepository.modifyUserByCon(modifyUserReq, userInfo);
     }
 
     public MyInfoRes myInfo(User user) {
         return MyInfoRes.builder()
+                .expGrade(user.getExpGrade())
+                .totalExp(user.getTotalExp())
                 .authProvider(user.getAuthProvider())
                 .contactAgree(user.getContactAgree())
                 .contactAgreeDate(user.getContactAgreeDate())
@@ -62,6 +65,8 @@ public class UserService implements UserDetailsService {
         // 유저 정보 생성하기
         UserInfoRes userInfoRes = UserInfoRes.builder()
                 .email(user.getEmail())
+                .expGrade(user.getExpGrade())
+                .totalExp(user.getTotalExp())
                 .userName(user.getUsername())
                 .nickname(user.getNickname())
                 .image(user.getImage())
