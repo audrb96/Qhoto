@@ -62,7 +62,7 @@ public class QuestController {
      * @return {@link IsClearRes}
      */
     @GetMapping("/isClear/monthly")
-    public ResponseEntity<?> readMonthlyIsClear(@AuthenticationPrincipal User user) {
+    public ResponseEntity<IsClearRes> readMonthlyIsClear(@AuthenticationPrincipal User user) {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getMonthlyIsClear(userId), HttpStatus.OK);
     }
@@ -73,7 +73,7 @@ public class QuestController {
      * @return {@link QuestLevelRes}
      */
     @GetMapping("/point")
-    public ResponseEntity<?> readQuestLevel(@AuthenticationPrincipal User user) {
+    public ResponseEntity<QuestLevelRes> readQuestLevel(@AuthenticationPrincipal User user) {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getQuestLevel(userId), HttpStatus.OK);
     }
