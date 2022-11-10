@@ -117,24 +117,31 @@ public class FeedService {
     public void postFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
         // 퀘스트 정보 받아오기
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));
-        //
+        // 유저 정보 받아오기
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "feed/image/"+user.getEmail();
+        // S3에 upload 하기
         S3upload(createFeedReq, quest, user, dirName, FeedType.IMAGE);
     }
 
+    // 비디오 피드 작성하기
     public void postVideoFeed(CreateFeedReq createFeedReq,User userInfo) throws IOException {
+        // 퀘스트 정보 받아오기
         Quest quest = questRepository.findQuestById(createFeedReq.getQuestId()).orElseThrow(()-> new NoQuestByIdException("no quest by id"));;
-
+        // 유저 정보 받아오기
         User user = userRepository.findUserById(userInfo.getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         String dirName = "feed/video/input/"+user.getEmail();
+        // S3에 upload 하기
         S3upload(createFeedReq, quest, user, dirName, FeedType.VIDEO);
 
     }
 
+    // S3에 upload 하기
     private void S3upload(CreateFeedReq createFeedReq, Quest quest, User user, String dirName, FeedType feedType) throws IOException {
         s3Utils.upload(createFeedReq.getFeedImage(),dirName);
+        // DB에는 클라우드 프론트 도메인 이름을 앞에 붙여서 넣어주기
         dirName = S3Utils.CLOUD_FRONT_DOMAIN_NAME+"/"+dirName;
+        // 피드 생성
         Feed feed = Feed.builder()
                 .user(user)
                 .quest(quest)
@@ -153,15 +160,17 @@ public class FeedService {
                 .duration(quest.getDuration())
                 .feedType(feedType)
                 .build();
+        // 경험치 가져오기
         Exp exp = expRepository.findAllByTypeCodeAndUserId(quest.getQuestType().getCode(),user.getId());
+        // 경험지 변경
         exp.addPoint(quest.getScore());
-
+        // 피드 저장
         feedRepository.save(feed);
     }
 
-
+    // 댓글 등록
     public void postComment(CreateCommentReq createCommentReq, User user){
-
+        // 댓글 생성
         Comment comment = Comment.builder()
                 .feed(feedRepository.findFeedById(createCommentReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
@@ -169,34 +178,43 @@ public class FeedService {
                 .time(LocalDateTime.now())
                 .status(CommentStatus.USING)
                 .build();
-
+        // 댓글 저장
         commentRepository.save(comment);
     }
 
+    // 댓글 불러오기
     public List<CommentRes> getComment(Long feedId){
-
         return getCommentList(feedId);
     }
 
+    // 댓글 삭제하기
     public void putComment(Long commentId){
+        // 댓글 가져오기
         Comment comment = commentRepository.findCommentById(commentId);
+        // 댓글 상태 변경하기
         comment.changeCommentStatus(CommentStatus.DISABLE);
     }
 
+    // 피드 좋아요 누르기
     public void postLike(LikeReq likeReq, User user){
+        // 피드 좋아요 생성
         FeedLike feedLike = FeedLike.builder()
                 .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .build();
+        // 피드 좋아요 저장
         feedLikeRepository.save(feedLike);
     }
 
+    // 피드 좋아요 삭제
     @Modifying
     public void deleteLike(LikeReq likeReq,User user){
+        // 피드 좋아요 생성
         FeedLikePK feedLikePK = FeedLikePK.builder()
                 .feed(feedRepository.findFeedById(likeReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .build();
+        // 피드 좋아요 삭제
         feedLikeRepository.deleteById(feedLikePK);
     }
 
