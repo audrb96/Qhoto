@@ -35,5 +35,4 @@ public class Exp {
     public void addPoint(int questPoint){
         this.point+=questPoint;
     }
-
 }

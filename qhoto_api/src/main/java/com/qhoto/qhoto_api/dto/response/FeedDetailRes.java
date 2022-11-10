@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -23,6 +22,7 @@ public class FeedDetailRes {
     private final String questName;
     private final String questType;
     private final int questPoint;
+    private final String expGrade;
     private final int expPoint;
     private final LikeStatus likeStatus;
     private final int likeCount;

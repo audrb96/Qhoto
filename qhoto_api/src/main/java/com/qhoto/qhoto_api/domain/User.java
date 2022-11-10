@@ -115,4 +115,13 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public void addTotalExp(int exp){
+        this.totalExp += exp;
+    }
+
+    public void updateGrade(String expGrade) {
+        this.expGrade = expGrade;
+    }
+
 }

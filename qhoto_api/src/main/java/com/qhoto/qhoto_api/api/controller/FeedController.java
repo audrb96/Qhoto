@@ -94,6 +94,18 @@ public class FeedController {
     }
 
     /**
+     * 피드 삭제 api
+     * @param feedId
+     * @return {@link HttpStatus}
+     */
+    @DeleteMapping("/{feedId}")
+    public ResponseEntity<HttpStatus> removeFeed(@PathVariable Long feedId){
+        feedService.deleteFeed(feedId);
+        return ResponseEntity.ok().build();
+    }
+
+
+    /**
      * 댓글 작성 api
      * @param user
      * @param createCommentReq
