@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,9 +55,11 @@ public class UserService implements UserDetailsService {
                 .description(user.getDescription())
                 .build();
     }
+    // 유저 정보 불러오기
     public UserInfoRes getUserInfo(Long userId) {
+        // 유저 가져오기
         User user = userRepository.findUserById(userId).orElseThrow(()-> new NoUserByIdException("no user by Id"));
-
+        // 유저 정보 생성하기
         UserInfoRes userInfoRes = UserInfoRes.builder()
                 .email(user.getEmail())
                 .userName(user.getUsername())
@@ -70,16 +73,17 @@ public class UserService implements UserDetailsService {
         return userInfoRes;
     }
 
-
-
+    // 나의 피드 불러오기
     public List<MyFeedRes> getMyFeed(User user){
+        // 피드리스트 가져오기 
         List<Feed> feedList = feedRepository.findAllByUserId(user.getId());
         List<MyFeedRes> myFeedResList = new ArrayList<>();
+        // 피드리스트 RES 생성하기
         for(Feed feed:feedList){
             myFeedResList.add(MyFeedRes.builder()
                             .feedId(feed.getId())
                             .feedImage(feed.getImage())
-                            .feedTime(feed.getTime())
+                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-DD HH:MM")))
                             .questName(feed.getQuestName())
                             .typeCode(feed.getTypeCode())
                             .build());
@@ -87,7 +91,7 @@ public class UserService implements UserDetailsService {
         return myFeedResList;
     }
 
-
+    // 닉네임 중복 확인하기
     public Boolean confirmUser(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
