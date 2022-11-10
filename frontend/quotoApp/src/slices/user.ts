@@ -13,8 +13,8 @@ const initialState = {
   userPoint: '',
   contactAgreeDate: '',
   profileOpen: true,
-  loggedIn: true,
-  // loggedIn: false,
+  // loggedIn: true,
+  loggedIn: false,
 };
 const userSlice = createSlice({
   name: 'user',
