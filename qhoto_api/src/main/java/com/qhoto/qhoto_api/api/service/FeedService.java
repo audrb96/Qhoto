@@ -19,6 +19,7 @@ import com.qhoto.qhoto_api.util.S3Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -45,11 +46,9 @@ public class FeedService {
     private final UserRepository userRepository;
     private final FeedLikeRepository feedLikeRepository;
     private final QuestRepository questRepository;
-
     private final ActiveDailyRepository activeDailyRepository;
-
+    private final ExpGradeRepository expGradeRepository;
     private final ActiveWeeklyRepository activeWeeklyRepository;
-
     private final ActiveMonthlyRepository activeMonthlyRepository;
     private final ExpRepository expRepository;
 
@@ -80,7 +79,8 @@ public class FeedService {
                 .questName(feed.getQuest().getName())
                 .questType(feed.getQuest().getQuestType().getCode())
                 .questPoint(feed.getQuest().getScore())
-                .expPoint(expRepository.findPointByUserId(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
+                .expGrade(user.getExpGrade())
+                .expPoint(user.getTotalExp())
                 .likeCount(feedLikeRepository.countAllById(feedId).orElseThrow(()-> new NoFeedByIdException("no feed by id")))
                 .likeStatus((feedLikeRepository.findById(userInfo.getId(),feed.getId()).isPresent())?LikeStatus.LIKE:LikeStatus.UNLIKE)
                 .commentList(commentResList)
@@ -165,10 +165,19 @@ public class FeedService {
         // 경험지 변경
         exp.addPoint(quest.getScore());
         // 유저 테이블 변경
-
+        user.addTotalExp(exp.getPoint());
+        PageRequest pageRequest = PageRequest.of(0,1);
+        List<ExpGrade> expGrade = expGradeRepository.findByBoundaryPoint(user.getTotalExp(), pageRequest);
+        user.updateGrade(expGrade.get(0).getGradeName());
         // 피드 저장
         feedRepository.save(feed);
     }
+
+    //피드 삭제
+    public void deleteFeed(Long feedId) {
+        feedRepository.deleteFeedByfeedId(feedId);
+    }
+
 
     // 댓글 등록
     public void postComment(CreateCommentReq createCommentReq, User user){
@@ -237,4 +246,6 @@ public class FeedService {
                 .build();
         return QO;
     }
+
+
 }
