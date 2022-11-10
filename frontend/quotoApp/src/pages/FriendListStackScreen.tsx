@@ -16,12 +16,16 @@ function FriendListStackScreen() {
       <FriendListStack.Screen
         name="FriendList"
         component={FriendList}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+        }}
       />
       <FriendListStack.Screen
         name="FindFriend"
         component={FindFriend}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+        }}
       />
       <FriendListStack.Screen
         name="OtherPage"
