@@ -113,6 +113,7 @@ function AppInner() {
               options={{
                 title: '퀘스트',
                 header: () => <QhotoHeader leftIcon={false} />,
+                unmountOnBlur: true,
               }}
             />
             <Tab.Screen

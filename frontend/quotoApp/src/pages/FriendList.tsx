@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -18,7 +19,7 @@ import {Avatar, List} from 'react-native-paper';
 import ImageModal from 'react-native-image-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import QhotoHeader from './../components/QhotoHeader';
-
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {
   findFriendApi,
   friendListApi,
@@ -32,6 +33,12 @@ function FriendList({navigation}) {
   const [openFriendList, setOpenFriendList] = useState(true);
   const [friendList, setFriendList] = useState('');
   const [selectedId, setSelectedId] = useState(null);
+  const isFocused = useIsFocused();
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
   const gotoFindFriend = () =>
     navigation.navigate('FindFriend', {friendList: friendList});
@@ -64,7 +71,7 @@ function FriendList({navigation}) {
         console.log('friendListApi - err', err.response);
       },
     );
-  }, []);
+  }, [isFocused]);
 
   const Item = ({
     item,
