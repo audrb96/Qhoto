@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +150,7 @@ public class FeedService {
                 .activeWeekly(activeWeeklyRepository.findWeeklyById(createFeedReq.getActiveWeeklyId()))
                 .activeMonthly(activeMonthlyRepository.findMonthlyById(createFeedReq.getActiveMonthlyId()))
                 .image(dirName+"/"+createFeedReq.getFeedImage().getOriginalFilename())
-                .time(LocalDateTime.now())
+                .time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                 .status(FeedStatus.USING)
                 .questName(quest.getName())
                 .location(createFeedReq.getLocation())
