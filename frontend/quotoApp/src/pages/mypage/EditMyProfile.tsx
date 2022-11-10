@@ -12,6 +12,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import QhotoHeader from '../../components/QhotoHeader';
 import SwitchToggle from 'react-native-switch-toggle';
 import {duplicateTestApi, editMyProfileApi} from '../../api/mypage';
+import {ScrollView} from 'react-native-gesture-handler';
 
 function EditMyProfile({navigation, route}) {
   const [editable, setEditable] = useState(false);
@@ -24,6 +25,7 @@ function EditMyProfile({navigation, route}) {
     editMyProfileApi(
       {
         phone: newPhone,
+        name: newName,
         nickname: newNickname,
         profileOpen: newProfileOpen,
         description: newDescription,
@@ -38,6 +40,7 @@ function EditMyProfile({navigation, route}) {
     );
   };
 
+  const [newName, setNewName] = useState(route.params.userInfo.name);
   const [newPhone, setNewPhone] = useState(route.params.userInfo.phone);
   const [newNickname, setNewNickname] = useState(
     route.params.userInfo.nickname,
@@ -55,6 +58,7 @@ function EditMyProfile({navigation, route}) {
     joinDate,
     nickname,
     phone,
+    name,
     profileOpen,
     description,
     userImage,
@@ -67,6 +71,7 @@ function EditMyProfile({navigation, route}) {
     // Todo 유효성 검사
     await setNewNickname(text);
 
+    // 중복검사Api
     await duplicateTestApi(
       text,
       (res: any) => {
@@ -134,12 +139,25 @@ function EditMyProfile({navigation, route}) {
   );
 
   return (
-    <View>
+    <ScrollView>
       <QhotoHeader leftIcon={leftIcon} rightIcon={rightIcon} />
-      <TextInput editable={false} style={{color: 'black'}}>
-        유저 정보 변경 화면
-      </TextInput>
-      <Text style={{color: 'black'}}>닉네임</Text>
+      <Text style={{color: 'black'}}>이름</Text>
+      <TextInput
+        value={newName}
+        defaultValue={description}
+        onChangeText={text => setNewName(text)}
+        editable={editable}
+        style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
+      />
+
+      <Text style={{color: 'black'}}>
+        닉네임
+        {messageType === 'disable' ? (
+          <Text style={styles.duplicatedNickname}>{message}</Text>
+        ) : (
+          <Text style={styles.nonDuplicatedNickname}>{message}</Text>
+        )}
+      </Text>
       <TextInput
         value={newNickname}
         defaultValue={nickname}
@@ -147,11 +165,6 @@ function EditMyProfile({navigation, route}) {
         editable={editable}
         style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
       />
-      {messageType === 'disable' ? (
-        <Text style={styles.duplicatedNickname}>{message}</Text>
-      ) : (
-        <Text style={styles.nonDuplicatedNickname}>{message}</Text>
-      )}
 
       <Text style={{color: 'black'}}>자기소개</Text>
       <TextInput
@@ -216,7 +229,7 @@ function EditMyProfile({navigation, route}) {
           circleStyle={styles.circle}
         />
       )}
-    </View>
+    </ScrollView>
   );
 }
 

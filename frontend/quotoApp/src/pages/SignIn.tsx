@@ -48,6 +48,25 @@ function SignIn({navigation}: SignInScreenProps) {
         loginKakao(
           token.accessToken,
           async (res: any) => {
+            if (!res.data.isJoined) {
+              console.log('가입하지 않았어');
+              return navigation.navigate('SignUp', {
+                accessToken: res.data.accessToken,
+                refreshToken: res.data.refreshToken,
+              }); // 가입하지 않았어
+            }
+            if (res.data.isJoined && !res.data.isModified) {
+              console.log('가입은 했는데, 정보입력을 안했어');
+
+              return navigation.navigate('SignUp', {
+                accessToken: res.data.accessToken,
+                refreshToken: res.data.refreshToken,
+              }); // 가입은 했는데, 정보입력을 안했어
+            }
+            if (!res.data.isJoined) {
+              // 서비스 이용해~
+            }
+
             await AsyncStorage.setItem(
               'accessToken',
               res.data.accessToken,
@@ -68,6 +87,10 @@ function SignIn({navigation}: SignInScreenProps) {
               (response: any) => {
                 let {
                   nickname,
+                  // NOTICE: 로그인 했는데, 마이페이지 들리기 전에
+                  // 필요한 정보있으면 여기서 dispatch 해줘야함.
+                  // 그런데 SignUp 에서도 dispatch 해줘야 함
+
                   // email,
                   // joinDate,
                   // phone,
@@ -116,15 +139,33 @@ function SignIn({navigation}: SignInScreenProps) {
             .then(userInfo => {
               loginGoogle(
                 userInfo.idToken,
-                (res: any) => {
-                  AsyncStorage.setItem(
+                async (res: any) => {
+                  if (!res.data.isJoined) {
+                    console.log('가입하지 않았어');
+                    return navigation.navigate('SignUp', {
+                      accessToken: res.data.accessToken,
+                      refreshToken: res.data.refreshToken,
+                    }); // 가입하지 않았어
+                  }
+                  if (res.data.isJoined && !res.data.isModified) {
+                    console.log('가입은 했는데, 정보입력을 안했어');
+
+                    return navigation.navigate('SignUp', {
+                      accessToken: res.data.accessToken,
+                      refreshToken: res.data.refreshToken,
+                    }); // 가입은 했는데, 정보입력을 안했어
+                  }
+                  if (!res.data.isJoined) {
+                    // 서비스 이용해~
+                  }
+                  await AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
                     () => {
                       console.log('accessToken : ' + res.data.accessToken);
                     },
                   );
-                  AsyncStorage.setItem(
+                  await AsyncStorage.setItem(
                     'refreshToken',
                     res.data.refreshToken,
                     () => {
