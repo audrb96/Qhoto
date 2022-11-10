@@ -73,6 +73,9 @@ function SignUp({navigation, route}: SignInScreenProps) {
     ) {
       return Alert.alert('알림', '전화번호는 only 숫자만 가능해');
     }
+    if (phone.substr(0, 3) !== '010') {
+      return Alert.alert('알림', '전화번호는 010 으로 시작해줘');
+    }
     // if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
     //   return Alert.alert(
     //     '알림',
