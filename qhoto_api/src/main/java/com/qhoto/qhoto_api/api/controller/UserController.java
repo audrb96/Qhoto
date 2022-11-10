@@ -97,7 +97,7 @@ public class UserController {
      * @return {@link List<MyFeedRes>}
      */
     @GetMapping("/mypage")
-    public ResponseEntity<?> readMyFeed(@AuthenticationPrincipal User user){
+    public ResponseEntity<List<MyFeedRes>> readMyFeed(@AuthenticationPrincipal User user){
         return new ResponseEntity<>(userService.getMyFeed(user),HttpStatus.OK);
     }
 
