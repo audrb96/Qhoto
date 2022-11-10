@@ -94,9 +94,12 @@ public class FriendService {
         return friendRequestRepository.save(savedRequest);
     }
 
+    // 친구 목록을 불러온다
     public List<FriendRes> getFriends(User user) {
+        // 친구 리스트 가져오기
         List<User> friendList = userRepository.findFriendById(user.getId());
         List<FriendRes> friendResList = new ArrayList<>();
+        // 친구 리스트 생성
         for(User friend:friendList){
             friendResList.add(FriendRes.builder()
                     .userId(friend.getId())
@@ -107,9 +110,12 @@ public class FriendService {
         return friendResList;
     }
 
+    // 받은 친구 요청을 불러온다
     public List<FriendRes> getReceives(User user){
+        // 친구 요청을 한 유저 리스트 가져오기
         List<User> receiveList = userRepository.findReceiveById(user.getId());
         List<FriendRes> friendResList = new ArrayList<>();
+        // 친구 요청을 한 유저 리스트 생성
         for(User receive:receiveList){
             friendResList.add(FriendRes.builder()
                     .userId(receive.getId())
@@ -137,11 +143,14 @@ public class FriendService {
         return friendInfo;
     }
 
-
-    @Transactional
+    // 친구 끊기
+   @Transactional
     public void putConnection(User user, Long friendId) {
+        // 친구 요청 상태 불러오기
         List<FriendRequest> friendRequest = friendRequestRepository.findByUserIdAndFriendId(user.getId(),friendId);
+        // 친구 삭제
         friendRepository.deleteByUserIdAndFriendId(user.getId(),friendId);
+        // 친구 요청 상태 단절로 바꾸기
         friendRequest.stream().forEach((request) -> request.changeStatus(DISCONNECTED));
     }
 }
