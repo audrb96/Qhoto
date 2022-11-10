@@ -6,9 +6,7 @@ const api = apiInstance();
 async function getOtherInfoApi(userId, success, fail) {
   await api
     .get(
-      `/api/friend/${userId}`,
-      {params: {userId: userId}},
-      {headers: await createHeaders()},
+      `/api/info/${userId}`, {headers: await createHeaders()},
     )
     .then(success)
     .catch(fail);
