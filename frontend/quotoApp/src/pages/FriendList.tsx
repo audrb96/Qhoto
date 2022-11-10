@@ -126,6 +126,10 @@ function FriendList({navigation}) {
 
   return (
     <View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('OtherPage', {userId: 10})}>
+        <Text style={{color: 'black'}}>38번 유저가기</Text>
+      </TouchableOpacity>
       <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
       <View style={{marginVertical: 5}}>
         <List.Accordion

@@ -74,10 +74,10 @@ function FindFriend({navigation, route}) {
     } else if (searchResult.isFriend === 'FRIEND') {
       iconName = 'user-friends';
       iconOrder = '친구';
-    } else if (searchResult.isFriend === 'DISCONNECTED') {
-      iconName = 'user-plus';
-      iconOrder = '친구 요청';
-    } else if (searchResult.isFriend === null) {
+    } else if (
+      searchResult.isFriend === 'DISCONNECTED' ||
+      searchResult.isFriend === null
+    ) {
       iconName = 'user-plus';
       iconOrder = '친구 요청';
     }
@@ -148,6 +148,8 @@ function FindFriend({navigation, route}) {
         // 친구 요청or수락 후 친구 리스트 재요청
         // => friendList.tsx 의 useEffect(func, [isFocused]) 로 대체함.
         // 굳이 friendListAPI 또 쓸 필요 없음.
+
+        // 친구요청 or 수락 후 isFriend 를 업데이트
         findFriend(targetId);
       },
       (err: any) => {
@@ -382,24 +384,6 @@ function FindFriend({navigation, route}) {
           />
         </List.Accordion>
       </View>
-
-      {/* <View style={{marginVertical: 5}}>
-        <List.Accordion
-          // Todo: Customizing
-          // Todo: 각자 스마트폰 설정 폰트로 보이는지 확인
-          // theme={{colors: {background: 'red'}}}
-          // style={{backgroundColor: 'red', marginBottom: 20}}
-          title="친구목록" // Todo: 친구목록 개수
-          expanded={openFriendList}
-          onPress={() => setOpenFriendList(!openFriendList)}>
-          <FlatList
-            data={friendList}
-            renderItem={renderFriendList}
-            keyExtractor={item => item.userId}
-            extraData={selectedId}
-          />
-        </List.Accordion>
-      </View> */}
     </ScrollView>
   );
 }
