@@ -52,7 +52,7 @@ public class QuestController {
      * @return {@link IsClearRes}
      */
     @GetMapping("/isClear/weekly")
-    public ResponseEntity<?> readWeeklyIsClear(@AuthenticationPrincipal User user) {
+    public ResponseEntity<IsClearRes> readWeeklyIsClear(@AuthenticationPrincipal User user) {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getWeeklyIsClear(userId), HttpStatus.OK);
     }
