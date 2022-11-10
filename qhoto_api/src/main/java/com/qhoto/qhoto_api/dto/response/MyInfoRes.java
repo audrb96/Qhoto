@@ -18,6 +18,7 @@ public class MyInfoRes {
     private String email;
     private String UserImage;
     private LocalDate JoinDate;
+    private String name;
     private String nickname;
     private String phone;
     private Boolean profileOpen;

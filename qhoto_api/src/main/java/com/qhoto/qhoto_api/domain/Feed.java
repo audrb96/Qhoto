@@ -83,4 +83,5 @@ public class Feed {
     private FeedType feedType;
 
 
+
 }

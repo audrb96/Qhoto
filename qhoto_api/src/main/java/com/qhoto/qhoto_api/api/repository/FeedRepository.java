@@ -3,6 +3,7 @@ package com.qhoto.qhoto_api.api.repository;
 import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.dto.response.QuestAggregateRes;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -33,5 +34,8 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
     @Query("select f from Feed f where f.user.id=:userId order by f.time desc")
     List<Feed> findAllByUserId(@Param("userId") Long userId);
 
+    @Modifying
+    @Query("update Feed f set f.status='D' where f.id=:feedId")
+    int deleteFeedByfeedId(@Param("feedId") Long feedId);
 
 }

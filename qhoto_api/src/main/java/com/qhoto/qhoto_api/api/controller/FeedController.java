@@ -39,8 +39,8 @@ public class FeedController {
      * @return {@link Page<FeedAllDto>}
      */
     @GetMapping("/all")
-    public ResponseEntity<Page<FeedAllDto>> readFeed(@ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
-        return new ResponseEntity<>(feedService.getFeed(feedAllReq, pageable),HttpStatus.OK);
+    public ResponseEntity<Page<FeedAllDto>> readFeed(@AuthenticationPrincipal User user, @ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
+        return new ResponseEntity<>(feedService.getFeed(user,feedAllReq, pageable),HttpStatus.OK);
     }
 
     /**
@@ -94,6 +94,18 @@ public class FeedController {
     }
 
     /**
+     * 피드 삭제 api
+     * @param feedId
+     * @return {@link HttpStatus}
+     */
+    @DeleteMapping("/{feedId}")
+    public ResponseEntity<HttpStatus> removeFeed(@PathVariable Long feedId){
+        feedService.deleteFeed(feedId);
+        return ResponseEntity.ok().build();
+    }
+
+
+    /**
      * 댓글 작성 api
      * @param user
      * @param createCommentReq
@@ -145,9 +157,9 @@ public class FeedController {
      * @param likeReq
      * @return {@link HttpStatus}
      */
-    @DeleteMapping("/like")
-    public ResponseEntity<HttpStatus> removeLike(@AuthenticationPrincipal User user,@Validated @RequestBody LikeReq likeReq){
-        feedService.deleteLike(likeReq,user);
+    @DeleteMapping("/like/{feedId}")
+    public ResponseEntity<HttpStatus> removeLike(@AuthenticationPrincipal User user, @PathVariable Long feedId){
+        feedService.deleteLike(user, feedId);
         return ResponseEntity.ok().build();
     }
 

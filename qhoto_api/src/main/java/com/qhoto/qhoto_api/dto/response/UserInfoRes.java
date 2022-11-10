@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class UserInfoRes {
 
     private String email;
+    private String userName;
     private String nickname;
     private String image;
     private Boolean profileOpen;
