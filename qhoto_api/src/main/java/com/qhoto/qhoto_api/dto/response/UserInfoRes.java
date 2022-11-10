@@ -17,5 +17,6 @@ public class UserInfoRes {
     private Boolean profileOpen;
     private int point;
     private String description;
-
+    private String expGrade;
+    private Integer totalExp;
 }

@@ -22,4 +22,6 @@ public class MyInfoRes {
     private String phone;
     private Boolean profileOpen;
     private String description;
+    private String expGrade;
+    private Integer totalExp;
 }

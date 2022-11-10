@@ -17,4 +17,5 @@ public class QuestPointRes {
     private int weeklyCnt;
     private int monthlyCnt;
 
+
 }
