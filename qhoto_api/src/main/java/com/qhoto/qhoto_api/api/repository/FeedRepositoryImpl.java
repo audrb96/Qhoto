@@ -8,11 +8,13 @@ import com.qhoto.qhoto_api.dto.response.FeedFriendDto;
 import com.qhoto.qhoto_api.dto.response.QFeedAllDto;
 import com.qhoto.qhoto_api.dto.response.QFeedFriendDto;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
+import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -84,7 +86,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .select(new QFeedFriendDto(feed.id,
                         user.id,
                         feed.image,
-                        feed.time,
+//                        feed.time,
+                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",feed.time, ConstantImpl.create("%Y-%m-%d %H:%i")),
                         feed.questName,
                         feed.quest.questType.code,
                         feed.quest.score,
@@ -95,7 +98,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         comment.user.nickname,
                         comment.user.image,
                         user.image,
-                        comment.time,
+                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",comment.time, ConstantImpl.create("%Y-%m-%d %H:%i")),
                         comment.context,
                         feed.feedType
                         ))
@@ -116,7 +119,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .select(new QFeedFriendDto(feed.id,
                         user.id,
                         feed.image,
-                        feed.time,
+                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",feed.time, ConstantImpl.create("%Y-%m-%d %H:%i")),
                         feed.questName,
                         feed.quest.questType.code,
                         feed.quest.score,
@@ -127,7 +130,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         comment.user.nickname,
                         comment.user.image,
                         user.image,
-                        comment.time,
+                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",comment.time, ConstantImpl.create("%Y-%m-%d %H:%i")),
                         comment.context,
                         feed.feedType
                 ))
