@@ -17,7 +17,6 @@ import com.qhoto.qhoto_api.domain.Exp;
 import com.qhoto.qhoto_api.domain.QuestType;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.UserRole;
-import com.qhoto.qhoto_api.dto.layer.KakaoTokenDto;
 import com.qhoto.qhoto_api.dto.response.LoginRes;
 import com.qhoto.qhoto_api.exception.InvalidIdTokenException;
 import com.qhoto.qhoto_api.util.JwtTokenProvider;
@@ -147,6 +146,8 @@ public class LoginService {
                 .joinDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
                 .name(name)
                 .phone("010-0000-0000")
+                .expGrade("red")
+                .totalExp(0)
                 .profileOpen(true)
                 .roles(Collections.singletonList(UserRole.USER))
                 .nickname(uuid.toString())
