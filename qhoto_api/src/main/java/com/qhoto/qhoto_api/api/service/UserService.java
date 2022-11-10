@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService {
                 .email(user.getEmail())
                 .expGrade(user.getExpGrade())
                 .totalExp(user.getTotalExp())
-                .userName(user.getUsername())
+                .userName(user.getName())
                 .nickname(user.getNickname())
                 .image(user.getImage())
                 .profileOpen(user.getProfileOpen())
