@@ -171,7 +171,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
     private BooleanExpression feedClassIn(String condition, String duration) {
         List<Long> conList = null;
         if(hasText(condition)){
-            conList = Arrays.stream(condition.split(",")).map((con) -> Long.parseLong(con) ).collect(Collectors.toList());
+            conList = Arrays.stream(condition.split(",")).map(Long::parseLong).collect(Collectors.toList());
         }
         if(duration.equals("D")){
             return conList==null? null: feed.activeDaily.id.in(conList);
