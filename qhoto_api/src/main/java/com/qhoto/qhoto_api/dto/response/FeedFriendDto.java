@@ -5,8 +5,6 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 public class FeedFriendDto {
     private final Long feedId;
@@ -17,6 +15,7 @@ public class FeedFriendDto {
     private final String questName;
     private final String questType;
     private final int questPoint;
+    private final String expGrade;
     private final int expPoint;
     private final String likeStatus;
     private final Long likeCount;
@@ -29,9 +28,10 @@ public class FeedFriendDto {
     private final FeedType feedType;
 
 
+
     @QueryProjection
     @Builder
-    public FeedFriendDto(Long feedId, Long userId, String feedImage, String feedTime, String questName, String questType, int questPoint, int expPoint, String likeStatus, Long likeCount, String nickname, String commentNickname, String commentUserImage, String userImage, String time, String context, FeedType feedType) {
+    public FeedFriendDto(Long feedId, Long userId, String feedImage, String feedTime, String questName, String questType, int questPoint, String expGrade, int expPoint, String likeStatus, Long likeCount, String nickname, String commentNickname, String commentUserImage, String userImage, String time, String context, FeedType feedType) {
         this.feedId = feedId;
         this.userId = userId;
         this.feedImage = feedImage;
@@ -39,6 +39,7 @@ public class FeedFriendDto {
         this.questName = questName;
         this.questType = questType;
         this.questPoint = questPoint;
+        this.expGrade = expGrade;
         this.expPoint = expPoint;
         this.likeStatus = likeStatus;
         this.likeCount = likeCount;

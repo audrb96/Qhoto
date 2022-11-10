@@ -1,6 +1,7 @@
 package com.qhoto.qhoto_api.api.repository;
 
 import com.qhoto.qhoto_api.domain.User;
+import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import com.qhoto.qhoto_api.domain.type.QuestDuration;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.response.FeedAllDto;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.qhoto.qhoto_api.domain.QComment.comment;
-import static com.qhoto.qhoto_api.domain.QExp.exp;
 import static com.qhoto.qhoto_api.domain.QFeed.feed;
 import static com.qhoto.qhoto_api.domain.QFeedLike.feedLike;
 import static com.qhoto.qhoto_api.domain.QFriend.friend;
@@ -59,7 +59,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         ))
                 .from(feed)
                 .where(feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
-                        feedTypeEq(feedAllReq.getDuration())
+                        feedTypeEq(feedAllReq.getDuration()),feed.status.eq(FeedStatus.USING)
                 )
                 .orderBy(feed.time.desc())
                 .offset(pageable.getOffset())
@@ -73,7 +73,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         ))
                 .from(feed,feedLike,comment)
                 .where(feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
-                        feedTypeEq(feedAllReq.getDuration())
+                        feedTypeEq(feedAllReq.getDuration()),feed.status.eq(FeedStatus.USING)
                 )
                 .orderBy(orderFirstByUserId(user.getId()),feed.time.desc())
                 ;
@@ -91,7 +91,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         feed.questName,
                         feed.quest.questType.code,
                         feed.quest.score,
-                        ExpressionUtils.as(JPAExpressions.select(exp.point.sum()).from(exp).where(exp.user.id.eq(user.id)),"expPoint"),
+                        user.expGrade,
+                        user.totalExp,
                         new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike,feed).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
                         ExpressionUtils.as(JPAExpressions.select(feedLike.count()).from(feedLike).where(feedLike.feed.id.eq(feed.id)),"likeCount"),
                         user.nickname,
@@ -110,6 +111,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
                         feedTypeEq(feedAllReq.getDuration())
                         ,user.id.in(JPAExpressions.select(friend.followee.id).from(friend).where(friend.follower.id.eq(userId))).or(user.id.eq(userId))
+                        ,feed.status.eq(FeedStatus.USING)
                 )
                 .groupBy(feed.id)
                 .orderBy(orderFirstByUserId(userId),feed.time.desc())
@@ -123,7 +125,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         feed.questName,
                         feed.quest.questType.code,
                         feed.quest.score,
-                        ExpressionUtils.as(JPAExpressions.select(exp.point.sum()).from(exp).where(exp.user.id.eq(user.id)),"expPoint"),
+                        user.expGrade,
+                        user.totalExp,
                         new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike,feed).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
                         ExpressionUtils.as(JPAExpressions.select(feedLike.count()).from(feedLike).where(feedLike.feed.id.eq(feed.id)),"likeCount"),
                         user.nickname,
@@ -142,6 +145,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         feedClassIn(feedAllReq.getCondition(),feedAllReq.getDuration()),
                         feedTypeEq(feedAllReq.getDuration())
                         ,user.id.in(JPAExpressions.select(friend.followee.id).from(friend).where(friend.follower.id.eq(userId)))
+                        ,feed.status.eq(FeedStatus.USING)
                 ).groupBy(feed.id)
                 .orderBy(feed.time.desc());
         return PageableExecutionUtils.getPage(feedFriendList, pageable, countQuery::fetchCount);
