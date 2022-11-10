@@ -76,6 +76,9 @@ function SignUp({navigation, route}: SignInScreenProps) {
     if (phone.substr(0, 3) !== '010') {
       return Alert.alert('알림', '전화번호는 010 으로 시작해줘');
     }
+    if (phone.length !== 10 && phone.length !== 11) {
+      return Alert.alert('알림', '전화번호는 10~11자리로 맞춰줘');
+    }
     // if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
     //   return Alert.alert(
     //     '알림',
