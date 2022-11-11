@@ -187,7 +187,7 @@ public class FeedService {
                 .feed(feedRepository.findFeedById(createCommentReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .context(createCommentReq.getCommentContext())
-                .time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+                .time(LocalDateTime.now())
                 .status(CommentStatus.USING)
                 .build();
         // 댓글 저장
