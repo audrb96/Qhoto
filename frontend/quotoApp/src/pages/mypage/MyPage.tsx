@@ -3,13 +3,15 @@ import {
   Text,
   TouchableOpacity,
   View,
-  TextInput,
+  Image,
+  ScrollView,
   Platform,
   SafeAreaView,
   Modal,
   Pressable,
   StyleSheet,
   NativeModules,
+  Dimensions,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/reducer';
@@ -27,49 +29,53 @@ import RNFetchBlob from 'rn-fetch-blob';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAppDispatch} from '../../store';
 import userSlice from '../../slices/user';
-import {
-  editMyProfileApi,
-  getUserInfoApi,
-  getUserPointApi,
-} from '../../api/mypage';
+import {editMyProfileApi, getUserInfoApi, getUserLog} from '../../api/mypage';
+import LevelBox from '../../components/mypage/LevelBox';
+import LogItem from '../../components/mypage/LogItem';
 
-function MyPage({navigation}: null) {
+const {width, height} = Dimensions.get('window');
+
+interface UserInfo {
+  email: string;
+  joinDate: string;
+  userImage: string;
+  phone: string;
+  description: string;
+  nickname: string;
+  contactAgreeDate: string;
+  profileOpen: boolean;
+  expGrade: string;
+  totalExp: number;
+}
+
+interface UserLog {
+  feedId: number;
+  feedImage: string;
+  feedTime: string;
+  questName: string;
+  typeCode: string;
+}
+
+function MyPage({navigation}: any) {
   const dispatch = useAppDispatch();
 
   const goToLevel = () => {
-    navigation.navigate('QhotoLevel', {userPoint: userPoint});
+    navigation.navigate('QhotoLevel');
   };
   const goToQuestLog = () => {
-    navigation.navigate('QuestLog');
+    navigation.navigate('QhotoLog');
   };
   const goToEditMyProfile = () => {
     navigation.navigate('EditMyProfile', {userInfo: userInfo});
   };
 
-  // // Todo: 왜 userPoint 만 못가져옴?? 숫자라서 그런가??
-  // // const userPoint = useSelector((state: RootState) => state.user.userPoint);
-  let backgroundColor = 'red';
-  let colorName = '';
-  let nextColorName = '';
-  let minPoint = 0;
-  let maxPoint = 0;
-  // const userPoint = 1500;
-  const [userPoint, setUserPoint] = useState(0);
-
-  const [userInfo, setUserInfo] = useState({
-    email: '',
-    joinDate: '',
-    userImage: '',
-    phone: '',
-    description: '',
-    nickname: '',
-    contactAgreeDate: '',
-    profileOpen: true,
-  });
+  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [userLog, setUserLog] = useState<UserLog[]>();
 
   useEffect(() => {
     getUserInfoApi(
       (res: any) => {
+        console.log(res.data);
         let {
           email,
           joinDate,
@@ -79,6 +85,8 @@ function MyPage({navigation}: null) {
           description,
           userImage,
           contactAgreeDate,
+          totalExp,
+          expGrade,
         } = res.data;
 
         setUserInfo({
@@ -90,90 +98,39 @@ function MyPage({navigation}: null) {
           description,
           userImage,
           contactAgreeDate,
+          totalExp,
+          expGrade,
         });
 
         dispatch(
           userSlice.actions.setUser({
-            email: userInfo.email,
-            joinDate: userInfo.joinDate,
-            userImage: userInfo.userImage,
-            phone: userInfo.phone,
-            nickname: userInfo.nickname,
-            description: userInfo.description,
-            contactAgreeDate: userInfo.contactAgreeDate,
-            profileOpen: userInfo.profileOpen,
+            email: email,
+            joinDate: joinDate,
+            userImage: userImage,
+            phone: phone,
+            nickname: nickname,
+            description: description,
+            contactAgreeDate: contactAgreeDate,
+            profileOpen: profileOpen,
             loggedIn: true,
           }),
         );
-        console.log('getUserInfo-res : ', res);
-        // Todo: back 에서 point 주면 redux 에 넣어야 함
-        // Todo: 유저 point state 관리도 해줘야함
       },
-      (err: any) => console.log('getUserInfo-err : ', err),
+      (err: any) => console.log(err.response.data),
     );
-    getUserPointApi(
-      res => {
-        console.log('getUserPointApi - res', res.data.exp.Total.point);
-        setUserPoint(res.data.exp.Total.point);
-        dispatch(
-          userSlice.actions.setUser({
-            userPoint: res.data.exp.Total.point,
-            loggedIn: true,
-          }),
-        );
+
+    getUserLog(
+      (res: any) => {
+        console.log(res.data);
+        setUserLog(res.data);
       },
       (err: any) => {
-        console.log('getUserPointApi - err', err);
+        console.log(err.data);
       },
     );
   }, []);
 
-  // Todo: 이것도 컴포넌트화 가능??
-  // 타입스크립트방식으로 해도 지저분하긴함..
-  if (userPoint < 50) {
-    backgroundColor = '#F94720';
-    colorName = '레드';
-    nextColorName = '오렌지';
-    minPoint = 0;
-    maxPoint = 50;
-  } else if (userPoint < 200) {
-    backgroundColor = '#FEAD0F';
-    colorName = '오렌지';
-    nextColorName = '옐로우';
-    minPoint = 50;
-    maxPoint = 200;
-  } else if (userPoint < 500) {
-    backgroundColor = '#FFEB3B';
-    colorName = '옐로우';
-    nextColorName = '그린';
-    minPoint = 200;
-    maxPoint = 500;
-  } else if (userPoint < 1000) {
-    backgroundColor = '#72D200';
-    colorName = '그린';
-    nextColorName = '블루';
-    minPoint = 500;
-    maxPoint = 1000;
-  } else if (userPoint < 2500) {
-    backgroundColor = '#30C1FF';
-    colorName = '블루';
-    nextColorName = '네이비';
-    minPoint = 1000;
-    maxPoint = 2500;
-  } else if (userPoint < 5000) {
-    backgroundColor = '#3CA1FF';
-    colorName = '네이비';
-    nextColorName = '퍼플';
-    minPoint = 2500;
-    maxPoint = 5000;
-  } else {
-    backgroundColor = '#8343E8';
-    colorName = '퍼플';
-    minPoint = 5000;
-  }
-
   const [editable, setEditable] = useState(false);
-  const [introduction, setIntroduction] = useState('Qhoto 짱이에요~~');
 
   // 안드로이드를 위한 모달 visible 상태값
   const [changeModalVisible, setChangeModalVisible] = useState(false);
@@ -278,39 +235,33 @@ function MyPage({navigation}: null) {
     />
   );
 
-  return (
-    <SafeAreaView>
-      <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
-      <View // 로그아웃 ~ 수정버튼
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginHorizontal: 20,
-        }}>
-        <TouchableOpacity style={{width: 40, height: 60}}>
-          <Text>임시logout</Text>
-        </TouchableOpacity>
-      </View>
-      <View // 프로필
-      >
-        <View style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <View>
-              <ImageModal
-                source={{uri: userInfo.userImage}}
-                resizeMode="cover"
-                modalImageResizeMode="contain"
-                style={{
-                  width: 120,
-                  height: 120,
-                  borderRadius: 100,
-                }}
-                swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
-                overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
-              />
-
+  return userInfo === undefined || userLog === undefined ? null : (
+    <ScrollView>
+      <SafeAreaView>
+        <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
+        <View // 로그아웃 ~ 수정버튼
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 20,
+          }}>
+          <TouchableOpacity style={{width: 40, height: 60}}>
+            <Text>임시logout</Text>
+          </TouchableOpacity>
+        </View>
+        <View // 프로필
+        >
+          <View style={{alignItems: 'center'}}>
+            <View style={styles.profileImageContainer}>
+              <Image source={{uri: userInfo.userImage}} resizeMode="cover" />
               <TouchableOpacity
-                style={{position: 'absolute', top: 90, left: 90}}
+                style={{
+                  position: 'absolute',
+                  backgroundColor: 'white',
+                  bottom: 10,
+                  right: 10,
+                  borderRadius: 50,
+                }}
                 onPress={modalOpen}>
                 <AntDesign name="camerao" size={20} color={'#3B28B1'} />
               </TouchableOpacity>
@@ -324,145 +275,79 @@ function MyPage({navigation}: null) {
             </Text>
           </View>
         </View>
-      </View>
-      <View // qhoto 레벨
-      >
-        <View>
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 10,
-              flexDirection: 'row',
-              //
-            }}>
-            <Text
-              onPress={goToLevel}
-              style={{fontWeight: 'bold', color: '#3B28B1'}}>
-              qhoto 레벨{' '}
-            </Text>
-            <FontAwesome5 name="angle-right" size={18} color={'#3B28B1'} />
-          </TouchableOpacity>
-        </View>
-        <View style={{alignItems: 'center'}}>
-          <View
-            style={{
-              width: 300,
-              height: 130,
-              backgroundColor,
-              borderRadius: 10,
-            }}>
-            <Text style={{marginHorizontal: 15, color: 'black'}}>
-              {colorName}
-            </Text>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 30,
-                fontWeight: '600',
-                marginHorizontal: 15,
-              }}>
-              {userPoint}
-            </Text>
-            <Text style={{color: 'black', marginHorizontal: 15}}>
-              총퀘스트점수
-            </Text>
-            <View style={{marginHorizontal: 15, marginVertical: 5}}>
-              <View
-                style={{
-                  width: 270,
-                  height: 5,
-                  backgroundColor: 'silver',
-                }}
-              />
-              <View
-                style={{
-                  width: 270 * ((userPoint - minPoint) / (maxPoint - minPoint)),
-                  height: 5,
-                  backgroundColor: 'black',
-                  position: 'absolute',
-                }}
-              />
-            </View>
-            {userPoint < 5000 ? (
-              <Text style={{color: 'black', marginHorizontal: 15}}>
-                {nextColorName} 레벨까지 {maxPoint - userPoint} Points 남음
+        <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+          <View>
+            <TouchableOpacity>
+              <Text onPress={goToLevel} style={styles.subjectText}>
+                qhoto 레벨 &nbsp;
+                <FontAwesome5 name="angle-right" size={20} color={'#3B28B1'} />
               </Text>
-            ) : (
-              <Text />
-            )}
+            </TouchableOpacity>
+          </View>
+          <View style={{alignItems: 'center', paddingVertical: 20}}>
+            <LevelBox userGrade="orange" userPoint={60} />
           </View>
         </View>
-      </View>
-      <View // quest 로그
-      >
-        <TouchableOpacity
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            flexDirection: 'row',
-            //
-          }}>
-          <Text
-            onPress={goToQuestLog}
-            style={{fontWeight: 'bold', color: '#3B28B1'}}>
-            퀘스트 로그{' '}
-          </Text>
-          <FontAwesome5 name="angle-right" size={18} color={'#3B28B1'} />
-        </TouchableOpacity>
-        <Text style={{color: 'black'}}> URI: {imageUri}</Text>
-        <Text style={{color: 'black'}}> joinDate: {userInfo.joinDate}</Text>
-        <Text style={{color: 'black'}}> phone: {userInfo.phone}</Text>
-        <Text style={{color: 'black'}}>
-          {' '}
-          profileOpen: {userInfo.profileOpen === true ? 'true' : 'false'}
-        </Text>
-      </View>
-
-      <Modal
-        ////////////////////////////////////////////////////////////////////////
-        visible={changeModalVisible} // modal 나타나는 조건
-        transparent={true} // false 로 하면 버튼을 눌렀던 page 가 안보임
-        animationType="fade" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
-        onRequestClose={() => setChangeModalVisible(false)} // 안드로이드에서 뒤로가기 버튼을 눌렀을 때 호출되는 함수
-      >
-        <Pressable
-          style={styles.background}
-          onPress={() => setChangeModalVisible(false)}>
-          <View style={styles.whiteBox}>
-            <Pressable
-              style={styles.actionButton}
-              android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
-              onPress={() => {
-                onLaunchCamera();
-                () => setChangeModalVisible(false);
-              }}>
-              <MaterialIcons
-                name="camera-alt"
-                color="#757575"
-                size={24}
-                style={styles.icon}
-              />
-              <Text style={styles.actionText}>카메라로 촬영하기</Text>
-            </Pressable>
-            <Pressable
-              style={styles.actionButton}
-              android_ripple={{color: '#eee'}}
-              onPress={() => {
-                onLaunchImageLibrary();
-                () => setChangeModalVisible(false);
-              }}>
-              <MaterialIcons
-                name="photo"
-                color="#757575"
-                size={24}
-                style={styles.icon}
-              />
-              <Text style={styles.actionText}>사진 선택하기</Text>
-            </Pressable>
+        <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+          <TouchableOpacity>
+            <Text onPress={goToQuestLog} style={styles.subjectText}>
+              qhoto 로그 &nbsp;
+              <FontAwesome5 name="angle-right" size={20} color={'#3B28B1'} />
+            </Text>
+          </TouchableOpacity>
+          <View>
+            {userLog.map((log, index) => (
+              <LogItem key={index} log={log} />
+            ))}
           </View>
-        </Pressable>
-      </Modal>
-    </SafeAreaView>
+        </View>
+
+        <Modal
+          ////////////////////////////////////////////////////////////////////////
+          visible={changeModalVisible} // modal 나타나는 조건
+          transparent={true} // false 로 하면 버튼을 눌렀던 page 가 안보임
+          animationType="fade" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+          onRequestClose={() => setChangeModalVisible(false)} // 안드로이드에서 뒤로가기 버튼을 눌렀을 때 호출되는 함수
+        >
+          <Pressable
+            style={styles.background}
+            onPress={() => setChangeModalVisible(false)}>
+            <View style={styles.whiteBox}>
+              <Pressable
+                style={styles.actionButton}
+                android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
+                onPress={() => {
+                  onLaunchCamera();
+                  () => setChangeModalVisible(false);
+                }}>
+                <MaterialIcons
+                  name="camera-alt"
+                  color="#757575"
+                  size={24}
+                  style={styles.icon}
+                />
+                <Text style={styles.actionText}>카메라로 촬영하기</Text>
+              </Pressable>
+              <Pressable
+                style={styles.actionButton}
+                android_ripple={{color: '#eee'}}
+                onPress={() => {
+                  onLaunchImageLibrary();
+                  () => setChangeModalVisible(false);
+                }}>
+                <MaterialIcons
+                  name="photo"
+                  color="#757575"
+                  size={24}
+                  style={styles.icon}
+                />
+                <Text style={styles.actionText}>사진 선택하기</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Modal>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
@@ -472,6 +357,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  subjectText: {
+    color: '#3B28B1',
+    fontSize: 20,
+    fontFamily: 'MICEGothic-Bold',
+    marginBottom: 3,
+  },
+  profileImageContainer: {
+    width: width * 0.3,
+    height: width * 0.3,
   },
   whiteBox: {
     width: 300,

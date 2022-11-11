@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Dimensions,
-  StyleSheet,
-  View,
-  Text,
-  ImageBackground,
-} from 'react-native';
+import {Dimensions, StyleSheet, View, Text, Image} from 'react-native';
 
 import info from '../info';
 
@@ -22,7 +16,12 @@ interface Props {
 const {width, height} = Dimensions.get('window');
 
 const questTypes: {
-  [key: string]: {typeName: string; iconName: string; colorCode: string};
+  [key: string]: {
+    typeName: string;
+    iconName: string;
+    colorCode: string;
+    stamp: any;
+  };
 } = info.questTypes;
 
 const CardTemplate: React.FC<Props> = props => {
@@ -53,16 +52,25 @@ const CardTemplate: React.FC<Props> = props => {
         </View>
       </View>
       <View style={styles.questContentContainer}>
-        <Text
-          style={[
-            styles.questContent,
-            {
-              color: questTypes[questType].colorCode,
-            },
-          ]}>
-          {questName}
-        </Text>
+        {questName.split('<br>').map(item => (
+          <Text
+            style={[
+              styles.questContent,
+              {
+                color: questTypes[questType].colorCode,
+              },
+            ]}>
+            {item}
+          </Text>
+        ))}
       </View>
+      {isComplete ? (
+        <Image
+          resizeMode="contain"
+          source={questTypes[questType].stamp}
+          style={styles.stampImage}
+        />
+      ) : null}
     </View>
   );
 };
@@ -110,6 +118,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 30,
     fontFamily: 'Happiness-Sans-Bold',
+  },
+  stampImage: {
+    position: 'absolute',
+    bottom: 0,
+    right: 15,
+    width: width * 0.3,
+    height: width * 0.3,
   },
 });
 

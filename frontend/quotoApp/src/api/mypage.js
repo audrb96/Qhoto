@@ -1,20 +1,68 @@
 import {apiInstance, fileApiInstance, createHeaders} from '.';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = apiInstance();
 const fileApi = fileApiInstance();
+const REFRESH_URL = '/api/auth/reissue';
+
+api.interceptors.request.use(async config => {
+  if (!config.headers) return config;
+
+  let token = null;
+
+  if (config.url === REFRESH_URL) {
+    token = await AsyncStorage.getItem('refreshToken');
+  } else {
+    token = await AsyncStorage.getItem('accessToken');
+  }
+
+  if (token !== null) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  res => res,
+  async err => {
+    const {
+      config,
+      response: {
+        data: {code},
+      },
+    } = err;
+
+    /** 1 */
+    if (config.url === REFRESH_URL || code !== 'U002' || config.sent) {
+      return Promise.reject(err);
+    }
+
+    /** 2 */
+    config.sent = true;
+
+    const response = await api.post(REFRESH_URL);
+    const accessToken = response.data.accessToken;
+    const refreshToken = response.data.refreshToken;
+
+    await AsyncStorage.setItem('accessToken', accessToken, () => {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    });
+    await AsyncStorage.setItem('refreshToken', refreshToken);
+
+    return api(config);
+  },
+);
 
 async function getUserInfoApi(success, fail) {
-  await api
-    .get('/api/me', {headers: await createHeaders()})
-    .then(success)
-    .catch(fail);
+  await api.get('/api/me').then(success).catch(fail);
 }
 
 async function editMyProfileApi(newUserInfo, success, fail) {
   console.log('newUserInfo', newUserInfo);
   await fileApi
     // Body
-    .put('/api/user', newUserInfo, {headers: await createHeaders()})
+    .put('/api/user', newUserInfo)
     .then(success)
     .catch(fail);
 }
@@ -25,17 +73,23 @@ async function duplicateTestApi(nickname, success, fail) {
       // QueryParams
       `/api/valid/${nickname}`,
       {params: {nickname: nickname}},
-      {headers: await createHeaders()},
     )
     .then(success)
     .catch(fail);
 }
 
 async function getUserPointApi(success, fail) {
-  await api
-    .get('/api/quest/point', {headers: await createHeaders()})
-    .then(success)
-    .catch(fail);
+  await api.get('/api/quest/point').then(success).catch(fail);
 }
 
-export {getUserInfoApi, editMyProfileApi, duplicateTestApi, getUserPointApi};
+async function getUserLog(success, fail) {
+  await api.get('/api/mypage').then(success).catch(fail);
+}
+
+export {
+  getUserInfoApi,
+  editMyProfileApi,
+  duplicateTestApi,
+  getUserPointApi,
+  getUserLog,
+};

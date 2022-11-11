@@ -68,7 +68,6 @@ async function getFriendsFeeds(params, success, fail) {
   await api
     .get('/api/feed/friend', {
       params: {condition: params[1], duration: params[0]},
-      headers: await createHeaders(),
     })
     .then(success)
     .catch(fail);

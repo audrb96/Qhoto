@@ -47,115 +47,16 @@ function MyQuest() {
   useEffect(() => {
     getQuestList(
       (res: any) => {
-        console.log(res.data);
-        setDailyQuestList(res.data.daily);
-        setWeeklyQuestList(res.data.weekly);
-        setMonthlyQuestList(res.data.monthly);
+        const {daily, weekly, monthly} = res.data.questList;
+        setDailyQuestList(daily);
+        setWeeklyQuestList(weekly);
+        setMonthlyQuestList(monthly);
       },
       (err: any) => {
         console.log(err.response);
       },
     );
   }, []);
-
-  const questLists: Quest[][] = [
-    [
-      {
-        activeId: 1,
-        questId: 1,
-        // questName: '일회용기 쓰지 않기',
-        questName: '1',
-        questType: '환경',
-        questScore: 100,
-        questDifficulty: 1,
-        questImage: '',
-      },
-      {
-        activeId: 2,
-        questId: 2,
-        // questName: '하루 3km 뛰기',
-        questName: '2',
-        questType: '건강',
-        questScore: 200,
-        questDifficulty: 2,
-        questImage: '',
-      },
-      {
-        activeId: 3,
-        questId: 3,
-        // questName: '보라색이 들어간 옷 입기',
-        questName: '3',
-        questType: '색깔',
-        questScore: 300,
-        questDifficulty: 3,
-        questImage: '',
-      },
-    ],
-    [
-      {
-        activeId: 4,
-        questId: 4,
-        // questName: '고양이 사진찍기',
-        questName: '1',
-        questType: '일상',
-        questScore: 200,
-        questDifficulty: 1,
-        questImage: '',
-      },
-      {
-        activeId: 5,
-        questId: 5,
-        // questName: '하루 한끼 비건식단으로 먹어보기',
-        questName: '2',
-        questType: '건강',
-        questScore: 400,
-        questDifficulty: 2,
-        questImage: '',
-      },
-      {
-        activeId: 6,
-        questId: 6,
-        // questName: '친구에게 꽃 선물해주기',
-        questName: '3',
-        questType: '이색',
-        questScore: 600,
-        questDifficulty: 3,
-        questImage: '',
-      },
-    ],
-    [
-      {
-        activeId: 7,
-        questId: 7,
-        // questName: '다같이 단풍산 등산하기',
-        questName: '1',
-        questType: '건강',
-        questScore: 300,
-        questDifficulty: 1,
-        questImage: '',
-      },
-      {
-        activeId: 8,
-        questId: 8,
-        // questName: '할로윈 페스티벌 참여해보기',
-        questName: '2',
-        questType: '이색',
-        questScore: 600,
-        questDifficulty: 2,
-        questImage: '',
-      },
-      {
-        activeId: 9,
-        questId: 9,
-        // questName: '브라질리언 왁싱 받아보기',
-        questName: '3',
-        questType: '일상',
-        questScore: 900,
-        questDifficulty: 3,
-        questImage: '',
-      },
-    ],
-  ];
 
   const selectQuestList = (index: number) => {
     if (index === 0) {

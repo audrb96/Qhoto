@@ -53,6 +53,23 @@ function SignIn({navigation}: SignInScreenProps) {
               res.data.accessToken,
               () => {
                 console.log('accessToken : ' + res.data.accessToken);
+
+                getUserInfoApi(
+                  (response: any) => {
+                    let {nickname} = response.data;
+                    console.log('성공');
+                    dispatch(
+                      userSlice.actions.setUser({
+                        nickname: nickname,
+                        loggedIn: true,
+                      }),
+                    );
+                  },
+                  (err: any) => {
+                    console.log('실패');
+                    console.log(err);
+                  },
+                );
               },
             );
 
@@ -62,36 +79,6 @@ function SignIn({navigation}: SignInScreenProps) {
               () => {
                 console.log('refreshToken : ' + res.data.refreshToken);
               },
-            );
-
-            getUserInfoApi(
-              (response: any) => {
-                let {
-                  nickname,
-                  // email,
-                  // joinDate,
-                  // phone,
-                  // profileOpen,
-                  // description,
-                  // userImage,
-                  // contactAgreeDate,
-                } = response.data;
-
-                dispatch(
-                  userSlice.actions.setUser({
-                    nickname: nickname,
-                    // email: email,
-                    // joinDate: joinDate,
-                    // userImage: userImage,
-                    // phone: phone,
-                    // description: description,
-                    // contactAgreeDate: contactAgreeDate,
-                    // profileOpen: profileOpen,
-                    loggedIn: true,
-                  }),
-                );
-              },
-              (err: any) => console.log(err),
             );
           },
           (err: any) => {
@@ -116,15 +103,15 @@ function SignIn({navigation}: SignInScreenProps) {
             .then(userInfo => {
               loginGoogle(
                 userInfo.idToken,
-                (res: any) => {
-                  AsyncStorage.setItem(
+                async (res: any) => {
+                  await AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
                     () => {
                       console.log('accessToken : ' + res.data.accessToken);
                     },
                   );
-                  AsyncStorage.setItem(
+                  await AsyncStorage.setItem(
                     'refreshToken',
                     res.data.refreshToken,
                     () => {
@@ -186,11 +173,9 @@ function SignIn({navigation}: SignInScreenProps) {
           onPress={signInWithGoogle}
         />
         <Pressable style={{marginTop: 10}} onPress={signInWithKakao}>
-          <View style={{elevation: 5}}>
-            <Image
-              source={KAKAO_LOGIN_BUTTON}
-              style={styles.kakaoLoginButton}
-            />
+          <View
+            style={{backgroundColor: 'white', borderRadius: 5, elevation: 5}}>
+            <Image source={KAKAO_LOGIN_BUTTON} />
           </View>
         </Pressable>
       </View>
@@ -212,9 +197,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  kakaoLoginButton: {
-    elevation: 5,
   },
 });
 

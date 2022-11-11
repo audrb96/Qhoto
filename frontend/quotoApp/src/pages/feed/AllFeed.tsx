@@ -23,7 +23,7 @@ function AllFeed({navigation}) {
   const [missionVisible, setMissionVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [Feeds, setFeeds] = useState([]);
-  const [condition, setCondition] = useState([10, 11, 12]);
+  const [condition, setCondition] = useState([121, 11, 12]);
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
   const [missionFilter, setmissionFilter] = useState([]);
