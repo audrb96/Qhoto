@@ -2,14 +2,14 @@ import React from 'react';
 import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {HEADER_LOGO} from '../image';
 
-function QhotoHeader({leftIcon, rightIcon}) {
+function QhotoHeader({leftIcon, rightIcon, missionVisible}) {
   return (
     <View
       style={{
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: missionVisible ? 'rgba(0, 0, 0, 0)' : 'white',
       }}>
       {leftIcon && (
         <TouchableOpacity style={styles.leftIcon}>{leftIcon}</TouchableOpacity>

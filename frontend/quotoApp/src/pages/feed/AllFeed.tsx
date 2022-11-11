@@ -23,7 +23,9 @@ function AllFeed({navigation}) {
   const [missionVisible, setMissionVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [Feeds, setFeeds] = useState([]);
+  // 활성화된 퀘스트의 아이디
   const [condition, setCondition] = useState([10, 11, 12]);
+  // duration = D, W, M
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
   const [missionFilter, setmissionFilter] = useState([]);
@@ -63,17 +65,17 @@ function AllFeed({navigation}) {
             let missions = [];
             if (duration === 'D') {
               res.data.options.dailyOptions.map(item => {
-                missions.push(item.questName);
+                missions.push(item);
               });
               setmissionFilter(missions);
             } else if (duration === 'W') {
               res.data.options.weeklyOptions.map(item => {
-                missions.push(item.questName);
+                missions.push(item);
               });
               setmissionFilter(missions);
             } else if (duration === 'M') {
               res.data.options.monthlyOptions.map(item => {
-                missions.push(item.questName);
+                missions.push(item);
               });
               setmissionFilter(missions);
             }
@@ -106,7 +108,6 @@ function AllFeed({navigation}) {
         style={{
           width,
           height,
-          backgroundColor: 'gray',
         }}>
         {/* <Text>{content.feedImage}</Text> */}
 
@@ -127,7 +128,12 @@ function AllFeed({navigation}) {
             source={{
               uri: content.feedImage,
             }}
-            style={{width: '100%', height: '100%'}}
+            style={[
+              {width: '100%', height: '100%'},
+              {
+                opacity: missionVisible ? 0.3 : 1,
+              },
+            ]}
             // fullscreen={true}
             // resizeMode={'contain'}
             resizeMode={'cover'}
@@ -143,7 +149,6 @@ function AllFeed({navigation}) {
         style={{
           width,
           height,
-          backgroundColor: 'gray',
         }}>
         {/* <Text>{content.feedImage}</Text> */}
 
@@ -161,7 +166,12 @@ function AllFeed({navigation}) {
             setModalVisible(true);
           }}>
           <Image
-            style={{width: '100%', height: '100%', resizeMode: 'stretch'}}
+            style={[
+              {width: '100%', height: '100%', resizeMode: 'stretch'},
+              {
+                opacity: missionVisible ? 0.3 : 1,
+              },
+            ]}
             source={{
               uri: content.feedImage,
             }}
@@ -180,8 +190,16 @@ function AllFeed({navigation}) {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <QhotoHeader rightIcon={rightIcon} />
+    <SafeAreaView
+      style={[
+        {flex: 1},
+        {backgroundColor: missionVisible ? 'rgba(0, 0, 0, 0.3)' : 'white'},
+      ]}>
+      <QhotoHeader
+        leftIcon={false}
+        rightIcon={rightIcon}
+        missionVisible={missionVisible}
+      />
 
       <View
         style={{
@@ -258,7 +276,7 @@ function AllFeed({navigation}) {
 
       <View>
         <Modal
-          animationType="none"
+          animationType="slide"
           transparent={true}
           visible={missionVisible}
           onRequestClose={() => {
@@ -266,7 +284,7 @@ function AllFeed({navigation}) {
           }}>
           <MissionModal
             parentFunction={missionvisibleFunction}
-            props={missionFilter}
+            props={[missionFilter, duration]}
           />
         </Modal>
       </View>

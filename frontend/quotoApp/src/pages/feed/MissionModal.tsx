@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -9,6 +9,22 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 function MissionModal({parentFunction, props}) {
+  const [optionItems, setOptionItems] = useState([]);
+  const [selectBox, setSelectBox] = useState([true, true, true]);
+  const [missionFilter, setMissionFilter] = useState([]);
+  const [duration, setDuration] = useState('');
+  useEffect(() => {
+    console.log(selectBox);
+    setMissionFilter(props[0]);
+    setDuration(props[1]);
+  }, [selectBox]);
+  console.log(missionFilter + '     미션필터');
+  console.log(duration + '        듀레이션');
+
+  useEffect(() => {
+    console.log(optionItems);
+  }, [optionItems]);
+
   return (
     <Pressable
       style={styles.centeredView}
@@ -16,10 +32,32 @@ function MissionModal({parentFunction, props}) {
         parentFunction();
       }}>
       <Pressable style={styles.modalView}>
-        {props.map(item => (
-          <View style={styles.modal}>
-            <TouchableOpacity style={styles.modalButton}>
-              <Text style={styles.modalButtonText}>{item}</Text>
+        {missionFilter.map((item, index) => (
+          <View style={styles.modal} key={index}>
+            <TouchableOpacity
+              style={[
+                styles.modalButton,
+                {
+                  backgroundColor: selectBox[index]
+                    ? 'rgba(128, 0, 128, 0.1)'
+                    : 'white',
+                  borderTopRightRadius: index == 0 ? 20 : 0,
+                  borderTopLeftRadius: index == 0 ? 20 : 0,
+                },
+              ]}
+              onPress={() => {
+                const newSelectBox = [...selectBox];
+                newSelectBox[index] = !newSelectBox[index];
+                setSelectBox(newSelectBox);
+                const newOptionItems = [...optionItems];
+                if (selectBox[index] === true) {
+                  newOptionItems.splice(index, 1);
+                } else {
+                  newOptionItems.splice(index, 0, item);
+                }
+                setOptionItems(newOptionItems);
+              }}>
+              <Text style={styles.modalButtonText}>{item.questName}</Text>
             </TouchableOpacity>
           </View>
           // <TouchableOpacity
@@ -33,49 +71,40 @@ function MissionModal({parentFunction, props}) {
         ))}
         <TouchableOpacity
           style={{
-            backgroundColor: 'red',
+            backgroundColor: 'purple',
             flex: 0.4,
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
-          <Text style={{textAlign: 'center'}}>확인</Text>
+          }}
+          onPress={() => parentFunction()}>
+          <Text
+            style={[
+              styles.modalButtonText,
+              {textAlign: 'center', color: 'white'},
+            ]}>
+            확인
+          </Text>
         </TouchableOpacity>
       </Pressable>
     </Pressable>
   );
 }
+
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   modalView: {
-    width: 350,
+    width: '100%',
     height: 300,
     backgroundColor: 'white',
-    padding: 15,
     borderRadius: 20,
   },
   body: {
     flex: 1,
-  },
-  questCardContainer: {
-    flex: 3,
-  },
-  questButtonContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  questButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 100,
-    height: 100,
-    borderRadius: 45,
-    backgroundColor: '#4B179F',
   },
   modal: {
     flex: 1,
