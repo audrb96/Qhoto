@@ -165,7 +165,7 @@ public class LoginService {
                 .description(null)
                 .email(email)
                 .image(pictureUrl)
-                .joinDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
+                .joinDate(LocalDate.now())
                 .name(name)
                 .phone("010-0000-0000")
                 .expGrade("red")
