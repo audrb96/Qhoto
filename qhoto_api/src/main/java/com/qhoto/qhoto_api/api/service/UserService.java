@@ -88,7 +88,7 @@ public class UserService implements UserDetailsService {
                 .email(user.getEmail())
                 .expGrade(user.getExpGrade())
                 .totalExp(user.getTotalExp())
-                .userName(user.getUsername())
+                .userName(user.getName())
                 .nickname(user.getNickname())
                 .image(user.getImage())
                 .profileOpen(user.getProfileOpen())
@@ -109,7 +109,7 @@ public class UserService implements UserDetailsService {
             myFeedResList.add(MyFeedRes.builder()
                             .feedId(feed.getId())
                             .feedImage(feed.getImage())
-                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-DD HH:MM")))
+                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                             .questName(feed.getQuestName())
                             .typeCode(feed.getTypeCode())
                             .build());
