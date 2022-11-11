@@ -69,6 +69,9 @@ function MyPage({navigation}: any) {
   const goToEditMyProfile = () => {
     navigation.navigate('EditMyProfile', {userInfo: userInfo});
   };
+  const goToContactsPage = () => {
+    navigation.navigate('ContactsPage');
+  };
 
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [userLog, setUserLog] = useState<UserLog[]>();
@@ -242,21 +245,25 @@ function MyPage({navigation}: any) {
     <ScrollView>
       <SafeAreaView>
         <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
+        <TouchableOpacity onPress={goToContactsPage}>
+          <Text style={{color: 'black'}}>연락처 페이지 가기</Text>
+        </TouchableOpacity>
         <View // 로그아웃 ~ 수정버튼
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginHorizontal: 20,
-          }}>
-          <TouchableOpacity style={{width: 40, height: 60}}>
-            <Text>임시logout</Text>
-          </TouchableOpacity>
-        </View>
+          }}
+        />
         <View // 프로필
         >
           <View style={{alignItems: 'center'}}>
             <View style={styles.profileImageContainer}>
-              <Image source={{uri: userInfo.userImage}} resizeMode="cover" />
+              <Image
+                style={styles.profileImage}
+                source={{uri: userInfo.userImage}}
+                resizeMode="cover"
+              />
               <TouchableOpacity
                 style={{
                   position: 'absolute',
@@ -370,6 +377,11 @@ const styles = StyleSheet.create({
   profileImageContainer: {
     width: width * 0.3,
     height: width * 0.3,
+  },
+  profileImage: {
+    width: width * 0.3,
+    height: width * 0.3,
+    borderRadius: 100,
   },
   whiteBox: {
     width: 300,

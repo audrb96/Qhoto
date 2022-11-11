@@ -13,6 +13,9 @@ import com.quotoapp.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+// Contact 관련 설정
+import com.rt2zz.reactnativecontacts.ReactNativeContacts;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =

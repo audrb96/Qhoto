@@ -9,3 +9,8 @@ if (settings.hasProperty("newArchEnabled") && settings.newArchEnabled == "true")
     include(":ReactAndroid:hermes-engine")
     project(":ReactAndroid:hermes-engine").projectDir = file('../node_modules/react-native/ReactAndroid/hermes-engine')
 }
+
+// Contact 설정
+include ':react-native-contacts'
+project(':react-native-contacts').projectDir = new
+File(rootProject.projectDir, '../node_modules/react-native-contacts/android')
