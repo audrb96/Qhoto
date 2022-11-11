@@ -37,11 +37,11 @@ import java.util.concurrent.TimeUnit;
 class QhotoApiApplicationTests {
 
     @Autowired
-    private FeedService feedService;
-    @Test
-    void test() {
-        FeedDetailRes feedDetail = feedService.getFeedDetail(46L, User.builder()
-                .id(46L).build());
-        System.out.println(feedDetail.getFeedTime());
-    }
+    private ActiveDailyRepository activeDailyRepository;
+//    @Test
+//    @Transactional
+//    void test() {
+//        activeDailyRepository.updateDailyQuestDtoA(LocalDate.now(ZoneId.of("Asia/Seoul")).plusDays(1));
+//        activeDailyRepository.updateDailyQuestAtoD(LocalDate.now(ZoneId.of("Asia/Seoul")));
+//    }
 }
