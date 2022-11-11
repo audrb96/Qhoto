@@ -58,6 +58,27 @@ public class UserService implements UserDetailsService {
                 .description(user.getDescription())
                 .build();
     }
+
+    // 다른 유저 피드 리스트 불러오기
+    public List<MyFeedRes> getUserFeed(Long userId) {
+        // 피드리스트 가져오기 
+        List<Feed> feedList = feedRepository.findAllByUserId(userId);
+        List<MyFeedRes> FeedResList = new ArrayList<>();
+        // 피드리스트 RES 생성하기
+        for(Feed feed:feedList){
+            FeedResList.add(MyFeedRes.builder()
+                    .feedId(feed.getId())
+                    .feedImage(feed.getImage())
+                    .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-DD HH:MM")))
+                    .questName(feed.getQuestName())
+                    .typeCode(feed.getTypeCode())
+                    .build());
+        }
+        return FeedResList;
+    }
+
+
+
     // 유저 정보 불러오기
     public UserInfoRes getUserInfo(Long userId) {
         // 유저 가져오기

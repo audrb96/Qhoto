@@ -68,6 +68,12 @@ public class UserController {
         return ResponseEntity.ok(userService.myInfo(user));
     }
 
+    @GetMapping("/user/quest/{userId}")
+    public ResponseEntity<List<MyFeedRes>> readUserFeed(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getUserFeed(userId));
+    }
+
+
     /**
      * 회원 정보 확인 api
      * @param userId
@@ -97,7 +103,7 @@ public class UserController {
      * @return {@link List<MyFeedRes>}
      */
     @GetMapping("/mypage")
-    public ResponseEntity<?> readMyFeed(@AuthenticationPrincipal User user){
+    public ResponseEntity<List<MyFeedRes>> readMyFeed(@AuthenticationPrincipal User user){
         return new ResponseEntity<>(userService.getMyFeed(user),HttpStatus.OK);
     }
 
