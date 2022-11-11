@@ -20,26 +20,37 @@ import {
   getSelectedFeed,
 } from '../../api/feed';
 import Video from 'react-native-video';
+import info from '../../components/info';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 function SelectedFeed({parentFunction, props}) {
+  const [selectedFeed, setSelectedFeed] = useState([]);
   const [text, onChangeText] = useState('');
-  const [isLike, setLike] = useState(props[0].likeStatus);
+  const [isLike, setLike] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const category = {
-    environment: 'https://cdn-icons-png.flaticon.com/128/259/259345.png',
-    health: 'https://cdn-icons-png.flaticon.com/128/2262/2262878.png',
-    daily: 'https://cdn-icons-png.flaticon.com/128/4397/4397734.png',
-    special: 'https://cdn-icons-png.flaticon.com/128/2970/2970858.png',
-  };
-
-  const feed = props[0];
-  const feedId = props[1];
-  const lastNameRef = useRef();
 
   const userInfo = useSelector((state: RootState) => state.user);
-  console.log(feed);
+  const feed = selectedFeed;
+  const lastNameRef = useRef();
 
-  useEffect(() => {}, [feed.commentList]);
+  useEffect(() => {
+    getSelectedFeed(
+      props,
+      res => {
+        setSelectedFeed(res.data);
+        setLike(res.data.likeStatus);
+      },
+      err => {
+        console.log(err.response.data);
+        console.log('getSelectedFeed에러입니다.');
+      },
+    );
+  }, []);
+
+  const questTypes: {
+    [key: string]: {typeName: string; iconName: string; colorCode: string};
+  } = info.questTypes;
+
   if (feed.userId) {
     return (
       <ScrollView style={{backgroundColor: 'white'}}>
@@ -84,19 +95,11 @@ function SelectedFeed({parentFunction, props}) {
             flexDirection: 'row',
             marginTop: 10,
           }}>
-          {/* <Image
-            style={{
-              width: '10%',
-              height: '70%',
-              resizeMode: 'stretch',
-            }}
-            source={{
-              uri: feed.questType,
-            }}
-          /> */}
-          <View style={{flex: 0.3}}>
-            <Text>feed.questType</Text>
-          </View>
+          <Icon
+            name={questTypes[feed.questType].iconName}
+            color={questTypes[feed.questType].colorCode}
+            style={{fontSize: 30}}
+          />
           <View style={{flex: 0.6}}>
             <Text>{feed.questName}</Text>
           </View>
@@ -134,7 +137,7 @@ function SelectedFeed({parentFunction, props}) {
               onPress={() => {
                 isLike === 'LIKE'
                   ? setFeedDisLike(
-                      feedId,
+                      feed.feedId,
                       res => {
                         setLike('UNLIKE');
                       },
@@ -143,7 +146,7 @@ function SelectedFeed({parentFunction, props}) {
                       },
                     )
                   : setFeedLike(
-                      feedId,
+                      feed.feedId,
                       res => {
                         setLike('LIKE');
                       },
@@ -192,7 +195,7 @@ function SelectedFeed({parentFunction, props}) {
                 }}
                 onPress={() => {
                   setComment(
-                    [feedId, text],
+                    [feed.feedId, text],
                     res => {
                       console.log('댓글입력완료');
                       feed.commentList.push({
@@ -202,6 +205,7 @@ function SelectedFeed({parentFunction, props}) {
                       onChangeText('');
                     },
                     err => {
+                      console.log('댓글에서 오류남.');
                       console.log(err);
                     },
                   );
@@ -248,7 +252,7 @@ function SelectedFeed({parentFunction, props}) {
   } else {
     return (
       <View>
-        <Text>아직안됨</Text>
+        <Text>기다려주세요</Text>
       </View>
     );
   }

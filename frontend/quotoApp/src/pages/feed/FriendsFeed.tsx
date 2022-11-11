@@ -23,19 +23,19 @@ import {getFriendsFeeds, getSelectedFeed, setFeedMission} from '../../api/feed';
 import {ScrollView} from 'react-native-gesture-handler';
 import info from '../../components/info';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Video from 'react-native-video';
 
 function FriendsFeed() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedFeedId, setSelectedFeedId] = useState(null);
-  const [isLike, setLike] = useState([true, false, true, false]);
+  // const [isLike, setLike] = useState([true, false, true, false]);
   const [isSuccess, setSuccess] = useState(true);
-  const [selectedIdx, setSelectedIdx] = useState(0);
+  const [FriendsFeeds, setFeeds] = useState([]);
   const [condition, setCondition] = useState([4, 8, 12]);
   const [duration, setDuration] = useState('D');
-  const [FriendsFeeds, setFeeds] = useState([]);
-  const [commentList, setComment] = useState([]);
-  console.log(FriendsFeeds, '찍습니다.');
+  const [durationIdx, setdurationIdx] = useState(0);
+  const [selectedFeedId, setSelectedFeedId] = useState(null);
 
+  // 친구피드 전체셋팅
   useEffect(() => {
     let change_condition = '';
     condition.forEach(elem => {
@@ -70,6 +70,7 @@ function FriendsFeed() {
   const parentFunction = () => {
     setModalVisible(!modalVisible);
   };
+
   const questTypes: {
     [key: string]: {typeName: string; iconName: string; colorCode: string};
   } = info.questTypes;
@@ -85,12 +86,12 @@ function FriendsFeed() {
         }}>
         <TouchableOpacity
           onPress={() => {
-            setSelectedIdx(0);
+            setdurationIdx(0);
             setDuration('D');
           }}>
           <Text
             style={
-              selectedIdx === 0
+              durationIdx === 0
                 ? {width: 80, textAlign: 'center', color: 'purple'}
                 : {width: 80, textAlign: 'center'}
             }>
@@ -99,12 +100,12 @@ function FriendsFeed() {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            setSelectedIdx(1);
+            setdurationIdx(1);
             setDuration('W');
           }}>
           <Text
             style={
-              selectedIdx === 1
+              durationIdx === 1
                 ? {width: 80, textAlign: 'center', color: 'purple'}
                 : {width: 80, textAlign: 'center'}
             }>
@@ -113,12 +114,12 @@ function FriendsFeed() {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            setSelectedIdx(2);
+            setdurationIdx(2);
             setDuration('M');
           }}>
           <Text
             style={
-              selectedIdx === 2
+              durationIdx === 2
                 ? {width: 80, textAlign: 'center', color: 'purple'}
                 : {width: 80, textAlign: 'center'}
             }>
@@ -140,39 +141,28 @@ function FriendsFeed() {
                     <Text>{feed.nickname}</Text>
                   </View>
                   <View style={{flexDirection: 'row'}}>
-                    {/* <Text>{feed.nickname}!!!!!!!!!!!!</Text> */}
-                    <Text>{feed.feedTime.slice()}!!!!</Text>
+                    <Text style={{color: 'blue'}}>{feed.nickname} </Text>
+                    <Text>{feed.feedTime.slice(0, 4)}년 </Text>
+                    <Text>{feed.feedTime.slice(5, 7)}월 </Text>
+                    <Text>{feed.feedTime.slice(8, 10)}일 </Text>
                     <Text>
                       {(() => {
-                        if (duration === 'D') {
-                          if (parseInt(feed.feedTime.slice(11, 13)) >= 12) {
-                            return (
-                              '오후' +
-                              (
-                                '0' +
-                                (parseInt(feed.feedTime.slice(11, 13)) - 12)
-                              ).slice(-2) +
-                              ':' +
-                              parseInt(feed.feedTime.slice(14, 16))
-                            );
-                          } else {
-                            return (
-                              '오전' +
-                              feed.feedTime.slice(11, 13) +
-                              ':' +
-                              parseInt(feed.feedTime.slice(14, 16))
-                            );
-                          }
-                        } else if (duration === 'W') {
-                          return feed.feedTime;
+                        if (parseInt(feed.feedTime.slice(11, 13)) >= 12) {
+                          return (
+                            '오후 0' +
+                            (parseInt(feed.feedTime.slice(11, 13)) - 12) +
+                            '시 '
+                          );
                         } else {
-                          return feed.feedTime;
+                          return '오전 ' + feed.feedTime.slice(11, 13) + '시 ';
                         }
                       })()}
                     </Text>
+                    <Text>{feed.feedTime.slice(14, 16)}분</Text>
                   </View>
                 </View>
                 <View style={{flex: 0.1}}>
+                  {/* 퀘스트아이콘 */}
                   <Icon
                     name={questTypes[feed.questType].iconName}
                     color={questTypes[feed.questType].colorCode}
@@ -180,49 +170,86 @@ function FriendsFeed() {
                   />
                 </View>
               </View>
-              <View style={{height: 200, width: '100%'}}>
+              <View style={{height: 250, width: '100%'}}>
                 {isSuccess ? (
                   <TouchableOpacity
                     onPress={() => {
                       setSelectedFeedId(feed.feedId);
-                      getSelectedFeed(
-                        feed.feedId,
-                        res => {
-                          setComment(res.data);
-                        },
-                        err => {
-                          console.log(err.response.data);
-                          console.log('getSelectedFeed에러입니다.');
-                        },
-                      );
                       setModalVisible(true);
                     }}>
-                    <Image
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        resizeMode: 'stretch',
-                      }}
-                      source={{uri: feed.feedImage}}
-                    />
+                    {(() => {
+                      if (feed.feedType === 'VIDEO') {
+                        return (
+                          <Video
+                            source={{
+                              uri: feed.feedImage,
+                            }}
+                            style={{width: '100%', height: '100%'}}
+                            // fullscreen={true}
+                            // resizeMode={'contain'}
+                            // resizeMode={'cover'}
+                            resizeMode={'stretch'}
+                            repeat={true}
+                            // controls={true}
+                            paused={true}
+                          />
+                        );
+                      } else {
+                        return (
+                          <Image
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              resizeMode: 'stretch',
+                            }}
+                            source={{uri: feed.feedImage}}
+                          />
+                        );
+                      }
+                    })()}
                   </TouchableOpacity>
                 ) : (
-                  <ImageBackground
-                    source={{uri: feed.feedImage}}
-                    style={{flex: 1}}
-                    resizeMode="stretch"
-                    blurRadius={10}>
-                    <View
-                      style={{
-                        flex: 1,
-                        backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                      }}
-                    />
-                  </ImageBackground>
+                  (() => {
+                    if (feed.feedType === 'VIDEO') {
+                      return (
+                        <Video
+                          source={{
+                            uri: feed.feedImage,
+                          }}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                          }}
+                          // fullscreen={true}
+                          // resizeMode={'contain'}
+                          // resizeMode={'cover'}
+                          resizeMode={'stretch'}
+                          repeat={true}
+                          // controls={true}
+                          paused={true}
+                        />
+                      );
+                    } else {
+                      return (
+                        <ImageBackground
+                          source={{uri: feed.feedImage}}
+                          style={{flex: 1}}
+                          resizeMode="stretch"
+                          blurRadius={10}>
+                          <View
+                            style={{
+                              flex: 1,
+                              backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                            }}
+                          />
+                        </ImageBackground>
+                      );
+                    }
+                  })()
                 )}
               </View>
-              <View style={{width: 70}}>
-                {/* <View
+              {/* <View style={{width: 70}}>
+                <View
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
@@ -251,25 +278,64 @@ function FriendsFeed() {
                       color={'black'}
                     />
                   </TouchableOpacity>
-                </View> */}
-              </View>
-              <View style={{flexDirection: 'row', flex: 1, marginVertical: 12}}>
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Avatar.Image
-                    size={30}
-                    source={{uri: feed.commentUserImage}}
-                  />
                 </View>
-                <View>
-                  <View style={{flexDirection: 'row', flex: 1}}>
-                    <Text>{feed.nickname}</Text>
-                    <Text>{feed.feedTime}</Text>
-                  </View>
-                  <View>
-                    <Text>{feed.context}</Text>
-                  </View>
-                </View>
-              </View>
+              </View> */}
+              {(() => {
+                if (feed.context === null) {
+                  return (
+                    <View>
+                      <Text>댓글없음</Text>
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        flex: 1,
+                        marginVertical: 12,
+                      }}>
+                      <View
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Avatar.Image
+                          size={30}
+                          source={{uri: feed.commentUserImage}}
+                        />
+                      </View>
+                      <View style={{flexDirection: 'row'}}>
+                        <View>
+                          <Text style={{color: 'blue'}}>
+                            {feed.commentNickname}
+                          </Text>
+                          <Text>{feed.context}!!!</Text>
+                        </View>
+                        <Text>{feed.feedTime.slice(0, 4)}년 </Text>
+                        <Text>{feed.feedTime.slice(5, 7)}월 </Text>
+                        <Text>{feed.feedTime.slice(8, 10)}일 </Text>
+                        <Text>
+                          {(() => {
+                            if (parseInt(feed.feedTime.slice(11, 13)) >= 12) {
+                              return (
+                                '오후 0' +
+                                (parseInt(feed.feedTime.slice(11, 13)) - 12) +
+                                '시 '
+                              );
+                            } else {
+                              return (
+                                '오전 ' + feed.feedTime.slice(11, 13) + '시 '
+                              );
+                            }
+                          })()}
+                        </Text>
+                        <Text>{feed.feedTime.slice(14, 16)}분</Text>
+                      </View>
+                    </View>
+                  );
+                }
+              })()}
             </View>
           ))}
         </ScrollView>
@@ -288,7 +354,7 @@ function FriendsFeed() {
             <Pressable style={styles.modalView}>
               <SelectedFeed
                 parentFunction={parentFunction}
-                props={[commentList, selectedFeedId]}
+                props={selectedFeedId}
               />
             </Pressable>
           </Pressable>
@@ -322,8 +388,7 @@ const styles = StyleSheet.create({
     height: 650,
     backgroundColor: 'white',
     padding: 15,
-    borderRadius: 20,
-    borderWidth: 3,
+    borderRadius: 10,
   },
   button: {
     borderRadius: 20,

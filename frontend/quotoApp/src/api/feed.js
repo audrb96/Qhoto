@@ -83,12 +83,7 @@ async function setFeedLike(feedId, success, fail) {
   await api.post('/api/feed/like', {feedId}).then(success).catch(fail);
 }
 async function setFeedDisLike(feedId, success, fail) {
-  console.log('피드아이디');
-  console.log(feedId);
-  await api
-    .delete('/api/feed/like', {data: {feedId: feedId}})
-    .then(success)
-    .catch(fail);
+  await api.delete(`/api/feed/like/${feedId}`).then(success).catch(fail);
 }
 
 async function setComment(params, success, fail) {
