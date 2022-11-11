@@ -52,7 +52,6 @@ function SelectedFeed({parentFunction, props}) {
   const userInfo = useSelector((state: RootState) => state.user);
 
   useEffect(() => {}, [feed.commentList]);
-  console.log(feed.feedType);
   if (feed.userId) {
     return (
       <ScrollView style={{backgroundColor: 'white'}}>
@@ -146,7 +145,6 @@ function SelectedFeed({parentFunction, props}) {
               style={{flex: 0.12}}
               onPress={() => {
                 console.log('피드아이디');
-                console.log(feed.feedId);
                 isLike === 'LIKE'
                   ? setFeedDisLike(
                       feed.feedId,
@@ -155,7 +153,7 @@ function SelectedFeed({parentFunction, props}) {
                       },
                       err => {
                         console.log('에러');
-                        console.log(err.response);
+                        console.log(err.response.data);
                       },
                     )
                   : setFeedLike(
@@ -211,8 +209,6 @@ function SelectedFeed({parentFunction, props}) {
                     [feed.feedId, text],
                     res => {
                       console.log('댓글입력완료');
-
-                      console.log(feed.commentList);
                       feed.commentList.push({
                         commentContext: text,
                         userId: userInfo.nickname,
