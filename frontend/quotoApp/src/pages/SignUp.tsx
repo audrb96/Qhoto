@@ -131,7 +131,7 @@ function SignUp({navigation, route}: SignInScreenProps) {
         console.log('editMyProfileApi - res', res);
       },
       (err: any) => {
-        console.log('editMyProfileApi - err', err);
+        console.log('editMyProfileApi - err', err.response.data);
       },
     );
   }, [phone, name, nickname]);

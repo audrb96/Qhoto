@@ -129,7 +129,8 @@ function AppInner() {
               component={MyPageStackScreen}
               options={{
                 title: '마이페이지',
-                headerShown: false,
+                header: () => <QhotoHeader leftIcon={false} />,
+                unmountOnBlur: true,
               }}
             />
           </Tab.Navigator>

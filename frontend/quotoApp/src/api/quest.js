@@ -23,6 +23,38 @@ api.interceptors.request.use(async config => {
   return config;
 });
 
+api.interceptors.response.use(
+  res => res,
+  async err => {
+    console.log(err.response);
+    const {
+      config,
+      response: {
+        data: {code},
+      },
+    } = err;
+
+    /** 1 */
+    if (config.url === REFRESH_URL || code !== 'U002' || config.sent) {
+      return Promise.reject(err);
+    }
+
+    /** 2 */
+    config.sent = true;
+
+    const response = await api.post(REFRESH_URL);
+    const accessToken = response.data.accessToken;
+    const refreshToken = response.data.refreshToken;
+
+    await AsyncStorage.setItem('accessToken', accessToken, () => {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    });
+    await AsyncStorage.setItem('refreshToken', refreshToken);
+
+    return api(config);
+  },
+);
+
 // request interceptor
 fileApi.interceptors.request.use(async config => {
   if (!config.headers) return config;
@@ -62,7 +94,7 @@ fileApi.interceptors.response.use(
     /** 2 */
     config.sent = true;
 
-    const response = await api.post('/api/auth/reissue');
+    const response = await api.post(REFRESH_URL);
     const accessToken = response.data.accessToken;
     const refreshToken = response.data.refreshToken;
 
