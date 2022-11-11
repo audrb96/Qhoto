@@ -150,7 +150,7 @@ public class FeedService {
                 .activeWeekly(activeWeeklyRepository.findWeeklyById(createFeedReq.getActiveWeeklyId()))
                 .activeMonthly(activeMonthlyRepository.findMonthlyById(createFeedReq.getActiveMonthlyId()))
                 .image(dirName+"/"+createFeedReq.getFeedImage().getOriginalFilename())
-                .time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+                .time(LocalDateTime.now())
                 .status(FeedStatus.USING)
                 .questName(quest.getName())
                 .location(createFeedReq.getLocation())
@@ -187,7 +187,7 @@ public class FeedService {
                 .feed(feedRepository.findFeedById(createCommentReq.getFeedId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
                 .user(userRepository.findUserById(user.getId()).orElseThrow(()-> new NoUserByIdException("no user by id")))
                 .context(createCommentReq.getCommentContext())
-                .time(LocalDateTime.now())
+                .time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                 .status(CommentStatus.USING)
                 .build();
         // 댓글 저장
