@@ -52,8 +52,9 @@ const CardTemplate: React.FC<Props> = props => {
         </View>
       </View>
       <View style={styles.questContentContainer}>
-        {questName.split('<br>').map(item => (
+        {questName.split('<br>').map((item, index) => (
           <Text
+            key={index}
             style={[
               styles.questContent,
               {
