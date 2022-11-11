@@ -6,7 +6,9 @@ const api = apiInstance();
 
 // request interceptor
 api.interceptors.request.use(async config => {
-  if (!config.headers) return config;
+  if (!config.headers) {
+    return config;
+  }
 
   let token = null;
 
@@ -81,7 +83,7 @@ async function setFeedLike(feedId, success, fail) {
   await api.post('/api/feed/like', {feedId}).then(success).catch(fail);
 }
 async function setFeedDisLike(feedId, success, fail) {
-  await api.delete('/api/feed/like', {feedId}).then(success).catch(fail);
+  await api.delete(`/api/feed/like/${feedId}`).then(success).catch(fail);
 }
 
 async function setComment(params, success, fail) {

@@ -48,6 +48,22 @@ function SignIn({navigation}: SignInScreenProps) {
         loginKakao(
           token.accessToken,
           async (res: any) => {
+            if (!res.data.isJoined) {
+              console.log('가입하지 않았어');
+              return navigation.navigate('SignUp', {
+                accessToken: res.data.accessToken,
+                refreshToken: res.data.refreshToken,
+              }); // 가입하지 않았어
+            }
+            if (res.data.isJoined && !res.data.isModified) {
+              console.log('가입은 했는데, 정보입력을 안했어');
+
+              return navigation.navigate('SignUp', {
+                accessToken: res.data.accessToken,
+                refreshToken: res.data.refreshToken,
+              }); // 가입은 했는데, 정보입력을 안했어
+            }
+
             await AsyncStorage.setItem(
               'accessToken',
               res.data.accessToken,
@@ -104,6 +120,22 @@ function SignIn({navigation}: SignInScreenProps) {
               loginGoogle(
                 userInfo.idToken,
                 async (res: any) => {
+                  if (!res.data.isJoined) {
+                    console.log('가입하지 않았어');
+                    return navigation.navigate('SignUp', {
+                      accessToken: res.data.accessToken,
+                      refreshToken: res.data.refreshToken,
+                    }); // 가입하지 않았어
+                  }
+                  if (res.data.isJoined && !res.data.isModified) {
+                    console.log('가입은 했는데, 정보입력을 안했어');
+
+                    return navigation.navigate('SignUp', {
+                      accessToken: res.data.accessToken,
+                      refreshToken: res.data.refreshToken,
+                    }); // 가입은 했는데, 정보입력을 안했어
+                  }
+
                   await AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,

@@ -42,6 +42,7 @@ interface UserInfo {
   phone: string;
   description: string;
   nickname: string;
+  name: string;
   contactAgreeDate: string;
   profileOpen: boolean;
   expGrade: string;
@@ -80,6 +81,7 @@ function MyPage({navigation}: any) {
           email,
           joinDate,
           nickname,
+          name,
           phone,
           profileOpen,
           description,
@@ -93,6 +95,7 @@ function MyPage({navigation}: any) {
           email,
           joinDate,
           nickname,
+          name,
           phone,
           profileOpen,
           description,

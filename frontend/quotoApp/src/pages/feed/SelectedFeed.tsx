@@ -20,38 +20,37 @@ import {
   getSelectedFeed,
 } from '../../api/feed';
 import Video from 'react-native-video';
+import info from '../../components/info';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 function SelectedFeed({parentFunction, props}) {
+  const [selectedFeed, setSelectedFeed] = useState([]);
   const [text, onChangeText] = useState('');
-  const [isLike, setLike] = useState(props.likeStatus);
+  const [isLike, setLike] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const category = {
-    environment: 'https://cdn-icons-png.flaticon.com/128/259/259345.png',
-    health: 'https://cdn-icons-png.flaticon.com/128/2262/2262878.png',
-    daily: 'https://cdn-icons-png.flaticon.com/128/4397/4397734.png',
-    special: 'https://cdn-icons-png.flaticon.com/128/2970/2970858.png',
-  };
-  const item = [
-    {
-      id: '0',
-      title: 'First',
-      profile: 'https://reactjs.org/logo-og.png',
-      badge: 'https://reactjs.org/logo-og.png',
-      nickname: '코린이1',
-      profileId: 'hyungjin1asdfasdfasdf',
-      feedtime: '오후02:00',
-      questtag: category.health,
-      feedImage:
-        'https://file.mk.co.kr/meet/neds/2010/07/image_readtop_2010_348940_1278055177290222.jpg',
-      like: true,
-    },
-  ];
-  const feed = props;
-  const lastNameRef = useRef();
 
   const userInfo = useSelector((state: RootState) => state.user);
+  const feed = selectedFeed;
+  const lastNameRef = useRef();
 
-  useEffect(() => {}, [feed.commentList]);
+  useEffect(() => {
+    getSelectedFeed(
+      props,
+      res => {
+        setSelectedFeed(res.data);
+        setLike(res.data.likeStatus);
+      },
+      err => {
+        console.log(err.response.data);
+        console.log('getSelectedFeed에러입니다.');
+      },
+    );
+  }, []);
+
+  const questTypes: {
+    [key: string]: {typeName: string; iconName: string; colorCode: string};
+  } = info.questTypes;
+
   if (feed.userId) {
     return (
       <ScrollView style={{backgroundColor: 'white'}}>
@@ -96,19 +95,11 @@ function SelectedFeed({parentFunction, props}) {
             flexDirection: 'row',
             marginTop: 10,
           }}>
-          <Image
-            style={{
-              width: '10%',
-              height: '70%',
-              resizeMode: 'stretch',
-            }}
-            source={{
-              uri: item[0].questtag,
-            }}
+          <Icon
+            name={questTypes[feed.questType].iconName}
+            color={questTypes[feed.questType].colorCode}
+            style={{fontSize: 30}}
           />
-          <View style={{flex: 0.3}}>
-            <Text>feed.questType</Text>
-          </View>
           <View style={{flex: 0.6}}>
             <Text>{feed.questName}</Text>
           </View>
@@ -144,7 +135,6 @@ function SelectedFeed({parentFunction, props}) {
             <TouchableOpacity
               style={{flex: 0.12}}
               onPress={() => {
-                console.log('피드아이디');
                 isLike === 'LIKE'
                   ? setFeedDisLike(
                       feed.feedId,
@@ -152,7 +142,6 @@ function SelectedFeed({parentFunction, props}) {
                         setLike('UNLIKE');
                       },
                       err => {
-                        console.log('에러');
                         console.log(err.response.data);
                       },
                     )
@@ -216,6 +205,7 @@ function SelectedFeed({parentFunction, props}) {
                       onChangeText('');
                     },
                     err => {
+                      console.log('댓글에서 오류남.');
                       console.log(err);
                     },
                   );
@@ -262,7 +252,7 @@ function SelectedFeed({parentFunction, props}) {
   } else {
     return (
       <View>
-        <Text>아직안됨</Text>
+        <Text>기다려주세요</Text>
       </View>
     );
   }

@@ -70,14 +70,14 @@ function FindFriend({navigation, route}) {
     } else if (searchResult.isFriend === 'REQUEST') {
       // 내가 보낸(아직 받지않은)
       iconName = 'user-check';
-      iconOrder = '친구 요청';
+      iconOrder = '친구 수락 대기중';
     } else if (searchResult.isFriend === 'FRIEND') {
       iconName = 'user-friends';
       iconOrder = '친구';
-    } else if (searchResult.isFriend === 'DISCONNECTED') {
-      iconName = 'user-plus';
-      iconOrder = '친구 요청';
-    } else if (searchResult.isFriend === null) {
+    } else if (
+      searchResult.isFriend === 'DISCONNECTED' ||
+      searchResult.isFriend === null
+    ) {
       iconName = 'user-plus';
       iconOrder = '친구 요청';
     }
@@ -115,36 +115,42 @@ function FindFriend({navigation, route}) {
     );
   };
 
+  // } else if (searchResult.isFriend === 'REQUEST') {
+  //   // 내가 보낸(아직 받지않은)
+  //   iconName = 'user-check';
+  //   iconOrder = '친구 수락 대기중';
+  // } else if (searchResult.isFriend === 'FRIEND') {
+  //   iconName = 'user-friends';
+  //   iconOrder = '친구';
+
   // 친구 요청 + 수락
   // Todo: back api 완성시 resUserId 붙여야함
   const addFriend = resUserId => {
+    if (iconOrder === '친구 수락 대기중') {
+      return Alert.alert('알림', '친구 수락 대기중입니다.');
+    }
+    if (iconOrder === '친구') {
+      return Alert.alert('알림', '이미 친구입니다.');
+    }
     console.log('resUserId', resUserId);
     addFriendApi(
       resUserId,
       (res: any) => {
         console.log('addFriendApi - res', res);
         // 친구 요청or수락 후 받은 친구목록 재요청
-        receiveListApi(
-          res => {
-            console.log('receiveListApi - res', res);
-            setReceiveList(res.data);
-          },
-          (err: any) => {
-            console.log('receiveListApi - err', err);
-            console.log('receiveListApi - err', err.response);
-          },
+        // => 이미 addFriendApi 를 보냈으니 친구요청은 처리가 되었고,
+        // receiveListApi 를 또 받을 필요없이 그냥 프론트에서만 filter 를 통해 없애줌.
+        setReceiveList(
+          receiveList.filter(item => {
+            return item.userId !== resUserId;
+          }),
         );
         // 친구 요청or수락 후 친구 리스트 재요청
-        friendListApi(
-          res => {
-            console.log('friendListApi - res', res);
-            setFriendList(res.data);
-          },
-          (err: any) => {
-            console.log('friendListApi - err', err);
-            console.log('friendListApi - err', err.response);
-          },
-        );
+        // => friendList.tsx 의 useEffect(func, [isFocused]) 로 대체함.
+        // 굳이 friendListAPI 또 쓸 필요 없음.
+
+        // 친구요청 or 수락 후 isFriend 를 업데이트
+        findFriend(targetId);
       },
       (err: any) => {
         console.log('addFriendApi - err', err);
@@ -292,9 +298,9 @@ function FindFriend({navigation, route}) {
               placeholder="닉네임을 입력해주세요"
               placeholderTextColor="#666666"
               value={targetId}
-              keyboardType="decimal-pad"
               ref={emailRef}
-              onSubmitEditing={() => nameRef.current?.focus()}
+              returnKeyType="send"
+              onSubmitEditing={() => findFriend(targetId)}
             />
             <TouchableOpacity
               onPress={() => {
@@ -378,24 +384,6 @@ function FindFriend({navigation, route}) {
           />
         </List.Accordion>
       </View>
-
-      {/* <View style={{marginVertical: 5}}>
-        <List.Accordion
-          // Todo: Customizing
-          // Todo: 각자 스마트폰 설정 폰트로 보이는지 확인
-          // theme={{colors: {background: 'red'}}}
-          // style={{backgroundColor: 'red', marginBottom: 20}}
-          title="친구목록" // Todo: 친구목록 개수
-          expanded={openFriendList}
-          onPress={() => setOpenFriendList(!openFriendList)}>
-          <FlatList
-            data={friendList}
-            renderItem={renderFriendList}
-            keyExtractor={item => item.userId}
-            extraData={selectedId}
-          />
-        </List.Accordion>
-      </View> */}
     </ScrollView>
   );
 }
