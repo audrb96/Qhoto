@@ -5,7 +5,7 @@ const initialState = {
   userId: '',
   email: '',
   phone: '',
-  userName: '',
+  name: '',
   joinDate: '',
   description: '',
   userImage: '',
@@ -25,7 +25,7 @@ const userSlice = createSlice({
       state.userId = action.payload.userId;
       state.email = action.payload.email;
       state.phone = action.payload.phone;
-      state.userName = action.payload.userName;
+      state.name = action.payload.name;
       state.joinDate = action.payload.joinDate;
       state.userImage = action.payload.userImage;
       state.description = action.payload.description;
