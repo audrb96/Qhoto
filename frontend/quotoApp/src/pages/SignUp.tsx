@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Platform,
@@ -12,16 +12,30 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../AppInner';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import QhotoHeader from '../components/QhotoHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {editMyProfileApi, getUserInfoApi} from '../api/mypage';
+import {useAppDispatch} from '../store';
+import userSlice from '../slices/user';
 
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
-function SignUp({navigation}: SignUpScreenProps) {
+function SignUp({navigation, route}: SignInScreenProps) {
+  const dispatch = useAppDispatch();
+
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [nickname, setNickname] = useState('');
   const phoneRef = useRef<TextInput | null>(null); /////Todo
   const nameRef = useRef<TextInput | null>(null);
   const nicknameRef = useRef<TextInput | null>(null);
+
+  const accessToken = route.params.accessToken;
+  const refreshToken = route.params.refreshToken;
+
+  // useEffect(() => {
+  //   const accessToken = route.params.accessToken);
+  //   console.log('토큰넘어왔다', route.params.refreshToken);
+  // });
 
   const onChangePhone = useCallback(text => {
     setPhone(text.trim());
@@ -32,7 +46,7 @@ function SignUp({navigation}: SignUpScreenProps) {
   const onChangeNickname = useCallback(text => {
     setNickname(text.trim());
   }, []);
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!name || !name.trim()) {
       return Alert.alert('알림', '이름을 입력해주세요.');
     }
@@ -59,6 +73,12 @@ function SignUp({navigation}: SignUpScreenProps) {
     ) {
       return Alert.alert('알림', '전화번호는 only 숫자만 가능해');
     }
+    if (phone.substr(0, 3) !== '010') {
+      return Alert.alert('알림', '전화번호는 010 으로 시작해줘');
+    }
+    if (phone.length !== 10 && phone.length !== 11) {
+      return Alert.alert('알림', '전화번호는 10~11자리로 맞춰줘');
+    }
     // if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
     //   return Alert.alert(
     //     '알림',
@@ -77,6 +97,43 @@ function SignUp({navigation}: SignUpScreenProps) {
 
     console.log(phone, name, nickname);
     Alert.alert('알림', '회원가입 되었습니다.');
+
+    await AsyncStorage.setItem('accessToken', accessToken, () => {
+      console.log('accessToken : ' + accessToken);
+    });
+
+    await AsyncStorage.setItem('refreshToken', refreshToken, () => {
+      console.log('refreshToken : ' + refreshToken);
+    });
+
+    await dispatch(
+      userSlice.actions.setUser({
+        nickname: nickname,
+        // email: email,
+        // joinDate: joinDate,
+        // userImage: userImage,
+        // phone: phone,
+        // description: description,
+        // contactAgreeDate: contactAgreeDate,
+        // profileOpen: profileOpen,
+        loggedIn: true,
+      }),
+    );
+
+    await editMyProfileApi(
+      {
+        phone: phone,
+        name: name,
+        nickname: nickname,
+        // profileOpen: newProfileOpen,
+      },
+      (res: any) => {
+        console.log('editMyProfileApi - res', res);
+      },
+      (err: any) => {
+        console.log('editMyProfileApi - err', err);
+      },
+    );
   }, [phone, name, nickname]);
 
   const canGoNext = phone && name && nickname;
@@ -120,6 +177,7 @@ function SignUp({navigation}: SignUpScreenProps) {
         <TextInput
           style={styles.textInput}
           onChangeText={onChangePhone}
+          // defaultValue="010"
           placeholder="전화번호를 입력해주세요"
           placeholderTextColor="#666"
           textContentType="telephoneNumber" // Todo
