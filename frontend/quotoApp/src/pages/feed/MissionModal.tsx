@@ -14,18 +14,24 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {setFeedMission} from '../../api/feed';
 import CheckBox from '@react-native-community/checkbox';
 
-function MissionModal({parentFunction, props}) {
+function MissionModal({
+  parentFunction,
+  props,
+  setCondition,
+  selectedBox,
+  setSelectedBox,
+}) {
   const [optionItems, setOptionItems] = useState([]);
-  const [selectBox, setSelectBox] = useState([true, true, true]);
+  const [selectBox, setSelectBox] = useState([]);
   const [missionFilter, setMissionFilter] = useState([]);
   const [duration, setDuration] = useState('');
   useEffect(() => {
     setDuration(props);
-
+    setSelectBox(selectedBox);
     setFeedMission(
       res => {
-        console.log(res.data.options + ' result 입니다.');
-        console.log(res.data);
+        // console.log(res.data.options + ' result 입니다.');
+        // console.log(res.data);
         let missions = [];
         if (props === 'D') {
           res.data.options.dailyOptions.map(item => {
@@ -43,7 +49,7 @@ function MissionModal({parentFunction, props}) {
           });
           setMissionFilter(missions);
         }
-        console.log(missions + '      미션스미션스미션스');
+        // console.log(missions + '      미션스미션스미션스');
         setOptionItems(missions);
       },
       err => {
@@ -51,17 +57,25 @@ function MissionModal({parentFunction, props}) {
       },
     );
   }, []);
-  console.log(missionFilter + '     미션필터');
-  console.log(duration + '        듀레이션');
-  console.log(selectBox + '    셀렉트박스');
-  console.log();
-  console.log(optionItems + '    옵션 아이템즈');
+  selectBox.forEach((e, index) => {
+    if (e) {
+      console.log(optionItems[index]);
+    }
+  });
 
   return (
     <Pressable
       style={styles.centeredView}
       onPress={() => {
+        let selectedItems = [];
+        selectBox.forEach((e, index) => {
+          if (e) {
+            selectedItems.push(optionItems[index].activeQuestId);
+          }
+        });
         parentFunction();
+        setCondition(selectedItems);
+        setSelectedBox(selectBox);
       }}>
       {missionFilter.length > 0 ? (
         <Pressable style={styles.modalView}>
@@ -82,13 +96,16 @@ function MissionModal({parentFunction, props}) {
                   const newSelectBox = [...selectBox];
                   newSelectBox[index] = !newSelectBox[index];
                   setSelectBox(newSelectBox);
-                  const newOptionItems = [...optionItems];
-                  if (selectBox[index] === false) {
-                    newOptionItems.splice(index, 1);
-                  } else {
-                    newOptionItems.splice(index, 0, item);
-                  }
-                  setOptionItems(newOptionItems);
+                  // const newOptionItems = [...optionItems];
+                  // if (selectBox[index] === true) {
+                  //   newOptionItems.splice(index, 1);
+                  // } else {
+                  //   newOptionItems.splice(index, 0, item);
+                  // }
+                  // console.log(
+                  //   JSON.stringify(newOptionItems) + '  뭔지 몰라도 이렇게',
+                  // );
+                  // setOptionItems(newOptionItems);
                 }}>
                 <View style={styles.filterOptions}>
                   <View>
@@ -116,7 +133,17 @@ function MissionModal({parentFunction, props}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            onPress={() => parentFunction()}>
+            onPress={() => {
+              let selectedItems = [];
+              selectBox.forEach((e, index) => {
+                if (e) {
+                  selectedItems.push(optionItems[index].activeQuestId);
+                }
+              });
+              parentFunction();
+              setCondition(selectedItems);
+              setSelectedBox(selectBox);
+            }}>
             <Text
               style={[
                 styles.modalButtonText,

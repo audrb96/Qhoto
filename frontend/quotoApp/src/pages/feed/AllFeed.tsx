@@ -23,6 +23,7 @@ function AllFeed({navigation}) {
   const [missionVisible, setMissionVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [Feeds, setFeeds] = useState([]);
+  const [selectedBox, setSelectedBox] = useState([true, true, true]);
   const [condition, setCondition] = useState([121, 122, 123]);
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
@@ -52,6 +53,8 @@ function AllFeed({navigation}) {
   }, [duration, condition]);
   console.log('피드좋아요');
   console.log(Feeds);
+  console.log(' 이것은 자식으로부터 넘겨받은 conditions');
+  console.log(condition);
 
   const rightIcon = (
     <TouchableOpacity
@@ -258,6 +261,9 @@ function AllFeed({navigation}) {
           <MissionModal
             parentFunction={missionvisibleFunction}
             props={duration}
+            setCondition={setCondition}
+            selectedBox={selectedBox}
+            setSelectedBox={setSelectedBox}
           />
         </Modal>
       </View>
