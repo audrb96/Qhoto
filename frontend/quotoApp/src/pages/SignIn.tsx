@@ -63,15 +63,29 @@ function SignIn({navigation}: SignInScreenProps) {
                 refreshToken: res.data.refreshToken,
               }); // 가입은 했는데, 정보입력을 안했어
             }
-            if (!res.data.isJoined) {
-              // 서비스 이용해~
-            }
 
             await AsyncStorage.setItem(
               'accessToken',
               res.data.accessToken,
               () => {
                 console.log('accessToken : ' + res.data.accessToken);
+
+                getUserInfoApi(
+                  (response: any) => {
+                    let {nickname} = response.data;
+                    console.log('성공');
+                    dispatch(
+                      userSlice.actions.setUser({
+                        nickname: nickname,
+                        loggedIn: true,
+                      }),
+                    );
+                  },
+                  (err: any) => {
+                    console.log('실패');
+                    console.log(err);
+                  },
+                );
               },
             );
 
@@ -81,40 +95,6 @@ function SignIn({navigation}: SignInScreenProps) {
               () => {
                 console.log('refreshToken : ' + res.data.refreshToken);
               },
-            );
-
-            getUserInfoApi(
-              (response: any) => {
-                let {
-                  nickname,
-                  // NOTICE: 로그인 했는데, 마이페이지 들리기 전에
-                  // 필요한 정보있으면 여기서 dispatch 해줘야함.
-                  // 그런데 SignUp 에서도 dispatch 해줘야 함
-
-                  // email,
-                  // joinDate,
-                  // phone,
-                  // profileOpen,
-                  // description,
-                  // userImage,
-                  // contactAgreeDate,
-                } = response.data;
-
-                dispatch(
-                  userSlice.actions.setUser({
-                    nickname: nickname,
-                    // email: email,
-                    // joinDate: joinDate,
-                    // userImage: userImage,
-                    // phone: phone,
-                    // description: description,
-                    // contactAgreeDate: contactAgreeDate,
-                    // profileOpen: profileOpen,
-                    loggedIn: true,
-                  }),
-                );
-              },
-              (err: any) => console.log(err),
             );
           },
           (err: any) => {
@@ -155,9 +135,7 @@ function SignIn({navigation}: SignInScreenProps) {
                       refreshToken: res.data.refreshToken,
                     }); // 가입은 했는데, 정보입력을 안했어
                   }
-                  if (!res.data.isJoined) {
-                    // 서비스 이용해~
-                  }
+
                   await AsyncStorage.setItem(
                     'accessToken',
                     res.data.accessToken,
@@ -227,11 +205,9 @@ function SignIn({navigation}: SignInScreenProps) {
           onPress={signInWithGoogle}
         />
         <Pressable style={{marginTop: 10}} onPress={signInWithKakao}>
-          <View style={{elevation: 5}}>
-            <Image
-              source={KAKAO_LOGIN_BUTTON}
-              style={styles.kakaoLoginButton}
-            />
+          <View
+            style={{backgroundColor: 'white', borderRadius: 5, elevation: 5}}>
+            <Image source={KAKAO_LOGIN_BUTTON} />
           </View>
         </Pressable>
       </View>
@@ -253,9 +229,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  kakaoLoginButton: {
-    elevation: 5,
   },
 });
 
