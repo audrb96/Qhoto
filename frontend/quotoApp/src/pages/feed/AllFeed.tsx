@@ -51,6 +51,8 @@ function AllFeed({navigation}) {
     }
     SetAllFeeds();
   }, [duration, condition]);
+  console.log('피드좋아요');
+  console.log(Feeds);
 
   const rightIcon = (
     <TouchableOpacity
