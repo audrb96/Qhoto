@@ -14,7 +14,7 @@ import QhotoHeader from '../../components/QhotoHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectedFeed from './SelectedFeed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getAllFeeds, getSelectedFeed, setFeedMission} from '../../api/feed';
+import {getAllFeeds, getSelectedFeed} from '../../api/feed';
 import MissionModal from './MissionModal';
 import Video from 'react-native-video';
 
@@ -28,7 +28,6 @@ function AllFeed({navigation}) {
   // duration = D, W, M
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
-  const [missionFilter, setmissionFilter] = useState([]);
 
   useEffect(() => {
     let change_condition = '';
@@ -60,30 +59,6 @@ function AllFeed({navigation}) {
     <TouchableOpacity
       onPress={() => {
         console.log('미션필터펼치기');
-        setFeedMission(
-          res => {
-            let missions = [];
-            if (duration === 'D') {
-              res.data.options.dailyOptions.map(item => {
-                missions.push(item);
-              });
-              setmissionFilter(missions);
-            } else if (duration === 'W') {
-              res.data.options.weeklyOptions.map(item => {
-                missions.push(item);
-              });
-              setmissionFilter(missions);
-            } else if (duration === 'M') {
-              res.data.options.monthlyOptions.map(item => {
-                missions.push(item);
-              });
-              setmissionFilter(missions);
-            }
-          },
-          err => {
-            console.log(err);
-          },
-        );
         setMissionVisible(true);
       }}>
       <Ionicons
@@ -284,7 +259,7 @@ function AllFeed({navigation}) {
           }}>
           <MissionModal
             parentFunction={missionvisibleFunction}
-            props={[missionFilter, duration]}
+            props={duration}
           />
         </Modal>
       </View>
