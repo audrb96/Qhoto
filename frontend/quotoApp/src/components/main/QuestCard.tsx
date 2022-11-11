@@ -7,7 +7,7 @@ import CardTemplate from './CardTemplate';
 
 interface Props {
   questType: string;
-  questList: Quest[];
+  questList: Quest[] | undefined;
   questIdx: number;
   setQuestIdx: Function;
   isComplete: boolean;

@@ -21,7 +21,7 @@ function MyPageStackScreen() {
         options={{headerShown: false}}
       />
       <MyPageStack.Screen
-        name="QuestLog"
+        name="QhotoLog"
         component={QhotoLog}
         options={{
           header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
