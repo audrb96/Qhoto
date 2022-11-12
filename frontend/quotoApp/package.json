@@ -25,6 +25,7 @@
     "react-native": "0.70.3",
     "react-native-alert-notification": "^0.3.4",
     "react-native-calendars": "^1.1291.0",
+    "react-native-contacts": "^7.0.5",
     "react-native-fast-image": "^8.6.3",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-flip-card": "^1.0.6",
