@@ -13,10 +13,12 @@ import {
 import QhotoHeader from '../../components/QhotoHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectedFeed from './SelectedFeed';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getAllFeeds, getSelectedFeed} from '../../api/feed';
 import MissionModal from './MissionModal';
 import Video from 'react-native-video';
+
+import {useSelector} from 'react-redux';
+import {RootState} from './src/store/reducer';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -27,6 +29,9 @@ function AllFeed({navigation}) {
   const [condition, setCondition] = useState([121, 122, 123]);
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
+  const allQuest = useSelector((state: RootState) => state.quest);
+  console.log('올퀘스트입니다.');
+  console.log(allQuest.quest);
 
   useEffect(() => {
     let change_condition = '';
@@ -51,10 +56,6 @@ function AllFeed({navigation}) {
     }
     SetAllFeeds();
   }, [duration, condition]);
-  console.log('피드좋아요');
-  console.log(Feeds);
-  console.log(' 이것은 자식으로부터 넘겨받은 conditions');
-  console.log(condition);
 
   const rightIcon = (
     <TouchableOpacity
@@ -88,8 +89,8 @@ function AllFeed({navigation}) {
         {/* <Text>{content.feedImage}</Text> */}
 
         <TouchableOpacity
-          onPress={() => {
-            getSelectedFeed(
+          onPress={async () => {
+            await getSelectedFeed(
               content.feedId,
               res => {
                 setComment(res.data);
@@ -129,8 +130,8 @@ function AllFeed({navigation}) {
         {/* <Text>{content.feedImage}</Text> */}
 
         <TouchableOpacity
-          onPress={() => {
-            getSelectedFeed(
+          onPress={async () => {
+            await getSelectedFeed(
               content.feedId,
               res => {
                 setComment(res.data);
