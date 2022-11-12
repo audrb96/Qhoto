@@ -2,22 +2,26 @@ package com.qhoto.qhoto_api.api.repository;
 
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
+import com.qhoto.qhoto_api.dto.response.ContactRes;
 import com.qhoto.qhoto_api.util.S3Utils;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.util.Map;
 
-import static com.qhoto.qhoto_api.domain.QUser.*;
-import static org.springframework.util.StringUtils.*;
+import static com.qhoto.qhoto_api.domain.QUser.user;
+import static org.springframework.util.StringUtils.hasText;
 
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepositoryByCon {
 
     private final S3Utils s3Utils;
     private final EntityManager em;
+    private final JPAQueryFactory jpaQueryFactory;
 
     //회원 정보 수정
     @Override
@@ -53,5 +57,22 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
 
         //DB update 실행
         updateClause.where(user.id.eq(userInfo.getId())).execute();
+    }
+
+    @Override
+    public ContactRes contactByCon(Map<String, String> contacts) {
+//        List<ContactRes> contactResList = jpaQueryFactory
+//                .select(new QContactRes(
+//                        user.id,
+//                        null,
+//                        user.nickname,
+//                        user.image,
+//                        friendRequest.status,
+//                        user.expGrade
+//                ))
+//                .from(user, friendRequest)
+//                .rightJoin(friendRequest.requestUser,user)
+
+        return null;
     }
 }
