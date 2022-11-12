@@ -88,7 +88,7 @@ public class FriendService {
                 .requestUser(reqUser)
                 .responseUser(resUser)
                 .status(status)
-                .time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+                .time(LocalDateTime.now())
                 .build();
 
         return friendRequestRepository.save(savedRequest);

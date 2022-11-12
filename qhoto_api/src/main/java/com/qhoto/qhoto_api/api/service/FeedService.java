@@ -150,7 +150,7 @@ public class FeedService {
                 .activeWeekly(activeWeeklyRepository.findWeeklyById(createFeedReq.getActiveWeeklyId()))
                 .activeMonthly(activeMonthlyRepository.findMonthlyById(createFeedReq.getActiveMonthlyId()))
                 .image(dirName+"/"+createFeedReq.getFeedImage().getOriginalFilename())
-                .time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+                .time(LocalDateTime.now())
                 .status(FeedStatus.USING)
                 .questName(quest.getName())
                 .location(createFeedReq.getLocation())
