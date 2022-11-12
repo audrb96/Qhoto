@@ -13,20 +13,25 @@ import {
 import QhotoHeader from '../../components/QhotoHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectedFeed from './SelectedFeed';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getAllFeeds, getSelectedFeed, setFeedMission} from '../../api/feed';
+import {getAllFeeds, getSelectedFeed} from '../../api/feed';
 import MissionModal from './MissionModal';
 import Video from 'react-native-video';
+
+import {useSelector} from 'react-redux';
+import {RootState} from './src/store/reducer';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [missionVisible, setMissionVisible] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [Feeds, setFeeds] = useState([]);
+  const [selectedBox, setSelectedBox] = useState([true, true, true]);
   const [condition, setCondition] = useState([121, 122, 123]);
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
-  const [missionFilter, setmissionFilter] = useState([]);
+  const allQuest = useSelector((state: RootState) => state.quest);
+  console.log('올퀘스트입니다.');
+  console.log(allQuest.quest);
 
   useEffect(() => {
     let change_condition = '';
@@ -51,37 +56,11 @@ function AllFeed({navigation}) {
     }
     SetAllFeeds();
   }, [duration, condition]);
-  console.log('피드좋아요');
-  console.log(Feeds);
 
   const rightIcon = (
     <TouchableOpacity
       onPress={() => {
         console.log('미션필터펼치기');
-        setFeedMission(
-          res => {
-            let missions = [];
-            if (duration === 'D') {
-              res.data.options.dailyOptions.map(item => {
-                missions.push(item);
-              });
-              setmissionFilter(missions);
-            } else if (duration === 'W') {
-              res.data.options.weeklyOptions.map(item => {
-                missions.push(item);
-              });
-              setmissionFilter(missions);
-            } else if (duration === 'M') {
-              res.data.options.monthlyOptions.map(item => {
-                missions.push(item);
-              });
-              setmissionFilter(missions);
-            }
-          },
-          err => {
-            console.log(err);
-          },
-        );
         setMissionVisible(true);
       }}>
       <Ionicons
@@ -110,8 +89,8 @@ function AllFeed({navigation}) {
         {/* <Text>{content.feedImage}</Text> */}
 
         <TouchableOpacity
-          onPress={() => {
-            getSelectedFeed(
+          onPress={async () => {
+            await getSelectedFeed(
               content.feedId,
               res => {
                 setComment(res.data);
@@ -151,8 +130,8 @@ function AllFeed({navigation}) {
         {/* <Text>{content.feedImage}</Text> */}
 
         <TouchableOpacity
-          onPress={() => {
-            getSelectedFeed(
+          onPress={async () => {
+            await getSelectedFeed(
               content.feedId,
               res => {
                 setComment(res.data);
@@ -282,7 +261,10 @@ function AllFeed({navigation}) {
           }}>
           <MissionModal
             parentFunction={missionvisibleFunction}
-            props={[missionFilter, duration]}
+            props={duration}
+            setCondition={setCondition}
+            selectedBox={selectedBox}
+            setSelectedBox={setSelectedBox}
           />
         </Modal>
       </View>

@@ -32,10 +32,12 @@ function SelectedFeed({parentFunction, props}) {
   const userInfo = useSelector((state: RootState) => state.user);
   const feed = selectedFeed;
   const lastNameRef = useRef();
+  console.log(feed);
 
   useEffect(() => {
+    console.log(props.feedId);
     getSelectedFeed(
-      props,
+      props.feedId,
       res => {
         setSelectedFeed(res.data);
         setLike(res.data.likeStatus);
