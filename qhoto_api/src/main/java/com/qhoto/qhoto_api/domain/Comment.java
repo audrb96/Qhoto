@@ -1,6 +1,7 @@
 package com.qhoto.qhoto_api.domain;
 
 import com.qhoto.qhoto_api.domain.type.CommentStatus;
+import com.qhoto.qhoto_api.domain.type.converter.CommentStatusConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,7 +38,7 @@ public class Comment {
     private LocalDateTime time;
 
     @Column(name = "comment_status", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = CommentStatusConverter.class)
     private CommentStatus status;
 
 

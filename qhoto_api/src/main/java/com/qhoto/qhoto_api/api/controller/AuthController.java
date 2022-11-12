@@ -1,18 +1,13 @@
 package com.qhoto.qhoto_api.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qhoto.qhoto_api.api.service.AuthService;
 import com.qhoto.qhoto_api.dto.response.AccessTokenRes;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.exception.ExpiredRefreshTokenException;
 import com.qhoto.qhoto_api.exception.NoUserByRefreshTokenException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
-import com.qhoto.qhoto_api.producer.AuthProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+
+/**
+ * Auth 컨트롤러
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -28,16 +27,22 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
-    private final ObjectMapper objectMapper;
-    private final AuthProducer authProducer;
-    private final RabbitTemplate rabbitTemplate;
+
+    /**
+     * JWT 토큰 재발급 컨트롤러
+     * @param request
+     * @return {@link AccessTokenRes}
+     */
     @PostMapping("/reissue")
     public ResponseEntity<AccessTokenRes> reissueToken(HttpServletRequest request) {
-        authProducer.reissueSendTo(request.getHeader("Authorization"));
-        String receiveToken = (String) rabbitTemplate.receiveAndConvert("AUTH_REISSUE");
-        return ResponseEntity.ok().body(authService.reissue(receiveToken));
+        return ResponseEntity.ok().body(authService.reissue(request.getHeader("Authorization")));
     }
 
+    /**
+     * refreshToken에 해당하는 유저가 없을 때 Exception 처리 handler
+     * @param e
+     * @return {@link ErrorResponse}
+     */
     @ExceptionHandler(NoUserByRefreshTokenException.class)
     protected ResponseEntity<ErrorResponse> noUserByRefreshTokenException(NoUserByRefreshTokenException e) {
         log.error("NoUserByRefreshTokenException", e);
@@ -45,6 +50,11 @@ public class AuthController {
         return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
 
+    /**
+     * refreshToken 만료 Exception
+     * @param e
+     * @return {@link ErrorResponse}
+     */
     @ExceptionHandler(ExpiredRefreshTokenException.class)
     protected ResponseEntity<ErrorResponse> expiredRefreshTokenException(ExpiredRefreshTokenException e) {
         log.error("ExpiredRefreshTokenException", e);

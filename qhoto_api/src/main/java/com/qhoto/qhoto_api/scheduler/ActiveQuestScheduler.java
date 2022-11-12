@@ -3,16 +3,17 @@ package com.qhoto.qhoto_api.scheduler;
 import com.qhoto.qhoto_api.api.repository.ActiveDailyRepository;
 import com.qhoto.qhoto_api.api.repository.ActiveMonthlyRepository;
 import com.qhoto.qhoto_api.api.repository.ActiveWeeklyRepository;
-import com.qhoto.qhoto_api.domain.ActiveMonthly;
-import com.qhoto.qhoto_api.domain.type.QuestStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
+// 활성 퀘스트를 주기별로 바꿔주는 Scheduler
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ActiveQuestScheduler {
@@ -22,19 +23,30 @@ public class ActiveQuestScheduler {
     private final ActiveDailyRepository activeDailyRepository;
 
     @Scheduled(cron = "0 0 6 1 * ?")
-    public void activeMonthlyQuest() {
-        Pageable page = PageRequest.of(0, 3);
-        List<ActiveMonthly> ActiveMonthlyList = activeMonthlyRepository.findByStatusOrderByDateDesc("D", page);
-        for (ActiveMonthly activeMonthly : ActiveMonthlyList) {
-            activeMonthly.changeStatus(QuestStatus.A);
-            activeMonthlyRepository.save(activeMonthly);
-        }
+    @Transactional
+    public void setActiveMonthlyQuest() {
+        log.info("monthlyQuest update");
+        activeMonthlyRepository.updateMonthlyQuestDtoA(LocalDate.now(ZoneId.of("Asia/Seoul")));
+        activeMonthlyRepository.updateMonthlyQuestAtoD(LocalDate.now(ZoneId.of("Asia/Seoul")).minusMonths(1));
     }
 
     @Scheduled(cron = "0 0 6 * * 1")
-    public void setActiveWeeklyRepository() {
-
+    @Transactional
+    public void setActiveWeeklyQuest() {
+        log.info("weeklyQuest update");
+        activeWeeklyRepository.updateWeeklyQuestDtoA(LocalDate.now(ZoneId.of("Asia/Seoul")));
+        activeWeeklyRepository.updateWeeklyQuestAtoD(LocalDate.now(ZoneId.of("Asia/Seoul")).minusWeeks(1));
     }
+
+    @Scheduled(cron = "0 0 6 * * *")
+    @Transactional
+    public void setActiveDailyQuest() {
+        log.info("dailyQuest update");
+        activeDailyRepository.updateDailyQuestDtoA(LocalDate.now(ZoneId.of("Asia/Seoul")));
+        activeDailyRepository.updateDailyQuestAtoD(LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(1));
+    }
+
+
 
 
 

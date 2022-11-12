@@ -12,4 +12,6 @@ public class LoginRes {
 
     private String accessToken;
     private String refreshToken;
+    private Boolean isJoined;
+    private Boolean isModified;
 }

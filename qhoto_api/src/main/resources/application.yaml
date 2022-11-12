@@ -8,11 +8,10 @@ spring:
     username: qhoto_admin
     password: ssafyA707
 
-  rabbitmq:
-    host: 34.64.115.144
-    username: qhoto_admin
-    password: ssafyA707
-    port: 5672
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 
   jpa:
     hibernate:
@@ -42,6 +41,4 @@ app:
   auth:
     token:
       secret-key: "c3NhZnlBNzA3"
-      refresh-cookie-key: "refresh"
-
 

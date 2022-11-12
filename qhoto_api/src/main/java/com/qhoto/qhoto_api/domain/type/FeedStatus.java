@@ -1,11 +1,14 @@
 package com.qhoto.qhoto_api.domain.type;
 
-public enum FeedStatus {
-    U("사용"), D("삭제");
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    private String value;
+@Getter
+@RequiredArgsConstructor
+public enum FeedStatus implements LegacyCommonType {
+    USING("사용","U"), DISABLE("삭제", "D");
 
-    FeedStatus(String value) {
-        this.value = value;
-    }
+    private final String desc;
+    private final String legacyCode;
+
 }
