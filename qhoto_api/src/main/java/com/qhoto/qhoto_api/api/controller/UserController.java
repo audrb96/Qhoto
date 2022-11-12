@@ -117,4 +117,10 @@ public class UserController {
         return new ResponseEntity<>(userService.confirmUser(nickname),HttpStatus.OK);
     }
 
+    @PostMapping("/contact")
+    public ResponseEntity<?> readUserContact(@RequestBody Map<String, String> contacts) {
+        return ResponseEntity.ok(userService.getUserContact(contacts));
+    }
+
+
 }
