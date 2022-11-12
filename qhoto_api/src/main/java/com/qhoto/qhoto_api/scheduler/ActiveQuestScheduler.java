@@ -23,8 +23,6 @@ public class ActiveQuestScheduler {
     private final ActiveWeeklyRepository activeWeeklyRepository;
     private final ActiveDailyRepository activeDailyRepository;
 
-
-
     @Scheduled(cron = "0 0 6 1 * ?",zone = "Asia/Seoul")
     @Transactional
     @Async
@@ -43,7 +41,7 @@ public class ActiveQuestScheduler {
         activeWeeklyRepository.updateWeeklyQuestAtoD(LocalDate.now(ZoneId.of("Asia/Seoul")).minusWeeks(1));
     }
 
-    @Scheduled(cron = "0 0 6 * * *",zone = "Asia/Seoul")
+    @Scheduled(cron = "0 25 14 * * *",zone = "Asia/Seoul")
     @Transactional
     @Async
     public void setActiveDailyQuest() {
