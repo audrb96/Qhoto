@@ -125,9 +125,9 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public String getUserContact(Map<String,String> contacts) {
+    public String getUserContact(User user,Map<String,String> contacts) {
         // 번호가 일치하는 회원들을 뽑아서 name이랑 같이 보내줌(친구 상태도 보내기)
-
+        userRepository.contactByCon(user, contacts);
 
         return null;
     }

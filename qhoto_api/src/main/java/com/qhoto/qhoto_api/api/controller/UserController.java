@@ -118,8 +118,8 @@ public class UserController {
     }
 
     @PostMapping("/contact")
-    public ResponseEntity<?> readUserContact(@RequestBody Map<String, String> contacts) {
-        return ResponseEntity.ok(userService.getUserContact(contacts));
+    public ResponseEntity<?> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {
+        return ResponseEntity.ok(userService.getUserContact(user, contacts));
     }
 
 

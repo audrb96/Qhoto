@@ -10,5 +10,5 @@ import java.util.Map;
 public interface UserRepositoryByCon {
     void modifyUserByCon(ModifyUserReq modifyUserReq, User user) throws IOException;
 
-    ContactRes contactByCon(Map<String,String> contacts);
+    ContactRes contactByCon(User user,Map<String,String> contacts);
 }

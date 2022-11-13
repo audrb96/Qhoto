@@ -8,23 +8,21 @@ import lombok.Data;
 @Data
 public class ContactRes {
 
-    private final Long userId;
-    private final String name;
-    private final String nickname;
-    private final String image;
-    private final RequestStatus isFriend;
-    private final String grade;
+    private Long userId;
+    private String name;
+    private String nickname;
+    private String phone;
+    private String image;
+    private String grade;
 
     @QueryProjection
     @Builder
-    public ContactRes(Long userId, String name, String nickname, String image, RequestStatus isFriend, String grade) {
+    public ContactRes(Long userId, String name, String nickname, String phone, String image,  String grade) {
         this.userId = userId;
         this.name = name;
         this.nickname = nickname;
+        this.phone = phone;
         this.image = image;
-        this.isFriend = isFriend;
         this.grade = grade;
     }
-
-
 }
