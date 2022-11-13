@@ -44,6 +44,8 @@ function MyQuest() {
   const [dailyQuestList, setDailyQuestList] = useState<Quest[]>();
   const [weeklyQuestList, setWeeklyQuestList] = useState<Quest[]>();
   const [monthlyQuestList, setMonthlyQuestList] = useState<Quest[]>();
+  const [callbackState, setCallbackState] = useState(true);
+
   const dispatch = useAppDispatch();
 
   const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
@@ -65,7 +67,7 @@ function MyQuest() {
         console.log(err.response);
       },
     );
-  }, []);
+  }, [callbackState]);
 
   const selectQuestList = (index: number) => {
     if (index === 0) {
@@ -108,7 +110,14 @@ function MyQuest() {
   };
 
   const saveVideo = (uri: string) => {
-    console.log(uri);
+    if (
+      dailyQuestList === undefined ||
+      weeklyQuestList === undefined ||
+      monthlyQuestList === undefined
+    ) {
+      return;
+    }
+
     const uriPath = uri.split('//').pop();
     const videoName = uri.split('/').pop();
 
@@ -137,23 +146,21 @@ function MyQuest() {
     uploadVideo(
       data,
       (res: any) => {
-        getQuestList(
-          (res: any) => {
-            console.log(res.data);
-            setDailyQuestList(res.data.daily);
-            setWeeklyQuestList(res.data.weekly);
-            setMonthlyQuestList(res.data.monthly);
-          },
-          (err: any) => {
-            console.log(err.response);
-          },
-        );
+        setCallbackState(!callbackState);
       },
       (err: any) => console.log(err.response.data),
     );
   };
 
   const savePhoto = (uri: string) => {
+    if (
+      dailyQuestList === undefined ||
+      weeklyQuestList === undefined ||
+      monthlyQuestList === undefined
+    ) {
+      return;
+    }
+
     const uriPath = uri.split('//').pop();
     const imageName = uri.split('/').pop();
 
@@ -211,17 +218,7 @@ function MyQuest() {
         await uploadPhoto(
           data,
           (res: any) => {
-            getQuestList(
-              (res: any) => {
-                console.log(res.data);
-                setDailyQuestList(res.data.daily);
-                setWeeklyQuestList(res.data.weekly);
-                setMonthlyQuestList(res.data.monthly);
-              },
-              (err: any) => {
-                console.log(err.response);
-              },
-            );
+            setCallbackState(!callbackState);
           },
           (err: any) => console.log(err.response.data),
         );
