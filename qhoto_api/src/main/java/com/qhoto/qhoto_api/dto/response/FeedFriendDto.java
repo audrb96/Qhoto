@@ -1,7 +1,6 @@
 package com.qhoto.qhoto_api.dto.response;
 
 import com.qhoto.qhoto_api.domain.type.FeedType;
-import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +17,7 @@ public class FeedFriendDto {
     private final int questPoint;
     private final String expGrade;
     private final int expPoint;
-    private final LikeStatus likeStatus;
+    private final String likeStatus;
     private final Long likeCount;
 
     private final String nickname;
@@ -32,7 +31,7 @@ public class FeedFriendDto {
 
     @QueryProjection
     @Builder
-    public FeedFriendDto(Long feedId, Long userId, String feedImage, String feedTime, String questName, String questType, int questPoint, String expGrade, int expPoint, LikeStatus likeStatus, Long likeCount, String nickname, String commentNickname, String commentUserImage, String userImage, String time, String context, FeedType feedType) {
+    public FeedFriendDto(Long feedId, Long userId, String feedImage, String feedTime, String questName, String questType, int questPoint, String expGrade, int expPoint, String likeStatus, Long likeCount, String nickname, String commentNickname, String commentUserImage, String userImage, String time, String context, FeedType feedType) {
         this.feedId = feedId;
         this.userId = userId;
         this.feedImage = feedImage;
