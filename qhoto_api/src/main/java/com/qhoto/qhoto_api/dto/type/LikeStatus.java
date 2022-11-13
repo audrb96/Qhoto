@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum LikeStatus {
 
-    LIKE("좋아요"), UNLIKE("초기상태");
+    LIKE("LIKE"), UNLIKE("UNLIKE");
 
     private String value;
 
