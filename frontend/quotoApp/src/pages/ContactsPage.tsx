@@ -10,41 +10,54 @@ import {
   TextInput,
   Text,
   View,
-  Button,
   Image,
+  ScrollView,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../AppInner';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from '@react-native-google-signin/google-signin';
-import {useAppDispatch} from '../store';
-import userSlice from '../slices/user';
-import {
-  KakaoOAuthToken,
-  KakaoProfile,
-  getProfile as getKakaoProfile,
-  login,
-  logout,
-  unlink,
-  getAccessToken,
-} from '@react-native-seoul/kakao-login';
-
 import Contacts from 'react-native-contacts';
-import store from '../store/index';
-
+import {Card, Button, Icon} from '@rneui/themed';
 function ContactsPage() {
-  const [myContacts, setMyContacts] = useState({
-    myContacts: [],
-  });
+  const [myContacts, setMyContacts] = useState(
+    [],
+    // myContacts: [],
+  );
+
+  const users = [
+    {
+      name: 'brynn',
+      avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
+    },
+  ];
+
+  useEffect(() => {
+    requestContactPermission().then((didGetPermission: Boolean) => {
+      if (didGetPermission) {
+        // Contacts.getAll((err, contacts) => {
+        //   if (err) {
+        //     throw err;
+        //   }
+        Contacts.getAll().then(async contacts => {
+          // await console.log(
+          // contacts[6].phoneNumbers,
+
+          // contacts.map(contact =>
+          //   contact.phoneNumbers[0].number.replaceAll('-', ''),
+          // ),
+          // );
+          await setMyContacts(contacts);
+          await console.log(contacts);
+        });
+      } else {
+        Alert.alert('no permission : 연락처 접근 권한이 없습니다.');
+      }
+    });
+  }, []);
 
   async function requestContactPermission() {
     if (Platform.OS === 'ios') {
-      console.warn('iOS');
+      // console.warn('iOS');
       return true;
     } else {
-      console.warn('Android');
+      // console.warn('Android');
 
       const granted = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS,
@@ -64,40 +77,138 @@ function ContactsPage() {
     }
   }
 
-  const getContacts = () => {
-    requestContactPermission().then((didGetPermission: Boolean) => {
-      if (didGetPermission) {
-        // Contacts.getAll((err, contacts) => {
-        //   if (err) {
-        //     throw err;
-        //   }
-        //   setContacts({myContacts: contacts});
-        //   console.warn(contacts);
-        // });
-        Contacts.getAll().then(contacts => {
-          console.log(
-            contacts.map(
-              contact =>
-                contact.phoneNumbers[0].number + ':' + contact.displayName,
-            ),
-          );
-          // setMyContacts(contacts);
-        });
-      } else {
-        alert('no permission');
-      }
-    });
-  };
   return (
-    <View>
+    <ScrollView>
       <Text style={{color: 'black'}}> ContactsPage 입니다</Text>
-      <TouchableOpacity onPress={() => getContacts()}>
-        <Text style={{color: 'black'}}>ContactsPage</Text>
-      </TouchableOpacity>
-    </View>
+
+      {myContacts.map((myContact, index) => (
+        <View key={index}>
+          <View>
+            <Text style={{color: 'black'}}>
+              {myContact.phoneNumbers[0].number.replaceAll('-', '')}
+            </Text>
+            <Text style={{color: 'black'}}>{myContact.displayName}</Text>
+          </View>
+        </View>
+      ))}
+
+      <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+        <View
+          style={{
+            padding: 0,
+            borderRadius: 100,
+            width: 220,
+            height: 300,
+            // margin: -5,
+            marginLeft: 5,
+          }}>
+          <Card>
+            <Card.Image
+              style={{
+                padding: 0,
+                borderRadius: 100,
+                width: 158,
+                height: 158,
+                margin: 0,
+              }}
+              source={{
+                uri: 'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
+              }}
+            />
+            <Card.Title>싸피고 김싸피</Card.Title>
+            <Card.Divider />
+
+            <View
+              style={{
+                justifyContent: 'center',
+                // alignItems: 'center',
+              }}>
+              <Button
+                // icon={
+                //   <Icon name="code" color="#ffffff" iconStyle={{marginRight: 10}} />
+                // }
+                buttonStyle={{
+                  borderRadius: 0,
+                  marginLeft: 0,
+                  marginRight: 0,
+                  marginBottom: 0,
+                  // width: 100,
+                }}
+                title="친구추가"
+              />
+            </View>
+          </Card>
+        </View>
+        <View
+          style={{
+            padding: 0,
+            borderRadius: 100,
+            width: 220,
+            height: 300,
+            // margin: -5,
+            marginRight: 5,
+          }}>
+          <Card>
+            <Card.Image
+              style={{
+                padding: 0,
+                borderRadius: 100,
+                width: 158,
+                height: 158,
+                margin: 0,
+              }}
+              source={{
+                uri: 'https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg',
+              }}
+            />
+            <Card.Title>싸피고 김싸피</Card.Title>
+            <Card.Divider />
+
+            <View
+              style={{
+                justifyContent: 'center',
+                // alignItems: 'center',
+              }}>
+              <Button
+                // icon={
+                //   <Icon name="code" color="#ffffff" iconStyle={{marginRight: 10}} />
+                // }
+                buttonStyle={{
+                  borderRadius: 0,
+                  marginLeft: 0,
+                  marginRight: 0,
+                  marginBottom: 0,
+                  // width: 100,
+                }}
+                title="친구추가"
+              />
+            </View>
+          </Card>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({});
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  fonts: {
+    marginBottom: 8,
+  },
+  user: {
+    flexDirection: 'row',
+    marginBottom: 6,
+  },
+  image: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
+  name: {
+    fontSize: 16,
+    marginTop: 5,
+  },
+});
 export default ContactsPage;

@@ -66,18 +66,21 @@ function SignUp({navigation, route}: SignInScreenProps) {
         '닉네임은 영어 대소문자와 언더바, 마침표만 가능해',
       );
     }
+    if (nickname.length < 2 || nickname.length > 51) {
+      return Alert.alert('알림', '닉네임은 2~50글자만 가능합니다.');
+    }
     if (
       /[a-zA-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|\{\}\[\]\/?,;:|\)*~`!^\-+<>@\#$%&\\\=\(\'\"]/.test(
         phone,
       )
     ) {
-      return Alert.alert('알림', '전화번호는 only 숫자만 가능해');
+      return Alert.alert('알림', '전화번호는 숫자만 입력해주세요.');
     }
     if (phone.substr(0, 3) !== '010') {
-      return Alert.alert('알림', '전화번호는 010 으로 시작해줘');
+      return Alert.alert('알림', '전화번호는 010 으로 시작해야합니다.');
     }
     if (phone.length !== 10 && phone.length !== 11) {
-      return Alert.alert('알림', '전화번호는 10~11자리로 맞춰줘');
+      return Alert.alert('알림', '전화번호는 10~11자리만 가능합니다.');
     }
     // if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
     //   return Alert.alert(
