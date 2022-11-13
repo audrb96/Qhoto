@@ -1,9 +1,6 @@
 package com.qhoto.qhoto_api;
 
-import com.qhoto.qhoto_api.api.repository.ActiveDailyRepository;
-import com.qhoto.qhoto_api.api.repository.ActiveMonthlyRepository;
-import com.qhoto.qhoto_api.api.repository.ActiveWeeklyRepository;
-import com.qhoto.qhoto_api.api.repository.FeedRepository;
+import com.qhoto.qhoto_api.api.repository.*;
 import com.qhoto.qhoto_api.api.service.FeedService;
 import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
@@ -36,12 +33,11 @@ import java.util.concurrent.TimeUnit;
 @Rollback(value = false)
 class QhotoApiApplicationTests {
 
-    @Autowired
-    private ActiveDailyRepository activeDailyRepository;
+//    @Autowired
+//    private UserRepository userRepository;
 //    @Test
 //    @Transactional
 //    void test() {
-//        activeDailyRepository.updateDailyQuestDtoA(LocalDate.now(ZoneId.of("Asia/Seoul")).plusDays(1));
-//        activeDailyRepository.updateDailyQuestAtoD(LocalDate.now(ZoneId.of("Asia/Seoul")));
+//        userRepository.contactByCon()
 //    }
 }
