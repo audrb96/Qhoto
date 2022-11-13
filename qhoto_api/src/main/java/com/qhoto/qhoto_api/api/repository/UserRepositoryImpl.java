@@ -92,12 +92,17 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
                 .select(new QIsFriendDto(
                     user.id,friendRequest.status
                 )).from(user, friendRequest)
-                .where( user.id.eq(friendRequest.requestUser.id),
-                        friendRequest.responseUser.eq(userInfo).or(friendRequest.requestUser.eq(userInfo)),
-                        friendRequest.status.ne(RequestStatus.FRIEND))
+                .innerJoin(friendRequest.requestUser,user)
+                .on(friendRequest.requestUser.id.eq(user.id))
+//                .where(
+//                        friendRequest.responseUser.id.eq(userInfo.getId()).or(friendRequest.requestUser.id.eq(userInfo.getId())),
+//                        friendRequest.status.ne(RequestStatus.FRIEND)
+//                        )
                 .fetch();
+
         log.info("contactResList = {}", contactResList);
         log.info("isFriendDtoList ={}", isFriendDtoList);
+        log.info("isFriendDtoList.size = {}", isFriendDtoList.size());
         return null;
     }
 
