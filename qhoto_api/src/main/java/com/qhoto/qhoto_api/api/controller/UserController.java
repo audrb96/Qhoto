@@ -4,15 +4,19 @@ import com.qhoto.qhoto_api.api.service.LoginService;
 import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
+import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.dto.response.user.ContactResSet;
 import com.qhoto.qhoto_api.dto.response.user.LoginRes;
 import com.qhoto.qhoto_api.dto.response.feed.MyFeedRes;
 import com.qhoto.qhoto_api.dto.response.user.MyInfoRes;
 import com.qhoto.qhoto_api.dto.response.user.UserInfoRes;
+import com.qhoto.qhoto_api.exception.NoUniqueUserException;
+import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -123,5 +127,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserContact(user, contacts));
     }
 
+    @ExceptionHandler(NoUniqueUserException.class)
+    protected ResponseEntity<ErrorResponse> NoUniqueUserException(NoUniqueUserException e) {
+        log.error("NoUniqueUserException", e);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_UNIQUE_USER);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+    }
 
 }
