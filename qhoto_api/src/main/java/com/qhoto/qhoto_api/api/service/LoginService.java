@@ -19,6 +19,7 @@ import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.UserRole;
 import com.qhoto.qhoto_api.dto.response.user.LoginRes;
 import com.qhoto.qhoto_api.exception.InvalidIdTokenException;
+import com.qhoto.qhoto_api.exception.NoUniqueUserException;
 import com.qhoto.qhoto_api.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,18 +106,20 @@ public class LoginService {
         User user;
 
         // 이메일로 사용자 가입 여부 판단.
-        Optional<User> findUser = userRepository.findByEmail(email);
-
+        Optional<User> findUser = userRepository.findByEmailAndAuthProvider(email, authProvider);
+        Long userCount = userRepository.countByEmailAndAuthProvider(email, authProvider);
         //JWT 토큰
         String accessToken;
         String refreshToken;
+
+        if(userCount > 1L) throw new NoUniqueUserException("해당 하는 사용자가 여러개 있습니다.");
 
         //가입이 되어 있는 지 판단.
         boolean isJoined = false;
         //가입후 초기 정보 설정이 되어 있는지 판단.
         boolean isModified = false;
 
-        if(findUser.isPresent()) {
+        if(findUser.isPresent() && userCount==1L) {
             //가입된 유저가 있을 때
             user = findUser.get();
 
