@@ -42,7 +42,9 @@ public class FriendService {
         Optional<FriendRequest> friendRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatusNot(reqUser,resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")), DISCONNECTED);
         // 요청을 받는 사용자가 이전에 보내는 사용자에게 요청을 보냈었는지 확인
         Optional<FriendRequest> isAcceptRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatus(resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")),reqUser, REQUEST);
-
+        if (reqUser.getId()==resUser.get().getId()){
+            throw new SelfRequestException("자기 자신에게 요청을 보낼 수 없습니다.");
+        }
         // 이전에 있던 요청 정보를 확인
         if(friendRequest.isPresent()) {
             switch (friendRequest.get().getStatus()) {

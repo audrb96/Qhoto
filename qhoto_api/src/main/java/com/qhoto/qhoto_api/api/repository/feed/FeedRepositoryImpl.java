@@ -94,7 +94,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         feed.quest.score,
                         user.expGrade,
                         user.totalExp,
-                        new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike,feed).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
+                        new CaseBuilder().when(JPAExpressions.select(feedLike).from(feedLike).where(feedLike.feed.id.eq(feed.id),feedLike.user.id.eq(userId)).exists()).then(LikeStatus.LIKE.getValue()).otherwise(LikeStatus.UNLIKE.getValue()).as("likeStatus"),
                         ExpressionUtils.as(JPAExpressions.select(feedLike.count()).from(feedLike).where(feedLike.feed.id.eq(feed.id)),"likeCount"),
                         user.nickname,
                         comment.user.nickname,

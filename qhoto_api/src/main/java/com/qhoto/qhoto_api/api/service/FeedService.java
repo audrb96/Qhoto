@@ -83,7 +83,7 @@ public class FeedService {
                 .feedId(feedId)
                 .userId(user.getId())
                 .userImage(user.getImage())
-                .nickName(user.getNickname())
+                .nickname(user.getNickname())
                 .feedImage(feed.getImage())
                 .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm")))
                 .questName(feed.getQuest().getName())
@@ -109,9 +109,10 @@ public class FeedService {
         for (Comment comment : commentList) {
             commentResList.add(CommentRes.builder()
                     .userId(comment.getUser().getId())
-                    .nickName(comment.getUser().getNickname())
+                    .nickname(comment.getUser().getNickname())
+                    .userImage(comment.getUser().getImage())
                     .commentContext(comment.getContext())
-                    .commentTime(comment.getTime())
+                    .commentTime(comment.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                     .build());
         }
         return commentResList;
