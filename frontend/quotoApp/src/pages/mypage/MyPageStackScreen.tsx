@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import MyPage from './MyPage';
 import QhotoLevel from './QhotoLevel';
@@ -6,6 +6,7 @@ import QhotoHeader from '../../components/QhotoHeader';
 import EditMyProfile from './EditMyProfile';
 import QhotoLog from './QhotoLog';
 import ContactsPage from '../ContactsPage';
+import LevelInfo from './LevelInfo';
 
 const TransitionScreenOptions = {
   ...TransitionPresets.SlideFromRightIOS,
