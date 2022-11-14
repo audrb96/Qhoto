@@ -13,6 +13,9 @@ const initialState = {
   totalExp: 0,
   name: '',
   userPoint: '',
+  userDailyState: false,
+  userWeeklyState: false,
+  userMonthlyState: false,
 };
 const userSlice = createSlice({
   name: 'user',
@@ -31,6 +34,11 @@ const userSlice = createSlice({
       state.expGrade = action.payload.expGrade;
       state.totalExp = action.payload.totalExp;
       state.name = action.payload.name;
+    },
+    setQuestState(state, action) {
+      state.userDailyState = action.payload.userDailyState;
+      state.userWeeklyState = action.payload.userWeeklyState;
+      state.userMonthlyState = action.payload.userMonthlyState;
     },
   },
   extraReducers: builder => {},
