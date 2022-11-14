@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,6 +100,7 @@ public class FeedService {
             commentResList.add(CommentRes.builder()
                     .userId(comment.getUser().getId())
                     .nickName(comment.getUser().getNickname())
+                    .userImage(comment.getUser().getImage())
                     .commentContext(comment.getContext())
                     .commentTime(comment.getTime())
                     .build());
