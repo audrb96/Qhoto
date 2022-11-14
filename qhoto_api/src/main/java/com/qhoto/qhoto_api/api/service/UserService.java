@@ -71,7 +71,7 @@ public class UserService implements UserDetailsService {
             FeedResList.add(MyFeedRes.builder()
                     .feedId(feed.getId())
                     .feedImage(feed.getImage())
-                    .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-DD HH:MM")))
+                    .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a HH:mm")))
                     .questName(feed.getQuestName())
                     .typeCode(feed.getTypeCode())
                     .build());
@@ -112,7 +112,7 @@ public class UserService implements UserDetailsService {
                             .feedId(feed.getId())
                             .feedImage(feed.getImage())
                             .feedType(feed.getFeedType())
-                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a HH:mm")))
                             .questName(feed.getQuestName())
                             .typeCode(feed.getTypeCode())
                             .build());
