@@ -30,8 +30,6 @@ function AllFeed({navigation}) {
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
   const allQuest = useSelector((state: RootState) => state.quest);
-  console.log('올퀘스트입니다.');
-  console.log(allQuest.quest);
 
   useEffect(() => {
     let change_condition = '';

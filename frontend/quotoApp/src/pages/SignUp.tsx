@@ -31,6 +31,14 @@ function SignUp({navigation, route}: SignInScreenProps) {
 
   const accessToken = route.params.accessToken;
   const refreshToken = route.params.refreshToken;
+  const email = route.params.email;
+  const joinDate = route.params.joinDate;
+  const profileOpen = route.params.profileOpen;
+  const description = route.params.description;
+  const userImage = route.params.userImage;
+  const contactAgreeDate = route.params.contactAgreeDate;
+  const expGrade = route.params.expGrade;
+  const totalExp = route.params.totalExp;
 
   // useEffect(() => {
   //   const accessToken = route.params.accessToken);
@@ -112,14 +120,16 @@ function SignUp({navigation, route}: SignInScreenProps) {
     await dispatch(
       userSlice.actions.setUser({
         nickname: nickname,
-        // email: email,
-        // joinDate: joinDate,
-        // userImage: userImage,
-        // phone: phone,
-        // description: description,
-        // contactAgreeDate: contactAgreeDate,
-        // profileOpen: profileOpen,
-        loggedIn: true,
+        email: email,
+        joinDate: joinDate,
+        phone: phone,
+        profileOpen: profileOpen,
+        description: description,
+        userImage: userImage,
+        contactAgreeDate: contactAgreeDate,
+        expGrade: expGrade,
+        totalExp: totalExp,
+        name: name,
       }),
     );
 
