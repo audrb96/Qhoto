@@ -55,23 +55,24 @@ interface UserLog {
   feedTime: string;
   questName: string;
   typeCode: string;
+  feedType: string;
 }
 
-function MyPage({navigation}: any) {
+function MyPage({navigation}) {
   const dispatch = useAppDispatch();
 
   const goToLevel = () => {
     navigation.navigate('QhotoLevel');
   };
   const goToQuestLog = () => {
-    navigation.navigate('QhotoLog');
+    navigation.navigate('QhotoLog', {logs: userLogs});
   };
   const goToEditMyProfile = () => {
     navigation.navigate('EditMyProfile', {userInfo: userInfo});
   };
 
   const [userInfo, setUserInfo] = useState<UserInfo>();
-  const [userLog, setUserLog] = useState<UserLog[]>();
+  const [userLogs, setUserLogs] = useState<UserLog[]>();
 
   useEffect(() => {
     getUserInfoApi(
@@ -125,7 +126,7 @@ function MyPage({navigation}: any) {
     getUserLog(
       (res: any) => {
         console.log(res.data);
-        setUserLog(res.data);
+        setUserLogs(res.data);
       },
       (err: any) => {
         console.log(err.data);
@@ -238,7 +239,7 @@ function MyPage({navigation}: any) {
     />
   );
 
-  return userInfo === undefined || userLog === undefined ? null : (
+  return userInfo === undefined || userLogs === undefined ? null : (
     <ScrollView>
       <SafeAreaView>
         <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
@@ -299,7 +300,7 @@ function MyPage({navigation}: any) {
             </Text>
           </TouchableOpacity>
           <View>
-            {userLog.map((log, index) => (
+            {userLogs.map((log, index) => (
               <LogItem key={index} log={log} />
             ))}
           </View>

@@ -1,15 +1,19 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import MyPage from './MyPage';
 import QhotoLevel from './QhotoLevel';
 import QhotoHeader from '../../components/QhotoHeader';
 import EditMyProfile from './EditMyProfile';
 import QhotoLog from './QhotoLog';
 
+const TransitionScreenOptions = {
+  ...TransitionPresets.SlideFromRightIOS,
+};
+
 const MyPageStack = createStackNavigator();
 function MyPageStackScreen() {
   return (
-    <MyPageStack.Navigator>
+    <MyPageStack.Navigator screenOptions={TransitionScreenOptions}>
       <MyPageStack.Screen
         name="MyPage"
         component={MyPage}
