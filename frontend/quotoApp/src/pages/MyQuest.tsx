@@ -13,6 +13,9 @@ import {launchCamera} from 'react-native-image-picker';
 import Modal from 'react-native-modal';
 import PhotoEditor from 'react-native-photo-editor';
 
+import {useAppDispatch} from '../store';
+import questSlice from '../slices/quest';
+
 import QuestCard from '../components/main/QuestCard';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -43,6 +46,8 @@ function MyQuest() {
   const [monthlyQuestList, setMonthlyQuestList] = useState<Quest[]>();
   const [callbackState, setCallbackState] = useState(true);
 
+  const dispatch = useAppDispatch();
+
   const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
 
   useEffect(() => {
@@ -52,6 +57,11 @@ function MyQuest() {
         setDailyQuestList(daily);
         setWeeklyQuestList(weekly);
         setMonthlyQuestList(monthly);
+        dispatch(
+          questSlice.actions.setQuest({
+            quest: res.data.questList,
+          }),
+        );
       },
       (err: any) => {
         console.log(err.response);
@@ -92,8 +102,11 @@ function MyQuest() {
     if (res.didCancel || !res) {
       return;
     }
-    if (res.assets[0].type == 'image/jpeg') savePhoto(res.assets[0].uri);
-    else if (res.assets[0].type == 'video/mp4') saveVideo(res.assets[0].uri);
+    if (res.assets[0].type == 'image/jpeg') {
+      savePhoto(res.assets[0].uri);
+    } else if (res.assets[0].type == 'video/mp4') {
+      saveVideo(res.assets[0].uri);
+    }
   };
 
   const saveVideo = (uri: string) => {
