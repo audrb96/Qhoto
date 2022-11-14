@@ -12,13 +12,15 @@ public class CommentRes {
 
     private final Long userId;
     private final String nickName;
+    private final String userImage;
     private final String commentContext;
     private final LocalDateTime commentTime;
 
 
-    public CommentRes(Long userId, String nickName, String commentContext, LocalDateTime commentTime) {
+    public CommentRes(Long userId, String nickName, String userImage, String commentContext, LocalDateTime commentTime) {
         this.userId = userId;
         this.nickName = nickName;
+        this.userImage = userImage;
         this.commentContext = commentContext;
         this.commentTime = commentTime;
     }

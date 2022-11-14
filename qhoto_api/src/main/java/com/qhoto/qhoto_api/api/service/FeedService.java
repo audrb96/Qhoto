@@ -110,6 +110,7 @@ public class FeedService {
             commentResList.add(CommentRes.builder()
                     .userId(comment.getUser().getId())
                     .nickName(comment.getUser().getNickname())
+                    .userImage(comment.getUser().getImage())
                     .commentContext(comment.getContext())
                     .commentTime(comment.getTime())
                     .build());
