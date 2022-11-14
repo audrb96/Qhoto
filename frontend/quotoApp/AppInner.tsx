@@ -48,7 +48,7 @@ function AppInner() {
   const isLoggedIn = useSelector((state: RootState) => state.user.loggedIn);
 
   return (
-    <GestureHandlerRootView style={{flex: 1, backgroundColor: 'white'}}>
+    <GestureHandlerRootView style={{flex: 1, maxWidth: 420}}>
       <NavigationContainer theme={appTheme}>
         {isLoggedIn ? (
           <Tab.Navigator
