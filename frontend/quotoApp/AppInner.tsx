@@ -4,7 +4,6 @@ import {View, Image} from 'react-native';
 
 import SignIn from './src/pages/SignIn';
 import MyQuest from './src/pages/MyQuest';
-import FriendsFeed from './src/pages/feed/FriendsFeed';
 import AllFeedStackScreen from './src/pages/feed/AllFeedStackScreen';
 import FindFriend from './src/pages/FindFriend';
 import MyPageStackScreen from './src/pages/mypage/MyPageStackScreen';
@@ -20,7 +19,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {HEADER_LOGO} from './src/image';
 import QhotoHeader from './src/components/QhotoHeader';
 import SignUp from './src/pages/SignUp';
-import FriendsFeedStackScreen from './src/pages/FriendsFeedStackScreen';
+import FriendsFeedStackScreen from './src/pages/feed/FriendsFeedStackScreen';
 import FriendListStackScreen from './src/pages/FriendListStackScreen';
 
 export type LoggedInParamList = {
@@ -97,6 +96,7 @@ function AppInner() {
               options={{
                 title: '친구 피드',
                 headerShown: false,
+                unmountOnBlur: true,
               }}
             />
             <Tab.Screen
@@ -130,6 +130,7 @@ function AppInner() {
               options={{
                 title: '마이페이지',
                 header: () => <QhotoHeader leftIcon={false} />,
+                headerShown: false,
                 unmountOnBlur: true,
               }}
             />

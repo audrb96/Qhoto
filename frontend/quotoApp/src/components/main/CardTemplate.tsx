@@ -19,7 +19,7 @@ const questTypes: {
   [key: string]: {
     typeName: string;
     iconName: string;
-    colorCode: string;
+    questColorCode: string;
     stamp: any;
   };
 } = info.questTypes;
@@ -42,7 +42,7 @@ const CardTemplate: React.FC<Props> = props => {
           style={[
             styles.label,
             {
-              backgroundColor: questTypes[questType].colorCode,
+              backgroundColor: questTypes[questType].questColorCode,
             },
           ]}>
           <Text style={styles.labelContent}>
@@ -58,7 +58,7 @@ const CardTemplate: React.FC<Props> = props => {
             style={[
               styles.questContent,
               {
-                color: questTypes[questType].colorCode,
+                color: questTypes[questType].questColorCode,
               },
             ]}>
             {item}
