@@ -15,11 +15,15 @@ import PhotoEditor from 'react-native-photo-editor';
 
 import {useAppDispatch} from '../store';
 import questSlice from '../slices/quest';
+import userSlice from '../slices/user';
 
 import QuestCard from '../components/main/QuestCard';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {getQuestList, uploadVideo, uploadPhoto} from '../api/quest';
+import {getUserInfoApi} from '../api/mypage';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const questTypes = ['DAILY', 'WEEKLY', 'MONTHLY'];
 
@@ -50,7 +54,48 @@ function MyQuest() {
 
   const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
 
+  const token: any = AsyncStorage.getItem('accessToken');
+  console.log('토큰뽑자');
+  console.log(token);
+
   useEffect(() => {
+    getUserInfoApi(
+      (response: any) => {
+        let {
+          nickname,
+          email,
+          joinDate,
+          phone,
+          profileOpen,
+          description,
+          userImage,
+          contactAgreeDate,
+          expGrade,
+          totalExp,
+          name,
+        } = response.data;
+        dispatch(
+          userSlice.actions.setUser({
+            nickname: nickname,
+            email: email,
+            joinDate: joinDate,
+            phone: phone,
+            profileOpen: profileOpen,
+            description: description,
+            userImage: userImage,
+            contactAgreeDate: contactAgreeDate,
+            expGrade: expGrade,
+            totalExp: totalExp,
+            name: name,
+          }),
+        );
+      },
+      (err: any) => {
+        console.log('실패');
+        console.log(err);
+      },
+    );
+
     getQuestList(
       (res: any) => {
         const {daily, weekly, monthly} = res.data.questList;
@@ -60,6 +105,25 @@ function MyQuest() {
         dispatch(
           questSlice.actions.setQuest({
             quest: res.data.questList,
+          }),
+        );
+        let dayState = false;
+        let weekState = false;
+        let monthState = false;
+        if (daily.length === 1) {
+          dayState = true;
+        }
+        if (weekly.length === 1) {
+          weekState = true;
+        }
+        if (monthly.length === 1) {
+          monthState = true;
+        }
+        dispatch(
+          userSlice.actions.setQuestState({
+            userDailyState: dayState,
+            userWeeklyState: weekState,
+            userMonthlyState: monthState,
           }),
         );
       },
@@ -230,7 +294,7 @@ function MyQuest() {
   };
 
   return dailyQuestList === undefined ||
-    weeklyQuestList == undefined ||
+    weeklyQuestList === undefined ||
     monthlyQuestList === undefined ? null : (
     <View style={styles.body}>
       <View style={styles.questCardContainer}>

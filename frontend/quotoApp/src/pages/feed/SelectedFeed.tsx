@@ -9,6 +9,7 @@ import {
   Image,
   ScrollView,
   TextInput,
+  Alert,
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -196,6 +197,11 @@ function SelectedFeed({parentFunction, props}) {
                   alignItems: 'center',
                 }}
                 onPress={() => {
+                  if (text.trim() === '') {
+                    Alert.alert('알림', '댓글 내용을 작성해주세요.');
+                    onChangeText('');
+                    return;
+                  }
                   setComment(
                     [feed.feedId, text],
                     res => {
