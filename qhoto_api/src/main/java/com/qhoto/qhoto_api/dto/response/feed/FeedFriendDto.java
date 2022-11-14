@@ -11,7 +11,7 @@ public class FeedFriendDto {
     private final Long userId;
     private final String userImage;
     private final String feedImage;
-    private final String feedTime;
+    private String feedTime;
     private final String questName;
     private final String questType;
     private final int questPoint;
@@ -23,7 +23,7 @@ public class FeedFriendDto {
     private final String nickname;
     private final String commentNickname;
     private final String commentUserImage;
-    private final String time;
+    private String time;
     private final String context;
     private final FeedType feedType;
 
