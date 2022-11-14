@@ -230,7 +230,7 @@ function MyQuest() {
   };
 
   return dailyQuestList === undefined ||
-    weeklyQuestList == undefined ||
+    weeklyQuestList === undefined ||
     monthlyQuestList === undefined ? null : (
     <View style={styles.body}>
       <View style={styles.questCardContainer}>
