@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.Arrays;
@@ -87,7 +88,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         user.id,
                         feed.image,
 //                        feed.time,
-                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",feed.time, ConstantImpl.create("%Y-%m-%d %H:%i")),
+                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",feed.time, ConstantImpl.create("%Y-%m-%d %p %h:%i")),
                         feed.questName,
                         feed.quest.questType.code,
                         feed.quest.score,
@@ -99,7 +100,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         comment.user.nickname,
                         comment.user.image,
                         user.image,
-                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",comment.time, ConstantImpl.create("%Y-%m-%d %H:%i")),
+                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",comment.time, ConstantImpl.create("%Y-%m-%d %p %h:%i")),
                         comment.context,
                         feed.feedType
                         ))
@@ -117,11 +118,16 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .orderBy(orderFirstByUserId(userId),feed.time.desc())
                 .fetch();
 
+        feedFriendList.forEach((feedFriendDto -> {
+            feedFriendDto.setFeedTime(feedFriendDto.getFeedTime().replace("AM", "오전").replace("PM", "오후"));
+           if(StringUtils.hasText(feedFriendDto.getTime())) feedFriendDto.setTime(feedFriendDto.getTime().replace("AM","오전").replace("PM", "오후"));
+        }));
+
         JPAQuery<FeedFriendDto> countQuery = jpaQueryFactory
                 .select(new QFeedFriendDto(feed.id,
                         user.id,
                         feed.image,
-                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",feed.time, ConstantImpl.create("%Y-%m-%d %H:%i")),
+                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",feed.time, ConstantImpl.create("%Y-%m-%d %h:%i")),
                         feed.questName,
                         feed.quest.questType.code,
                         feed.quest.score,
@@ -133,7 +139,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         comment.user.nickname,
                         comment.user.image,
                         user.image,
-                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",comment.time, ConstantImpl.create("%Y-%m-%d %H:%i")),
+                        Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",comment.time, ConstantImpl.create("%Y-%m-%d %h:%i")),
                         comment.context,
                         feed.feedType
                 ))
