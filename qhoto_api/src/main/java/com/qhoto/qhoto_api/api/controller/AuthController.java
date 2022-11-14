@@ -1,7 +1,7 @@
 package com.qhoto.qhoto_api.api.controller;
 
 import com.qhoto.qhoto_api.api.service.AuthService;
-import com.qhoto.qhoto_api.dto.response.AccessTokenRes;
+import com.qhoto.qhoto_api.dto.response.user.AccessTokenRes;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
 import com.qhoto.qhoto_api.exception.ExpiredRefreshTokenException;
 import com.qhoto.qhoto_api.exception.NoUserByRefreshTokenException;

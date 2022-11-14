@@ -1,6 +1,11 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.*;
+import com.qhoto.qhoto_api.api.repository.activequest.ActiveDailyRepository;
+import com.qhoto.qhoto_api.api.repository.activequest.ActiveMonthlyRepository;
+import com.qhoto.qhoto_api.api.repository.activequest.ActiveWeeklyRepository;
+import com.qhoto.qhoto_api.api.repository.feed.*;
+import com.qhoto.qhoto_api.api.repository.quest.QuestRepository;
+import com.qhoto.qhoto_api.api.repository.user.UserRepository;
 import com.qhoto.qhoto_api.domain.*;
 import com.qhoto.qhoto_api.domain.type.CommentStatus;
 import com.qhoto.qhoto_api.domain.type.FeedLikePK;
@@ -10,7 +15,12 @@ import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
-import com.qhoto.qhoto_api.dto.response.*;
+import com.qhoto.qhoto_api.dto.response.feed.CommentRes;
+import com.qhoto.qhoto_api.dto.response.feed.FeedAllDto;
+import com.qhoto.qhoto_api.dto.response.feed.FeedDetailRes;
+import com.qhoto.qhoto_api.dto.response.feed.FeedFriendDto;
+import com.qhoto.qhoto_api.dto.response.quest.QuestOptionItemRes;
+import com.qhoto.qhoto_api.dto.response.quest.QuestOptionRes;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import com.qhoto.qhoto_api.exception.NoFeedByIdException;
 import com.qhoto.qhoto_api.exception.NoQuestByIdException;
@@ -55,7 +65,7 @@ public class FeedService {
 
 
     // 전체 피드 불러오기
-    public Page<FeedAllDto> getFeed(User user,FeedAllReq feedAllReq, Pageable pageable) {
+    public Page<FeedAllDto> getFeed(User user, FeedAllReq feedAllReq, Pageable pageable) {
         return feedRepository.findByCondition(user,feedAllReq, pageable);
     }
 
@@ -109,7 +119,7 @@ public class FeedService {
     }
 
     // 친구 피드 불러오기
-    public Page<FeedFriendDto> getFriendFeed(User user,FeedAllReq feedAllReq, Pageable pageable){
+    public Page<FeedFriendDto> getFriendFeed(User user, FeedAllReq feedAllReq, Pageable pageable){
         return feedRepository.findByConditionAndUserId(feedAllReq, pageable, user.getId());
     }
 

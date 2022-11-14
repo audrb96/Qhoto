@@ -9,15 +9,15 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.qhoto.qhoto_api.api.repository.ExpRepository;
-import com.qhoto.qhoto_api.api.repository.QuestTypeRepository;
-import com.qhoto.qhoto_api.api.repository.UserRepository;
+import com.qhoto.qhoto_api.api.repository.feed.ExpRepository;
+import com.qhoto.qhoto_api.api.repository.quest.QuestTypeRepository;
+import com.qhoto.qhoto_api.api.repository.user.UserRepository;
 import com.qhoto.qhoto_api.domain.AuthProvider;
 import com.qhoto.qhoto_api.domain.Exp;
 import com.qhoto.qhoto_api.domain.QuestType;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.UserRole;
-import com.qhoto.qhoto_api.dto.response.LoginRes;
+import com.qhoto.qhoto_api.dto.response.user.LoginRes;
 import com.qhoto.qhoto_api.exception.InvalidIdTokenException;
 import com.qhoto.qhoto_api.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service

@@ -1,16 +1,16 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.FriendRepository;
-import com.qhoto.qhoto_api.api.repository.FriendRequestRepository;
-import com.qhoto.qhoto_api.api.repository.UserRepository;
+import com.qhoto.qhoto_api.api.repository.user.FriendRepository;
+import com.qhoto.qhoto_api.api.repository.user.FriendRequestRepository;
+import com.qhoto.qhoto_api.api.repository.user.UserRepository;
 import com.qhoto.qhoto_api.domain.Friend;
 import com.qhoto.qhoto_api.domain.FriendRequest;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.RequestStatus;
 import com.qhoto.qhoto_api.dto.request.FriendRequestReq;
-import com.qhoto.qhoto_api.dto.response.FriendInfoRes;
-import com.qhoto.qhoto_api.dto.response.FriendRes;
-import com.qhoto.qhoto_api.dto.response.UserRes;
+import com.qhoto.qhoto_api.dto.response.user.FriendInfoRes;
+import com.qhoto.qhoto_api.dto.response.user.FriendRes;
+import com.qhoto.qhoto_api.dto.response.user.UserRes;
 import com.qhoto.qhoto_api.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
