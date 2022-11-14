@@ -88,7 +88,7 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
                 .on(friendRequest.requestUser.id.eq(user.id))
                 .where(
                         contactsIn(contacts), user.ne(userInfo),
-                        friendRequest.status.ne(RequestStatus.FRIEND).or(friendRequest.status.isNull()))
+                        friendRequestIsNotFriend())
                 .groupBy(user.id)
                 .fetch();
 
@@ -103,7 +103,7 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
                 )).from(user, friendRequest)
                 .where( user.id.eq(friendRequest.requestUser.id),
                         friendRequest.responseUser.eq(userInfo),
-                        friendRequest.status.ne(RequestStatus.FRIEND).or(friendRequest.status.isNull())
+                        friendRequestIsNotFriend()
                         )
                 .fetch();
 
@@ -127,6 +127,10 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
         log.info("isFriendDtoList ={}", isFriendDtoList);
         return contactResSetList;
 
+    }
+
+    private BooleanExpression friendRequestIsNotFriend() {
+        return friendRequest.status.ne(RequestStatus.FRIEND).or(friendRequest.status.isNull());
     }
 
     private BooleanExpression contactsIn(Map<String, String> contacts) {
