@@ -5,6 +5,7 @@ import AllFeed from './AllFeed';
 import SelectedFeed from './SelectedFeed';
 import QhotoHeader from '../../components/QhotoHeader';
 import OtherPage from './../OtherPage';
+import CommentPage from './CommentPage';
 
 const AllFeedStack = createStackNavigator();
 function AllFeedStackScreen() {

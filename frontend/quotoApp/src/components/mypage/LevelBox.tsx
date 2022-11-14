@@ -9,7 +9,7 @@ interface Props {
 
 const levelInfo: {
   [key: string]: {
-    colorCode: string;
+    gradeColorCode: string;
     colorName: string;
     nextColor: string;
     minPoint: number;
@@ -21,11 +21,11 @@ const {width, height} = Dimensions.get('window');
 
 const LevelBox: React.FC<Props> = props => {
   const {userGrade, userPoint} = props;
-  const {colorCode, colorName, nextColor, minPoint, maxPoint} =
+  const {gradeColorCode, colorName, nextColor, minPoint, maxPoint} =
     levelInfo[userGrade];
 
   return (
-    <View style={[styles.levelBox, {backgroundColor: colorCode}]}>
+    <View style={[styles.levelBox, {backgroundColor: gradeColorCode}]}>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View>
           <Text

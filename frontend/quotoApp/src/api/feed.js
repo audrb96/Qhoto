@@ -66,10 +66,10 @@ async function getAllFeeds(params, success, fail) {
     .then(success)
     .catch(fail);
 }
-async function getFriendsFeeds(params, success, fail) {
+async function getFriendsFeeds(duration, condition, success, fail) {
   await api
     .get('/api/feed/friend', {
-      params: {condition: params[1], duration: params[0]},
+      params: {duration, condition},
     })
     .then(success)
     .catch(fail);
