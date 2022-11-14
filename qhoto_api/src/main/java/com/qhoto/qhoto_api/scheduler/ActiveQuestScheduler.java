@@ -1,8 +1,8 @@
 package com.qhoto.qhoto_api.scheduler;
 
-import com.qhoto.qhoto_api.api.repository.ActiveDailyRepository;
-import com.qhoto.qhoto_api.api.repository.ActiveMonthlyRepository;
-import com.qhoto.qhoto_api.api.repository.ActiveWeeklyRepository;
+import com.qhoto.qhoto_api.api.repository.activequest.ActiveDailyRepository;
+import com.qhoto.qhoto_api.api.repository.activequest.ActiveMonthlyRepository;
+import com.qhoto.qhoto_api.api.repository.activequest.ActiveWeeklyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
