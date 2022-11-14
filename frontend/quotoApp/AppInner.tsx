@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useSelector} from 'react-redux';
-import {View, Image} from 'react-native';
+import {Dimensions} from 'react-native';
 
 import SignIn from './src/pages/SignIn';
 import MyQuest from './src/pages/MyQuest';
@@ -39,6 +39,8 @@ export type RootStackParamList = {
   SignUp: undefined;
 };
 
+const {width, height} = Dimensions.get('window');
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const appTheme = DefaultTheme;
@@ -46,9 +48,8 @@ appTheme.colors.background = 'white';
 
 function AppInner() {
   const isLoggedIn = useSelector((state: RootState) => state.user.loggedIn);
-
   return (
-    <GestureHandlerRootView style={{flex: 1, backgroundColor: 'white'}}>
+    <GestureHandlerRootView style={{flex: 1, maxWidth: 420}}>
       <NavigationContainer theme={appTheme}>
         {isLoggedIn ? (
           <Tab.Navigator

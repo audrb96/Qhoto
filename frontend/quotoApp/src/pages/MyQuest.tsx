@@ -36,6 +36,7 @@ interface Quest {
 const {width, height} = Dimensions.get('window');
 
 function MyQuest() {
+  console.log('ㅁㄴㅇ러ㅏㅣ;ㅁㄴ어라ㅣㅁ어라ㅣ;');
   const [modalVisible, setModalVisible] = useState(false);
   const [questTypeIdx, setQuestTypeIdx] = useState(0);
   const [dailyQuestIdx, setDailyQuestIdx] = useState(0);
@@ -272,10 +273,17 @@ function MyQuest() {
           }}>
           <Pressable
             style={styles.questButton}
+            disabled={selectQuestList(questTypeIdx).length === 1 ? true : false}
             onPress={() => {
               setModalVisible(!modalVisible);
             }}>
-            <Icon name="camera" color="white" size={50} />
+            <Icon
+              name={
+                selectQuestList(questTypeIdx).length === 1 ? 'check' : 'camera'
+              }
+              color="white"
+              size={50}
+            />
           </Pressable>
         </View>
       </View>

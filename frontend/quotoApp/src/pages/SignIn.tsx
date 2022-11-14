@@ -160,7 +160,7 @@ function SignIn({navigation}: SignInScreenProps) {
                         // phone,
                         // profileOpen,
                         // description,
-                        // userImage,
+                        userImage,
                         // contactAgreeDate,
                       } = response.data;
 
@@ -169,7 +169,7 @@ function SignIn({navigation}: SignInScreenProps) {
                           nickname: nickname,
                           // email: email,
                           // joinDate: joinDate,
-                          // userImage: userImage,
+                          userImage: userImage,
                           // phone: phone,
                           // description: description,
                           // contactAgreeDate: contactAgreeDate,
