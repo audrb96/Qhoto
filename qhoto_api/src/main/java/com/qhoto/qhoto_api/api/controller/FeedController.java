@@ -7,7 +7,11 @@ import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
 import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
 import com.qhoto.qhoto_api.dto.request.FeedAllReq;
 import com.qhoto.qhoto_api.dto.request.LikeReq;
-import com.qhoto.qhoto_api.dto.response.*;
+import com.qhoto.qhoto_api.dto.response.feed.CommentRes;
+import com.qhoto.qhoto_api.dto.response.feed.FeedAllDto;
+import com.qhoto.qhoto_api.dto.response.feed.FeedDetailRes;
+import com.qhoto.qhoto_api.dto.response.feed.FeedFriendDto;
+import com.qhoto.qhoto_api.dto.response.quest.QuestOptionRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -58,7 +62,7 @@ public class FeedController {
      * @param user
      * @param feedAllReq
      * @param pageable
-     * @return {@link Page<FeedFriendDto>}
+     * @return {@link Page< FeedFriendDto >}
      */
     @GetMapping("/friend")
     public ResponseEntity<Page<FeedFriendDto>> readFriendFeed(@AuthenticationPrincipal User user, @ModelAttribute FeedAllReq feedAllReq, Pageable pageable){
