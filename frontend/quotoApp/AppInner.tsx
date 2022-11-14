@@ -45,6 +45,7 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const appTheme = DefaultTheme;
 appTheme.colors.background = 'white';
+// const token = false;
 const token: any = AsyncStorage.getItem('accessToken');
 
 function AppInner() {

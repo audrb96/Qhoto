@@ -1,39 +1,36 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  token: '',
-  userId: '',
+  nickname: '',
   email: '',
-  phone: '',
-  name: '',
   joinDate: '',
+  phone: '',
+  profileOpen: true,
   description: '',
   userImage: '',
-  nickname: '',
-  userPoint: '',
   contactAgreeDate: '',
-  profileOpen: true,
-  // loggedIn: true,
-  loggedIn: false,
+  expGrade: '',
+  totalExp: 0,
+  name: '',
+  userPoint: '',
 };
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
     setUser(state, action) {
-      // state.token = action.payload.token;
-      state.userId = action.payload.userId;
-      state.email = action.payload.email;
-      state.phone = action.payload.phone;
-      state.name = action.payload.name;
-      state.joinDate = action.payload.joinDate;
-      state.userImage = action.payload.userImage;
-      state.description = action.payload.description;
       state.nickname = action.payload.nickname;
-      state.userPoint = action.payload.userPoint;
-      state.contactAgreeDate = action.payload.contactAgreeDate;
+      state.nickname = action.payload.nickname;
+      state.email = action.payload.email;
+      state.joinDate = action.payload.joinDate;
+      state.phone = action.payload.phone;
       state.profileOpen = action.payload.profileOpen;
-      state.loggedIn = action.payload.loggedIn;
+      state.description = action.payload.description;
+      state.userImage = action.payload.userImage;
+      state.contactAgreeDate = action.payload.contactAgreeDate;
+      state.expGrade = action.payload.expGrade;
+      state.totalExp = action.payload.totalExp;
+      state.name = action.payload.name;
     },
   },
   extraReducers: builder => {},
