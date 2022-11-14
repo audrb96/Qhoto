@@ -16,7 +16,7 @@ public class FeedDetailRes {
     private final Long feedId;
     private final Long userId;
     private final String userImage;
-    private final String nickName;
+    private final String nickname;
     private final String feedImage;
     private final String feedTime;
     private final String questName;

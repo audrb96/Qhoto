@@ -18,6 +18,8 @@ public enum ErrorCode {
     NO_USER_BY_REFRESH_TOKEN(500, "U004", "No User By RefreshToken"),
     NO_USER_BY_NICKNAME(500, "U005", "No User By UserNickName"),
     NO_UNIQUE_USER(500,"U006", "No Unique User"),
+    NOT_SELF_REQUEST(500,"U007","Not Self Request"),
+
     EXPIRED_REFRESH_TOKEN(500,"A001", "Expired Refresh Token"),
     //feed
     NO_FEED_BY_ID(500, "F001", "No Feed By FeedId"),
@@ -26,6 +28,7 @@ public enum ErrorCode {
     ALREADY_REQUEST_USER(500,"F004", "Already Request User"),
     ALREADY_FRIEND(500,"F005","Already Friend"),
     NO_FEED_BY_USER_ID(500, "F006", "No Feed By UserId")
+
     ;
 
     private final int status;

@@ -1,27 +1,19 @@
 package com.qhoto.qhoto_api.dto.response.feed;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
+@AllArgsConstructor
 @Builder
 public class CommentRes {
 
     private final Long userId;
-    private final String nickName;
+    private final String nickname;
     private final String userImage;
     private final String commentContext;
-    private final LocalDateTime commentTime;
+    private final String commentTime;
 
-
-    public CommentRes(Long userId, String nickName, String userImage, String commentContext, LocalDateTime commentTime) {
-        this.userId = userId;
-        this.nickName = nickName;
-        this.userImage = userImage;
-        this.commentContext = commentContext;
-        this.commentTime = commentTime;
-    }
 }
