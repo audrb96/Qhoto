@@ -15,18 +15,15 @@ import {
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import {Card, Button, Icon} from '@rneui/themed';
+import {getContactsApi} from '../api/friend';
+
+const {width, height} = Dimensions.get('window');
+
 function ContactsPage() {
   const [myContacts, setMyContacts] = useState(
     [],
     // myContacts: [],
   );
-
-  const users = [
-    {
-      name: 'brynn',
-      avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
-    },
-  ];
 
   useEffect(() => {
     requestContactPermission().then((didGetPermission: Boolean) => {
@@ -36,15 +33,38 @@ function ContactsPage() {
         //     throw err;
         //   }
         Contacts.getAll().then(async contacts => {
-          // await console.log(
-          // contacts[6].phoneNumbers,
+          let contactList = [];
+          await contacts.forEach(contact =>
+            contactList.push(
+              contact.phoneNumbers[0].number.replaceAll('-', '') +
+                '":"' +
+                contact.displayName,
+            ),
+          );
 
-          // contacts.map(contact =>
-          //   contact.phoneNumbers[0].number.replaceAll('-', ''),
-          // ),
-          // );
-          await setMyContacts(contacts);
-          await console.log(contacts);
+          // const tmp = JSON.stringify(contactList)
+          //   .replace('[', '{')
+          //   .replace(']', '}');
+
+          const ttemp = {
+            '01020373918': '유경훈',
+            '01012344567': '김정아',
+            '01012340000': '김상현',
+            '01023129852': '박영준',
+            '01011111111': '정형진',
+          };
+          const tttemp = JSON.stringify(ttemp);
+          await console.log(ttemp);
+
+          await getContactsApi(
+            tttemp,
+            (res: any) => {
+              console.log('getContactsApi - res', res.data);
+            },
+            (err: any) => {
+              console.log('getContactsApi - err', err);
+            },
+          );
         });
       } else {
         Alert.alert('no permission : 연락처 접근 권한이 없습니다.');
@@ -93,12 +113,13 @@ function ContactsPage() {
       ))}
 
       <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+        {/* <View style={{flexDirection: 'row'}}> */}
         <View
           style={{
             padding: 0,
             borderRadius: 100,
-            width: 220,
-            height: 300,
+            width: width * 0.54,
+            height: height * 0.38,
             // margin: -5,
             marginLeft: 5,
           }}>
@@ -143,8 +164,8 @@ function ContactsPage() {
           style={{
             padding: 0,
             borderRadius: 100,
-            width: 220,
-            height: 300,
+            width: width * 0.54,
+            height: height * 0.38,
             // margin: -5,
             marginRight: 5,
           }}>
@@ -153,8 +174,8 @@ function ContactsPage() {
               style={{
                 padding: 0,
                 borderRadius: 100,
-                width: 158,
-                height: 158,
+                width: width * 0.39,
+                height: height * 0.2,
                 margin: 0,
               }}
               source={{
@@ -190,25 +211,4 @@ function ContactsPage() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  fonts: {
-    marginBottom: 8,
-  },
-  user: {
-    flexDirection: 'row',
-    marginBottom: 6,
-  },
-  image: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
-  },
-  name: {
-    fontSize: 16,
-    marginTop: 5,
-  },
-});
 export default ContactsPage;

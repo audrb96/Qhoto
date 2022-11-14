@@ -31,7 +31,7 @@ function FriendListStackScreen() {
         name="OtherPage"
         component={OtherPage}
         options={{
-          header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
+          headerShown: false,
         }}
       />
     </FriendListStack.Navigator>

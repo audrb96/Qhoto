@@ -19,8 +19,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImageModal from 'react-native-image-modal';
 
+import Fontisto from 'react-native-vector-icons/Fontisto';
+
 import {getOtherInfoApi} from '../api/other';
 import {addFriendApi, findFriendApi} from '../api/friend';
+import QhotoHeader from '../components/QhotoHeader';
 
 function OtherPage({navigation, route}) {
   const dispatch = useAppDispatch();
@@ -49,8 +52,7 @@ function OtherPage({navigation, route}) {
           description: res.data.description,
           nickname: res.data.nickname,
           point: res.data.point,
-          // profileOpen: res.data.profileOpen,
-          profileOpen: false,
+          profileOpen: res.data.profileOpen,
         });
         await findFriendApi(
           res.data.nickname,
@@ -86,7 +88,7 @@ function OtherPage({navigation, route}) {
       iconOrder = '친구 요청';
     } else if (isFriend === null) {
       iconName = 'user-plus';
-      iconOrder = '         ';
+      iconOrder = '친구 요청';
     }
     return (
       <FontAwesome5
@@ -184,8 +186,20 @@ function OtherPage({navigation, route}) {
     minPoint = 5000;
   }
 
+  //Icon
+  const leftIcon = (
+    <FontAwesome5
+      name="angle-left"
+      size={30}
+      color="#3B28B1"
+      onPress={() => navigation.goBack()}
+      style={styles.leftIcon}
+    />
+  );
+
   return (
     <View>
+      <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
       <View // 프로필
       >
         <View style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
@@ -214,22 +228,28 @@ function OtherPage({navigation, route}) {
         </View>
       </View>
 
-      {/* 
+      {/*
       비공개 && !친구 -> 비공개
       공개           -> 공개
       비공개 && 친구  -> 공개
  */}
 
       {!otherInfo.profileOpen && isFriend !== 'FRIEND' ? (
-        <TouchableOpacity
-          onPress={() => {
-            addFriend();
-          }}>
-          <View style={styles.ifFriendIcon}>
-            {isFriendIcon()}
-            <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              addFriend();
+            }}>
+            <View style={styles.ifFriendIcon}>
+              {isFriendIcon()}
+              <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
+            </View>
+          </TouchableOpacity>
+          <View style={{flexDirection: 'row'}}>
+            <Fontisto name="locked" size={30} color={'#3B28B1'} />
+            <Text style={{color: 'black', fontSize: 30}}>비공개 유저다</Text>
           </View>
-        </TouchableOpacity>
+        </View>
       ) : (
         <View>
           <View>
@@ -331,6 +351,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     padding: 10,
+  },
+  leftIcon: {
+    position: 'absolute',
+    top: -10,
+    right: -20,
   },
 });
 
