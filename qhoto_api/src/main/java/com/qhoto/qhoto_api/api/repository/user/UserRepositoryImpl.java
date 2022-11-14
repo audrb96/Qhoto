@@ -126,6 +126,7 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
         log.info("contactResList = {}", contactResList);
         log.info("isFriendDtoList ={}", isFriendDtoList);
         return contactResSetList;
+
     }
 
     private BooleanExpression contactsIn(Map<String, String> contacts) {
