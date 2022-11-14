@@ -4,10 +4,11 @@ import com.qhoto.qhoto_api.api.service.LoginService;
 import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
-import com.qhoto.qhoto_api.dto.response.LoginRes;
-import com.qhoto.qhoto_api.dto.response.MyFeedRes;
-import com.qhoto.qhoto_api.dto.response.MyInfoRes;
-import com.qhoto.qhoto_api.dto.response.UserInfoRes;
+import com.qhoto.qhoto_api.dto.response.user.ContactResSet;
+import com.qhoto.qhoto_api.dto.response.user.LoginRes;
+import com.qhoto.qhoto_api.dto.response.feed.MyFeedRes;
+import com.qhoto.qhoto_api.dto.response.user.MyInfoRes;
+import com.qhoto.qhoto_api.dto.response.user.UserInfoRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -118,7 +119,7 @@ public class UserController {
     }
 
     @PostMapping("/contact")
-    public ResponseEntity<?> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {
+    public ResponseEntity<List<ContactResSet>> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {
         return ResponseEntity.ok(userService.getUserContact(user, contacts));
     }
 
