@@ -24,8 +24,10 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import {getOtherInfoApi} from '../api/other';
 import {addFriendApi, findFriendApi} from '../api/friend';
 import QhotoHeader from '../components/QhotoHeader';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
-function OtherPage({navigation, route}) {
+function OtherPage({route}) {
+  const navigation = useNavigation();
   const dispatch = useAppDispatch();
 
   const [otherInfo, setOtherInfo] = useState({

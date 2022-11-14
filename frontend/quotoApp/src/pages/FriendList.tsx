@@ -113,12 +113,22 @@ function FriendList({navigation}) {
   );
 
   //Icon
-  const rightIcon = (
+  const leftIcon = (
     <AntDesign
       name="adduser"
       size={30}
       color="#3B28B1"
       onPress={gotoFindFriend}
+      style={styles.leftIcon}
+    />
+  );
+
+  const rightIcon = (
+    <AntDesign
+      name="contacts"
+      size={30}
+      color="#3B28B1"
+      onPress={() => navigation.navigate('ContactsPage')}
       style={styles.rightIcon}
     />
   );
@@ -126,7 +136,7 @@ function FriendList({navigation}) {
   return (
     <View>
       <QhotoHeader
-        leftIcon={false}
+        leftIcon={leftIcon}
         rightIcon={rightIcon}
         missionVisible={false}
       />
@@ -152,6 +162,11 @@ const styles = StyleSheet.create({
     padding: 5,
     width: width * 0.9,
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  leftIcon: {
+    position: 'absolute',
+    top: -10,
+    right: -20,
   },
   rightIcon: {
     position: 'absolute',

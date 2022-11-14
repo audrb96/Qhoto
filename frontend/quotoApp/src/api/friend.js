@@ -37,6 +37,7 @@ async function receiveListApi(success, fail) {
 
 // 연락처 접근
 async function getContactsApi(data, success, fail) {
+  console.log('data', data)
   await api
     .post('/api/contact', data, {headers: await createHeaders()})
     .then(success)

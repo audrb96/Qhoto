@@ -8,6 +8,7 @@ import FriendsFeed from './feed/FriendsFeed';
 import OtherPage from './OtherPage';
 import FindFriend from './FindFriend';
 import FriendList from './FriendList';
+import ContactsPage from './ContactsPage';
 
 const FriendListStack = createStackNavigator();
 function FriendListStackScreen() {
@@ -33,6 +34,11 @@ function FriendListStackScreen() {
         options={{
           headerShown: false,
         }}
+      />
+      <FriendListStack.Screen
+        name="ContactsPage"
+        component={ContactsPage}
+        options={{headerShown: false}}
       />
     </FriendListStack.Navigator>
   );
