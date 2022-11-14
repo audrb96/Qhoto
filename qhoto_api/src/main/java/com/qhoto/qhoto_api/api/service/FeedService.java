@@ -38,10 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -85,7 +82,7 @@ public class FeedService {
                 .userImage(user.getImage())
                 .nickname(user.getNickname())
                 .feedImage(feed.getImage())
-                .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm")))
+                .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                 .questName(feed.getQuest().getName())
                 .questType(feed.getQuest().getQuestType().getCode())
                 .questPoint(feed.getQuest().getScore())
@@ -112,7 +109,7 @@ public class FeedService {
                     .nickname(comment.getUser().getNickname())
                     .userImage(comment.getUser().getImage())
                     .commentContext(comment.getContext())
-                    .commentTime(comment.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .commentTime(comment.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                     .build());
         }
         return commentResList;
