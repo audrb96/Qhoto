@@ -1,5 +1,6 @@
 package com.qhoto.qhoto_api.api.repository.user;
 
+import com.qhoto.qhoto_api.domain.AuthProvider;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.response.user.UserRes;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,9 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>,UserRepositoryByCon {
+    Optional<User> findByEmailAndAuthProvider(String email, AuthProvider authProvider);
     Optional<User> findByEmail(String email);
+    Long countByEmailAndAuthProvider(String email, AuthProvider authProvider);
     Optional<User> findUserById(Long userId);
 
     Optional<User> findByRefreshToken(String refreshToken);
