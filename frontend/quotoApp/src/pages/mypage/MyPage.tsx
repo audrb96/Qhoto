@@ -70,9 +70,6 @@ function MyPage({navigation}) {
   const goToEditMyProfile = () => {
     navigation.navigate('EditMyProfile', {userInfo: userInfo});
   };
-  const goToContactsPage = () => {
-    navigation.navigate('ContactsPage');
-  };
 
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [userLogs, setUserLogs] = useState<UserLog[]>();
@@ -248,9 +245,6 @@ function MyPage({navigation}) {
     <ScrollView>
       <SafeAreaView>
         <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
-        <TouchableOpacity onPress={goToContactsPage}>
-          <Text style={{color: 'black'}}>연락처 페이지 가기</Text>
-        </TouchableOpacity>
         <View // 로그아웃 ~ 수정버튼
           style={{
             flexDirection: 'row',
@@ -298,7 +292,10 @@ function MyPage({navigation}) {
             </TouchableOpacity>
           </View>
           <View style={{alignItems: 'center', paddingVertical: 20}}>
-            <LevelBox userGrade="orange" userPoint={60} />
+            <LevelBox
+              userGrade={userInfo.expGrade}
+              userPoint={userInfo.totalExp}
+            />
           </View>
         </View>
         <View style={{marginVertical: 10, paddingHorizontal: 30}}>
