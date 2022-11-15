@@ -117,7 +117,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .groupBy(feed.id)
                 .orderBy(orderFirstByUserId(userId),feed.time.desc())
                 .fetch();
-
+        System.out.println(comment.count());
         feedFriendList.forEach((feedFriendDto -> {
             feedFriendDto.setFeedTime(feedFriendDto.getFeedTime().replace("AM", "오전").replace("PM", "오후"));
            if(StringUtils.hasText(feedFriendDto.getTime())) feedFriendDto.setTime(feedFriendDto.getTime().replace("AM","오전").replace("PM", "오후"));
