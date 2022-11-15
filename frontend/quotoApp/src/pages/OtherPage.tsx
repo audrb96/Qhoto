@@ -53,7 +53,7 @@ function OtherPage({route}) {
     image: '',
     description: '',
     nickname: '',
-    point: 0,
+    totalExp: 0,
     profileOpen: '',
     expGrade: '',
   });
@@ -74,7 +74,7 @@ function OtherPage({route}) {
           image: res.data.image,
           description: res.data.description,
           nickname: res.data.nickname,
-          point: res.data.point,
+          totalExp: res.data.totalExp,
           profileOpen: res.data.profileOpen,
           expGrade: res.data.expGrade,
         });
@@ -258,7 +258,7 @@ function OtherPage({route}) {
                 <View style={{alignItems: 'center', paddingVertical: 20}}>
                   <LevelBox
                     userGrade={otherInfo.expGrade}
-                    userPoint={otherInfo.point}
+                    userPoint={otherInfo.totalExp}
                   />
                 </View>
               </View>

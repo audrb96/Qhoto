@@ -51,8 +51,8 @@ export default {
       gradeColorCode: '#FEAD0F',
       colorName: '오렌지',
       nextColor: '옐로우',
-      minPoint: 0,
-      maxPoint: 100,
+      minPoint: 50,
+      maxPoint: 200,
     },
     yellow: {
       gradeColorCode: '#F6E226',

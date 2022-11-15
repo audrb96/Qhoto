@@ -14,6 +14,7 @@ import info from '../../components/info';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FeedDetail from '../../components/feed/FeedDetail';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const questTypes: {[key: string]: {iconName: string; questColorCode: string}} =
   info.questTypes;
@@ -48,7 +49,9 @@ interface UserLog {
 
 const {width, height} = Dimensions.get('window');
 
-function QhotoLog({navigation, route}) {
+function QhotoLog({route}) {
+  const navigation = useNavigation();
+
   const data: {[key: string]: marker} = {};
   const [modalVisible, setModalVisible] = useState(false);
 

@@ -9,6 +9,7 @@ import {RootState} from '../../store/reducer';
 import {getCommentList, setComment} from '../../api/feed';
 
 import CommentItem from '../../components/feed/CommentItem';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 interface Comment {
   userId: number;
@@ -20,13 +21,14 @@ interface Comment {
 
 const {width, height} = Dimensions.get('window');
 
-function CommentPage({navigation, route}) {
+function CommentPage({route}) {
   const feedId = route.params.feedId;
   const [commentList, setCommentList] = useState<Comment[]>();
   const [newComment, setNewComment] = useState('');
   const [commentState, setCommentState] = useState(true);
 
   const currUserImage = useSelector((state: RootState) => state.user.userImage);
+  const navigation = useNavigation();
 
   useEffect(() => {
     getCommentList(

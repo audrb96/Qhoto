@@ -29,7 +29,9 @@ import {
 
 const {width, height} = Dimensions.get('window');
 
-function FriendList({navigation}) {
+function FriendList() {
+  const navigation = useNavigation();
+
   const [openFriendList, setOpenFriendList] = useState(true);
   const [friendList, setFriendList] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
