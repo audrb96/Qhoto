@@ -54,28 +54,26 @@ const {width, height} = Dimensions.get('window');
 
 const FeedDetail: React.FC<Props> = props => {
   const {date} = props;
-  const [feedInfo, setFeedInfo] = useState<Feed>();
+  const [feedList, setFeedList] = useState<Feed>();
 
   useEffect(() => {}, []);
   return (
     <View style={styles.logDetailContainer}>
-      <ScrollView
-        pagingEnabled
-        horizontal
-        bounces={true}
-        style={{flex: 1, width: '100%'}}>
+      <View style={{height: 60}}></View>
+      <ScrollView>
         <View
           style={{
             flex: 1,
+            height: 100,
             width: width * 0.9,
             backgroundColor: 'blue',
-          }}>
-          <View style={{height: 80, backgroundColor: 'white'}}></View>
-        </View>
+          }}></View>
         <View
           style={{
             flex: 1,
             width: width * 0.9,
+
+            height: 100,
             backgroundColor: 'red',
           }}></View>
       </ScrollView>

@@ -5,12 +5,14 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Button,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import QhotoHeader from '../../components/QhotoHeader';
 import SwitchToggle from 'react-native-switch-toggle';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {duplicateTestApi, editMyProfileApi} from '../../api/mypage';
 import {ScrollView} from 'react-native-gesture-handler';
 
@@ -117,6 +119,11 @@ function EditMyProfile({navigation, route}) {
       style={styles.leftIcon}
     />
   );
+
+  const handleLogoutClick = async () => {
+    await AsyncStorage.removeItem('accessToken');
+    await AsyncStorage.removeItem('refreshToken');
+  };
 
   const rightIcon = editable ? (
     <TouchableOpacity
@@ -229,6 +236,7 @@ function EditMyProfile({navigation, route}) {
           circleStyle={styles.circle}
         />
       )}
+      <Button title="로그아웃" onPress={handleLogoutClick} />
     </ScrollView>
   );
 }

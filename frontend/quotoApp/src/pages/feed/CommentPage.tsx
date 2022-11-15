@@ -30,10 +30,10 @@ function CommentPage({navigation, route}) {
 
   useEffect(() => {
     getCommentList(
-      route.params.feedId,
+      feedId,
       (res: any) => {
-        console.log(res.data);
-        setCommentList(res.data);
+        console.log(res.data.content);
+        setCommentList(res.data.content);
       },
       (err: any) => {
         console.log(err.response);
@@ -89,7 +89,10 @@ function CommentPage({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
-  commentInputBoxContainer: {flexDirection: 'row', padding: 10},
+  commentInputBoxContainer: {
+    flexDirection: 'row',
+    padding: 10,
+  },
   commentInputBox: {backgroundColor: 'white', flexGrow: 1},
 });
 
