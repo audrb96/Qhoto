@@ -51,11 +51,11 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
 
         //사용자 프로필 이미지 수정
         if(modifyUserReq.getFile() != null) {
-            String profileDir = "/user/" + userInfo.getEmail();
+            String profileDir = "user/" + userInfo.getEmail();
             //S3에 사용
             s3Utils.upload(modifyUserReq.getFile(), profileDir);
             //DB에 저장할 이미지 URL
-            String imageUrl = S3Utils.CLOUD_FRONT_DOMAIN_NAME + profileDir +"/"+ modifyUserReq.getFile().getOriginalFilename();
+            String imageUrl = S3Utils.CLOUD_FRONT_DOMAIN_NAME +"/" + profileDir +"/"+ modifyUserReq.getFile().getOriginalFilename();
             updateClause.set(user.image, imageUrl);
         }
 
