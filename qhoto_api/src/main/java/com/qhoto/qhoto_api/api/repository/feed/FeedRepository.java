@@ -1,6 +1,8 @@
 package com.qhoto.qhoto_api.api.repository.feed;
 
 import com.qhoto.qhoto_api.domain.Feed;
+import com.qhoto.qhoto_api.domain.User;
+import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import com.qhoto.qhoto_api.dto.response.quest.QuestAggregateRes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +34,12 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
 
     Optional<Feed> findFeedById(Long feedId);
 
+    List<Feed> findByTimeBetweenAndStatusAndUser(LocalDateTime start, LocalDateTime end, FeedStatus status, User user);
+
     @Query("select f from Feed f where f.user.id=:userId order by f.time desc")
     List<Feed> findAllByUserId(@Param("userId") Long userId);
 
     @Modifying
     @Query("update Feed f set f.status='D' where f.id=:feedId")
     int deleteFeedByfeedId(@Param("feedId") Long feedId);
-
 }

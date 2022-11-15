@@ -1,6 +1,7 @@
 package com.qhoto.qhoto_api.dto.response.feed;
 
 import com.qhoto.qhoto_api.domain.type.FeedType;
+import com.qhoto.qhoto_api.domain.type.QuestDuration;
 import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,7 @@ public class FeedDetailRes {
     private final int likeCount;
     private final List<CommentRes> commentList;
     private final FeedType feedType;
+    private final QuestDuration duration;
 
 
 }
