@@ -70,14 +70,14 @@ public class FeedService {
     }
 
     // 피드 세부 사항 불러오기
-    public FeedDetailRes getFeedDetail(Long feedId, User userInfo){
+    public FeedDetailRes getFeedDetail(Long feedId, User userInfo, Pageable pageable){
 
         // 피드 정보 얻기
         Feed feed = feedRepository.findFeedById(feedId).orElseThrow(() -> new NoFeedByIdException("no feed by id"));
         // 유저 정보 얻기
         User user = userRepository.findUserById(feed.getUser().getId()).orElseThrow(()-> new NoUserByIdException("no user by id"));
         // 댓글리스트 불러오기
-        List<CommentRes> commentResList = getCommentList(feedId);
+        Page<CommentRes> commentResList = getCommentList(feedId, pageable);
         // 피드 세부 정보 생성
         FeedDetailRes feedDetailRes = FeedDetailRes.builder()
                 .feedId(feedId)
@@ -101,21 +101,28 @@ public class FeedService {
     }
 
     // 댓글리스트 불러오기
-    private List<CommentRes> getCommentList(Long feedId) {
+    private Page<CommentRes> getCommentList(Long feedId, Pageable pageable) {
         // 댓글 정보 얻기
-        List<Comment> commentList = commentRepository.findListById(feedId);
-        List<CommentRes> commentResList = new ArrayList<>();
-        // 댓글리스트 생성
-        for (Comment comment : commentList) {
-            commentResList.add(CommentRes.builder()
+        Page<Comment> commentList = commentRepository.findListById(feedId, pageable);
+        Page<CommentRes> commentResList = commentList.map(comment->
+                     CommentRes.builder()
                     .userId(comment.getUser().getId())
                     .nickname(comment.getUser().getNickname())
                     .userImage(comment.getUser().getImage())
                     .commentContext(comment.getContext())
                     .commentTime(comment.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                     .build());
-        }
         return commentResList;
+
+        // 댓글리스트 생성
+//        for (Comment comment : commentList) {
+//            commentResList.add(CommentRes.builder()
+//                    .userId(comment.getUser().getId())
+//                    .nickname(comment.getUser().getNickname())
+//                    .userImage(comment.getUser().getImage())
+//                    .commentContext(comment.getContext())
+//                    .commentTime(comment.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+//                    .build());
     }
 
     // 친구 피드 불러오기
@@ -205,8 +212,8 @@ public class FeedService {
     }
 
     // 댓글 불러오기
-    public List<CommentRes> getComment(Long feedId){
-        return getCommentList(feedId);
+    public Page<CommentRes> getComment(Long feedId, Pageable pageable){
+        return getCommentList(feedId,pageable);
     }
 
     // 댓글 삭제하기
