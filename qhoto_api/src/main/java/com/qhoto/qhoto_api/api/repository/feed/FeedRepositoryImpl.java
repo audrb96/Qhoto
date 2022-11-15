@@ -102,8 +102,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         user.image,
                         Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",comment.time, ConstantImpl.create("%Y-%m-%d %p %h:%i")),
                         comment.context,
-                        feed.feedType
-                        ))
+                        feed.feedType,
+                        ExpressionUtils.as(JPAExpressions.select(comment.count()).from(comment).where(comment.feed.id.eq(feed.id)),"commentCnt")))
                 .from(feed,user,comment)
                 .rightJoin(comment.user, user)
                 .rightJoin(comment.feed, feed)
@@ -117,7 +117,6 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .groupBy(feed.id)
                 .orderBy(orderFirstByUserId(userId),feed.time.desc())
                 .fetch();
-        System.out.println(comment.count());
         feedFriendList.forEach((feedFriendDto -> {
             feedFriendDto.setFeedTime(feedFriendDto.getFeedTime().replace("AM", "오전").replace("PM", "오후"));
            if(StringUtils.hasText(feedFriendDto.getTime())) feedFriendDto.setTime(feedFriendDto.getTime().replace("AM","오전").replace("PM", "오후"));
@@ -141,8 +140,9 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                         user.image,
                         Expressions.dateTemplate(String.class,"DATE_FORMAT({0},{1})",comment.time, ConstantImpl.create("%Y-%m-%d %h:%i")),
                         comment.context,
-                        feed.feedType
-                ))
+                        feed.feedType,
+                        ExpressionUtils.as(JPAExpressions.select(comment.count()).from(comment).where(comment.feed.id.eq(feed.id)),"commentCnt")
+                        ))
                 .from(feed,user,comment)
                 .rightJoin(comment.user, user)
                 .rightJoin(comment.feed, feed)
