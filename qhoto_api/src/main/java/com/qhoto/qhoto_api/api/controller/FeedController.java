@@ -176,8 +176,8 @@ public class FeedController {
     }
 
     @GetMapping("/date/{date}")
-    public ResponseEntity<?> readFeedByDate(@AuthenticationPrincipal User user, @Valid DateReq date) {
-        return ResponseEntity.ok(feedService.getFeedListByTime(user, date));
+    public ResponseEntity<?> readFeedByDate(@AuthenticationPrincipal User user, @Valid DateReq date, Pageable pageable) {
+        return ResponseEntity.ok(feedService.getFeedListByTime(user, date, pageable));
     }
 
 

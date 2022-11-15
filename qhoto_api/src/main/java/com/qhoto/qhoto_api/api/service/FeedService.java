@@ -264,11 +264,11 @@ public class FeedService {
         return QO;
     }
 
-    public List<FeedDetailRes> getFeedListByTime(User user, DateReq date) {
+    public List<FeedDetailRes> getFeedListByTime(User user, DateReq date, Pageable pageable) {
         LocalDate requestDate = LocalDate.parse(date.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         List<Feed> feedList = feedRepository.findByTimeBetweenAndStatusAndUser(requestDate.atStartOfDay(), requestDate.atTime(LocalTime.MAX),FeedStatus.USING,user);
         return feedList.stream().map((feed) -> {
-            List<CommentRes> commentResList = getCommentList(feed.getId());
+            Page<CommentRes> commentResList = getCommentList(feed.getId(),pageable);
             return FeedDetailRes.builder()
                     .feedId(feed.getId())
                     .userId(user.getId())
