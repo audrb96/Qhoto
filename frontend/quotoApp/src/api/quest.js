@@ -12,6 +12,7 @@ api.interceptors.request.use(async config => {
 
   if (config.url === REFRESH_URL) {
     token = await AsyncStorage.getItem('refreshToken');
+    console.log(token);
   } else {
     token = await AsyncStorage.getItem('accessToken');
   }
