@@ -48,94 +48,57 @@ function SignIn({navigation}: SignInScreenProps) {
         loginKakao(
           token.accessToken,
           async (res: any) => {
-            console.log('카카오로그인');
-            console.log(res.data);
+            const {accessToken, refreshToken, isModified} = res.data;
 
-            getUserInfoApi(
-              (response: any) => {
-                let {
-                  nickname,
-                  email,
-                  joinDate,
-                  phone,
-                  profileOpen,
-                  description,
-                  userImage,
-                  contactAgreeDate,
-                  expGrade,
-                  totalExp,
-                  name,
-                } = response.data;
+            await AsyncStorage.setItem('accessToken', accessToken, () => {
+              console.log('accessToken : ' + accessToken);
+            });
 
-                dispatch(
-                  userSlice.actions.setUser({
-                    nickname: nickname,
-                    email: email,
-                    joinDate: joinDate,
-                    phone: phone,
-                    profileOpen: profileOpen,
-                    description: description,
-                    userImage: userImage,
-                    contactAgreeDate: contactAgreeDate,
-                    expGrade: expGrade,
-                    totalExp: totalExp,
-                    name: name,
-                  }),
-                );
-              },
-              (err: any) => {
-                console.log('실패');
-                console.log(err);
-              },
-            );
+            await AsyncStorage.setItem('refreshToken', refreshToken, () => {
+              console.log('refreshToken : ' + refreshToken);
+            });
 
-            if (!res.data.isJoined) {
-              console.log('가입하지 않았어');
-              return navigation.navigate('SignUp', {
-                accessToken: res.data.accessToken,
-                refreshToken: res.data.refreshToken,
-                email: email,
-                joinDate: joinDate,
-                profileOpen: profileOpen,
-                description: description,
-                userImage: userImage,
-                contactAgreeDate: contactAgreeDate,
-                expGrade: expGrade,
-                totalExp: totalExp,
-              }); // 가입하지 않았어
+            if (isModified) {
+              await getUserInfoApi(
+                (response: any) => {
+                  let {
+                    nickname,
+                    email,
+                    joinDate,
+                    phone,
+                    profileOpen,
+                    description,
+                    userImage,
+                    contactAgreeDate,
+                    expGrade,
+                    totalExp,
+                    name,
+                  } = response.data;
+
+                  dispatch(
+                    userSlice.actions.setUser({
+                      nickname: nickname,
+                      email: email,
+                      joinDate: joinDate,
+                      phone: phone,
+                      profileOpen: profileOpen,
+                      description: description,
+                      userImage: userImage,
+                      contactAgreeDate: contactAgreeDate,
+                      expGrade: expGrade,
+                      totalExp: totalExp,
+                      name: name,
+                    }),
+                  );
+                },
+                (err: any) => {
+                  console.log('실패');
+                  console.log(err);
+                },
+              );
+            } else {
+              return navigation.navigate('SignUp');
             }
-            if (res.data.isJoined && !res.data.isModified) {
-              console.log('가입은 했는데, 정보입력을 안했어');
-
-              return navigation.navigate('SignUp', {
-                accessToken: res.data.accessToken,
-                refreshToken: res.data.refreshToken,
-                email: email,
-                joinDate: joinDate,
-                profileOpen: profileOpen,
-                description: description,
-                userImage: userImage,
-                contactAgreeDate: contactAgreeDate,
-                expGrade: expGrade,
-                totalExp: totalExp,
-              }); // 가입은 했는데, 정보입력을 안했어
-            }
-
-            await AsyncStorage.setItem(
-              'accessToken',
-              res.data.accessToken,
-              () => {
-                console.log('accessToken : ' + res.data.accessToken);
-              },
-            );
-
-            await AsyncStorage.setItem(
-              'refreshToken',
-              res.data.refreshToken,
-              () => {
-                console.log('refreshToken : ' + res.data.refreshToken);
-              },
-            );
           },
           (err: any) => {
             console.log(err.response);

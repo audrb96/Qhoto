@@ -29,16 +29,16 @@ function SignUp({navigation, route}: SignInScreenProps) {
   const nameRef = useRef<TextInput | null>(null);
   const nicknameRef = useRef<TextInput | null>(null);
 
-  const accessToken = route.params.accessToken;
-  const refreshToken = route.params.refreshToken;
-  const email = route.params.email;
-  const joinDate = route.params.joinDate;
-  const profileOpen = route.params.profileOpen;
-  const description = route.params.description;
-  const userImage = route.params.userImage;
-  const contactAgreeDate = route.params.contactAgreeDate;
-  const expGrade = route.params.expGrade;
-  const totalExp = route.params.totalExp;
+  // const accessToken = route.params.accessToken;
+  // const refreshToken = route.params.refreshToken;
+  // const email = route.params.email;
+  // const joinDate = route.params.joinDate;
+  // const profileOpen = route.params.profileOpen;
+  // const description = route.params.description;
+  // const userImage = route.params.userImage;
+  // const contactAgreeDate = route.params.contactAgreeDate;
+  // const expGrade = route.params.expGrade;
+  // const totalExp = route.params.totalExp;
 
   // useEffect(() => {
   //   const accessToken = route.params.accessToken);
@@ -54,7 +54,8 @@ function SignUp({navigation, route}: SignInScreenProps) {
   const onChangeNickname = useCallback(text => {
     setNickname(text.trim());
   }, []);
-  const onSubmit = useCallback(async () => {
+
+  const onSubmit = async () => {
     if (!name || !name.trim()) {
       return Alert.alert('알림', '이름을 입력해주세요.');
     }
@@ -90,48 +91,6 @@ function SignUp({navigation, route}: SignInScreenProps) {
     if (phone.length !== 10 && phone.length !== 11) {
       return Alert.alert('알림', '전화번호는 10~11자리만 가능합니다.');
     }
-    // if (!/^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@^!%*#?&]).{8,50}$/.test(password)) {
-    //   return Alert.alert(
-    //     '알림',
-    //     '비밀번호는 영문,숫자,특수문자($@^!%*#?&)를 모두 포함하여 8자 이상 입력해야합니다.',
-    //   );
-    // }
-
-    // async function editMyProfileApi(newUserInfo, success, fail) {
-    //   console.log('newUserInfo', newUserInfo);
-    //   await fileApi
-    //     // Body
-    //     .put('/api/user', newUserInfo, {headers: await createHeaders()})
-    //     .then(success)
-    //     .catch(fail);
-    // }
-
-    console.log(phone, name, nickname);
-    Alert.alert('알림', '회원가입 되었습니다.');
-
-    await AsyncStorage.setItem('accessToken', accessToken, () => {
-      console.log('accessToken : ' + accessToken);
-    });
-
-    await AsyncStorage.setItem('refreshToken', refreshToken, () => {
-      console.log('refreshToken : ' + refreshToken);
-    });
-
-    await dispatch(
-      userSlice.actions.setUser({
-        nickname: nickname,
-        email: email,
-        joinDate: joinDate,
-        phone: phone,
-        profileOpen: profileOpen,
-        description: description,
-        userImage: userImage,
-        contactAgreeDate: contactAgreeDate,
-        expGrade: expGrade,
-        totalExp: totalExp,
-        name: name,
-      }),
-    );
 
     await editMyProfileApi(
       {
@@ -141,15 +100,46 @@ function SignUp({navigation, route}: SignInScreenProps) {
         // profileOpen: newProfileOpen,
       },
       (res: any) => {
-        console.log('editMyProfileApi - res', res);
+        getUserInfoApi((res: any) => {
+          const {
+            nickname,
+            email,
+            joinDate,
+            phone,
+            profileOpen,
+            description,
+            userImage,
+            contactAgreeDate,
+            expGrade,
+            totalExp,
+            name,
+          } = res.data;
+
+          dispatch(
+            userSlice.actions.setUser({
+              nickname: nickname,
+              email: email,
+              joinDate: joinDate,
+              phone: phone,
+              profileOpen: profileOpen,
+              description: description,
+              userImage: userImage,
+              contactAgreeDate: contactAgreeDate,
+              expGrade: expGrade,
+              totalExp: totalExp,
+              name: name,
+            }),
+          );
+        });
       },
       (err: any) => {
         console.log('editMyProfileApi - err', err.response.data);
       },
     );
-  }, [phone, name, nickname]);
+  };
 
   const canGoNext = phone && name && nickname;
+
   return (
     <DismissKeyboardView>
       <QhotoHeader leftIcon={false} rightIcon={false} />

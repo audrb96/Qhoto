@@ -56,11 +56,11 @@ appTheme.colors.background = 'white';
 function AppInner() {
   const dispatch = useAppDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.user.email);
-
+  let token;
   useEffect(() => {
     const getTokenAndRefresh = async () => {
       try {
-        const token = await AsyncStorage.getItem('accessToken');
+        token = await AsyncStorage.getItem('accessToken');
         if (!token) {
           return;
         }
