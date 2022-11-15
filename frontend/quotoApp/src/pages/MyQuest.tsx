@@ -148,6 +148,7 @@ function MyQuest() {
 
   const handleVideoClick = () => {
     launchCamera({...options, mediaType: 'video'}, onPickImage);
+    setModalVisible(false);
   };
 
   const options = {
