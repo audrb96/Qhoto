@@ -1,6 +1,6 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.feed.ExpRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpRepository;
 import com.qhoto.qhoto_api.api.repository.feed.FeedRepository;
 import com.qhoto.qhoto_api.api.repository.quest.QuestRepository;
 import com.qhoto.qhoto_api.domain.Feed;

@@ -1,4 +1,4 @@
-package com.qhoto.qhoto_api.api.repository.feed;
+package com.qhoto.qhoto_api.api.repository.exp;
 
 import com.qhoto.qhoto_api.domain.ExpGrade;
 import org.springframework.data.domain.Pageable;
