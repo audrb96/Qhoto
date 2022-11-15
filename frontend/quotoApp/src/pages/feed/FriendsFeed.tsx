@@ -14,6 +14,7 @@ import FeedItem from '../../components/feed/FeedItem';
 import {getFriendsFeeds, setFeedMission} from '../../api/feed';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const tabMenu = ['DAY', 'WEEK', 'MONTH'];
 
@@ -50,13 +51,14 @@ interface Comment {
 
 const {width, height} = Dimensions.get('window');
 
-function FriendsFeed({navigation}) {
+function FriendsFeed() {
   const [modalVisible, setModalVisible] = useState(false);
   const [friendFeeds, setFriendFeeds] = useState<Feed[]>();
   const [selectedTab, setSelectedTab] = useState('');
   const [selectedQuests, setSelectedQuests] = useState([true, true, true]);
   const [questLists, setQuestLists] = useState<{[key: string]: Quest[]}>();
   const [selectedFeedId, setSelectedFeedId] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     setFeedMission(

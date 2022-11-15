@@ -7,7 +7,6 @@ import {
   ScrollView,
   Platform,
   SafeAreaView,
-  Modal,
   Pressable,
   StyleSheet,
   NativeModules,
@@ -15,6 +14,7 @@ import {
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/reducer';
+import Modal from 'react-native-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -32,6 +32,7 @@ import userSlice from '../../slices/user';
 import {editMyProfileApi, getUserInfoApi, getUserLog} from '../../api/mypage';
 import LevelBox from '../../components/mypage/LevelBox';
 import LogItem from '../../components/mypage/LogItem';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 
@@ -58,7 +59,11 @@ interface UserLog {
   feedType: string;
 }
 
-function MyPage({navigation}) {
+function MyPage() {
+  const navigation = useNavigation();
+
+  const isFocused = useIsFocused();
+
   const dispatch = useAppDispatch();
 
   const goToLevel = () => {
@@ -73,6 +78,7 @@ function MyPage({navigation}) {
 
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [userLogs, setUserLogs] = useState<UserLog[]>();
+  const [callbackState, setCallbackState] = useState(true);
 
   useEffect(() => {
     getUserInfoApi(
@@ -134,7 +140,7 @@ function MyPage({navigation}) {
         console.log(err.data);
       },
     );
-  }, []);
+  }, [callbackState, isFocused]);
 
   const [editable, setEditable] = useState(false);
 
@@ -151,6 +157,15 @@ function MyPage({navigation}) {
     }
   };
 
+  const launchCameraOption = {
+    mediaType: 'photo',
+    maxWidth: 768,
+    maxHeight: 768,
+    includeBase64: Platform.OS === 'android',
+    saveToPhotos: true,
+    includeExtra: true, // If true, will include extra data which requires library permissions to be requested (i.e. exif data)
+  };
+
   const imagePickerOption = {
     mediaType: 'photo',
     maxWidth: 768,
@@ -160,55 +175,46 @@ function MyPage({navigation}) {
     // presentationStyle,
   };
 
-  const launchCameraOption = {
-    mediaType: 'mixed',
-    maxWidth: 768,
-    maxHeight: 768,
-    includeBase64: Platform.OS === 'android',
-    saveToPhotos: true,
-    includeExtra: true, // If true, will include extra data which requires library permissions to be requested (i.e. exif data)
-  };
-
   // 선택 사진 또는 촬영된 사진 정보
-  const onPickImage = res => {
+  const onPickImage = (res: any) => {
     if (res.didCancel || !res) {
       return;
     }
-    console.log('PickImage', res.assets[0].uri);
-    setImageUri(res.assets[0].uri);
-
-    // dispatch(
-    //   userSlice.actions.setUser({
-    //     userImage: res.assets[0].uri, // Todo: 나중에 axios 로 back 으로 보내고 다시 유저 받아서 dispatch 해주고 store 에 저장해야함
-    //     loggedIn: true,
-    //   }),
-    // );
-
-    savePhoto(res.assets[0].uri);
+    if (res.assets[0].type == 'image/jpeg') {
+      savePhoto(res.assets[0].uri);
+    }
   };
 
   const savePhoto = (uri: string) => {
-    let DocumentDirectoryPath = RNFS.DocumentDirectoryPath + '/photo.jpg';
+    const uriPath = uri.split('//').pop();
+    const imageName = uri.split('/').pop();
 
-    RNFS.moveFile(uri, DocumentDirectoryPath)
-      .then(() => {
-        PhotoEditor.Edit({
-          path: DocumentDirectoryPath,
-          colors: undefined,
-          // hiddenControls: ['save'],
-          onDone: RRRES => {
-            console.log('on done', RRRES);
-          },
-          onCancel: () => {
-            console.log('on cancel');
-          },
+    PhotoEditor.Edit({
+      path: uriPath,
+      colors: undefined,
+      // hiddenControls: ['save'],
+      onDone: async res => {
+        const data = new FormData();
+        data.append('file', {
+          name: imageName,
+          type: 'image/jpeg',
+          uri: 'file://' + uriPath,
         });
-      })
-
-      .catch(err => {
-        console.log(err);
-        console.log(err.message);
-      });
+        await editMyProfileApi(
+          data,
+          res => {
+            console.log('editMyProfileApi - res', res);
+            setCallbackState(!callbackState);
+          },
+          (err: any) => {
+            console.log('editMyProfileApi - err', err.response);
+          },
+        );
+      },
+      onCancel: () => {
+        console.log('on cancel');
+      },
+    });
   };
 
   // 카메라 촬영
@@ -220,8 +226,6 @@ function MyPage({navigation}) {
   const onLaunchImageLibrary = () => {
     launchImageLibrary(imagePickerOption, onPickImage);
   };
-
-  const [imageUri, setImageUri] = useState('');
 
   //Icon
   let rightIcon = editable ? (
@@ -235,7 +239,6 @@ function MyPage({navigation}) {
       name="settings-outline"
       size={30}
       color="#3B28B1"
-      // onPress={() => setEditable(true)}
       onPress={() => goToEditMyProfile()}
       style={styles.rightIcon} // Todo 해결!!!: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
     />
@@ -314,11 +317,13 @@ function MyPage({navigation}) {
 
         <Modal
           ////////////////////////////////////////////////////////////////////////
-          visible={changeModalVisible} // modal 나타나는 조건
-          transparent={true} // false 로 하면 버튼을 눌렀던 page 가 안보임
-          animationType="fade" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
-          onRequestClose={() => setChangeModalVisible(false)} // 안드로이드에서 뒤로가기 버튼을 눌렀을 때 호출되는 함수
-        >
+          isVisible={changeModalVisible} // modal 나타나는 조건
+          animationIn="fadeIn" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+          animationOut="fadeOut" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+          animationOutTiming={10}
+          backdropOpacity={0.1}
+          onBackdropPress={() => setChangeModalVisible(false)}
+          onBackButtonPress={() => setChangeModalVisible(false)}>
           <Pressable
             style={styles.background}
             onPress={() => setChangeModalVisible(false)}>
@@ -328,7 +333,7 @@ function MyPage({navigation}) {
                 android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
                 onPress={() => {
                   onLaunchCamera();
-                  () => setChangeModalVisible(false);
+                  setChangeModalVisible(false);
                 }}>
                 <MaterialIcons
                   name="camera-alt"
@@ -336,14 +341,14 @@ function MyPage({navigation}) {
                   size={24}
                   style={styles.icon}
                 />
-                <Text style={styles.actionText}>카메라로 촬영하기</Text>
+                <Text style={styles.modalButtonText}>카메라로 촬영하기</Text>
               </Pressable>
               <Pressable
                 style={styles.actionButton}
                 android_ripple={{color: '#eee'}}
                 onPress={() => {
                   onLaunchImageLibrary();
-                  () => setChangeModalVisible(false);
+                  setChangeModalVisible(false);
                 }}>
                 <MaterialIcons
                   name="photo"
@@ -351,7 +356,7 @@ function MyPage({navigation}) {
                   size={24}
                   style={styles.icon}
                 />
-                <Text style={styles.actionText}>사진 선택하기</Text>
+                <Text style={styles.modalButtonText}>사진 선택하기</Text>
               </Pressable>
             </View>
           </Pressable>
@@ -411,6 +416,12 @@ const styles = StyleSheet.create({
   },
   actionText: {
     color: 'black',
+  },
+  modalButtonText: {
+    fontFamily: 'Happiness-Sans-Bold',
+    fontSize: 18,
+    color: '#595959',
+    marginVertical: height * 0.005,
   },
 });
 

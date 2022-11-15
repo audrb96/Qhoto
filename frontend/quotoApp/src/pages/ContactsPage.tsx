@@ -29,42 +29,46 @@ function ContactsPage() {
 
   useEffect(() => {
     console.log(width, height, '=-----==============');
-    requestContactPermission().then((didGetPermission: Boolean) => {
-      if (didGetPermission) {
-        // Contacts.getAll((err, contacts) => {
-        //   if (err) {
-        //     throw err;
-        //   }
-        Contacts.getAll().then(async contacts => {
-          let contactList = [];
-          await contacts.forEach(contact =>
-            contactList.push(
-              contact.phoneNumbers[0].number.replaceAll('-', '') +
-                ':' +
-                contact.displayName,
-            ),
-          );
+    requestContactPermission()
+      .then((didGetPermission: Boolean) => {
+        if (didGetPermission) {
+          // Contacts.getAll((err, contacts) => {
+          //   if (err) {
+          //     throw err;
+          //   }
+          Contacts.getAll().then(async contacts => {
+            let contactList = [];
+            await contacts.forEach(contact =>
+              contactList.push(
+                contact.phoneNumbers[0].number.replaceAll('-', '') +
+                  ':' +
+                  contact.displayName,
+              ),
+            );
 
-          let contactData = JSON.stringify(contactList)
-            .replace('[', '{')
-            .replace(']', '}')
-            .replaceAll(':', '":"');
+            let contactData = JSON.stringify(contactList)
+              .replace('[', '{')
+              .replace(']', '}')
+              .replaceAll(':', '":"');
 
-          await getContactsApi(
-            contactData,
-            async (res: any) => {
-              await console.log('getContactsApi - res', res.data);
-              await setMyContacts(res.data);
-            },
-            (err: any) => {
-              console.log('getContactsApi - err', err);
-            },
-          );
-        });
-      } else {
-        Alert.alert('no permission : 연락처 접근 권한이 없습니다.');
-      }
-    });
+            await getContactsApi(
+              contactData,
+              async (res: any) => {
+                await console.log('getContactsApi - res', res.data);
+                await setMyContacts(res.data);
+              },
+              (err: any) => {
+                console.log('getContactsApi - err', err);
+              },
+            );
+          });
+        } else {
+          Alert.alert('no permission : 연락처 접근 권한이 없습니다.');
+        }
+      })
+      .catch(() => {
+        Alert.alert('알림', '연락처 접근 권한을 허용해주세요.');
+      });
   }, []);
 
   // 권한 확인
@@ -183,7 +187,8 @@ function ContactsPage() {
       <QhotoHeader
         leftIcon={leftIcon}
         rightIcon={false}
-        missionVisible={false}></QhotoHeader>
+        missionVisible={false}
+      />
       <View
         style={{
           flexDirection: 'row',
