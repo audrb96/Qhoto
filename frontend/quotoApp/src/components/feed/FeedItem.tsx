@@ -15,6 +15,8 @@ import {BlurView} from '@react-native-community/blur';
 
 import info from '../info';
 
+import {setFeedLike, setFeedDislike} from '../../api/feed';
+
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -94,12 +96,32 @@ const FeedItem: React.FC<Props> = props => {
   const {typeName, iconName, questColorCode} = questTypes[questType];
   const {colorName, gradeColorCode} = levelInfo[expGrade];
 
-  const [isLike, setIsLike] = useState(likeStatus === 'Like' ? true : false);
+  const [isLike, setIsLike] = useState(likeStatus === 'LIKE' ? true : false);
 
-  const isAccessable = false;
+  const isAccessable = true;
 
   const handleLikeClick = () => {
-    setIsLike(!isLike);
+    if (isLike) {
+      setFeedDislike(
+        feedId,
+        (res: any) => {
+          setIsLike(!isLike);
+        },
+        (err: any) => {
+          console.log(err.response);
+        },
+      );
+    } else {
+      setFeedLike(
+        feedId,
+        (res: any) => {
+          setIsLike(!isLike);
+        },
+        (err: any) => {
+          console.log(err.response.data);
+        },
+      );
+    }
   };
 
   const navigation = useNavigation();

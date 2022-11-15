@@ -1,9 +1,19 @@
-import React, {useEffect, useState, useCallback} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet, Alert} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
 import {CalendarList} from 'react-native-calendars';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Modal from 'react-native-modal';
 
 import info from '../../components/info';
+
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FeedDetail from '../../components/feed/FeedDetail';
 
 const questTypes: {[key: string]: {iconName: string; questColorCode: string}} =
   info.questTypes;
@@ -36,8 +46,11 @@ interface UserLog {
   feedType: string;
 }
 
+const {width, height} = Dimensions.get('window');
+
 function QhotoLog({navigation, route}) {
   const data: {[key: string]: marker} = {};
+  const [modalVisible, setModalVisible] = useState(false);
 
   route.params.logs.forEach((item: UserLog) => {
     const key = item.feedTime.split(' ')[0];
@@ -76,6 +89,7 @@ function QhotoLog({navigation, route}) {
         onDayPress={day => {
           if (day.dateString in data) {
             console.log(data[day.dateString].questName);
+            setModalVisible(true);
           }
         }}
         theme={{
@@ -88,6 +102,16 @@ function QhotoLog({navigation, route}) {
           selectedDayBackgroundColor: 'white',
         }}
       />
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={() => setModalVisible(!modalVisible)}
+        onBackButtonPress={() => setModalVisible(!modalVisible)}
+        backdropOpacity={0.1}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        style={{alignItems: 'center', justifyContent: 'center'}}>
+        <FeedDetail date={'2022-11-15'} />
+      </Modal>
     </View>
   );
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useSelector} from 'react-redux';
-import {View, Image} from 'react-native';
+import {Dimensions} from 'react-native';
 
 import SignIn from './src/pages/SignIn';
 import MyQuest from './src/pages/MyQuest';
@@ -40,6 +40,8 @@ export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
 };
+
+const {width, height} = Dimensions.get('window');
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();

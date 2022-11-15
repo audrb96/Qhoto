@@ -55,8 +55,6 @@ function MyQuest() {
   const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
 
   const token: any = AsyncStorage.getItem('accessToken');
-  console.log('토큰뽑자');
-  console.log(token);
 
   useEffect(() => {
     getUserInfoApi(
@@ -336,10 +334,17 @@ function MyQuest() {
           }}>
           <Pressable
             style={styles.questButton}
+            disabled={selectQuestList(questTypeIdx).length === 1 ? true : false}
             onPress={() => {
               setModalVisible(!modalVisible);
             }}>
-            <Icon name="camera" color="white" size={50} />
+            <Icon
+              name={
+                selectQuestList(questTypeIdx).length === 1 ? 'check' : 'camera'
+              }
+              color="white"
+              size={50}
+            />
           </Pressable>
         </View>
       </View>
