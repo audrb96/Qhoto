@@ -3,10 +3,7 @@ package com.qhoto.qhoto_api.api.controller;
 
 import com.qhoto.qhoto_api.api.service.FeedService;
 import com.qhoto.qhoto_api.domain.User;
-import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
-import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
-import com.qhoto.qhoto_api.dto.request.FeedAllReq;
-import com.qhoto.qhoto_api.dto.request.LikeReq;
+import com.qhoto.qhoto_api.dto.request.*;
 import com.qhoto.qhoto_api.dto.response.feed.CommentRes;
 import com.qhoto.qhoto_api.dto.response.feed.FeedAllDto;
 import com.qhoto.qhoto_api.dto.response.feed.FeedDetailRes;
@@ -22,6 +19,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
 
@@ -172,8 +171,13 @@ public class FeedController {
      * @return {@link QuestOptionRes}
      */
     @GetMapping("/option")
-    public ResponseEntity<?> readOptionList(){
+    public ResponseEntity<QuestOptionRes> readOptionList(){
         return new ResponseEntity<>(feedService.getQuestList(), HttpStatus.OK);
+    }
+
+    @GetMapping("/date/{date}")
+    public ResponseEntity<?> readFeedByDate(@AuthenticationPrincipal User user, @Valid DateReq date) {
+        return ResponseEntity.ok(feedService.getFeedListByTime(user, date));
     }
 
 
