@@ -122,11 +122,22 @@ public class UserController {
         return new ResponseEntity<>(userService.confirmUser(nickname),HttpStatus.OK);
     }
 
+    /**
+     * 연락처에 있는 사용자 정보를 가져오는 api
+     * @param user
+     * @param contacts
+     * @return
+     */
     @PostMapping("/contact")
     public ResponseEntity<List<ContactResSet>> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {
         return ResponseEntity.ok(userService.getUserContact(user, contacts));
     }
 
+    /**
+     * 회원 정보와 관련된 유저가 2명이상 있을 때 터지는 Exception
+     * @param e
+     * @return {@link ErrorResponse}
+     */
     @ExceptionHandler(NoUniqueUserException.class)
     protected ResponseEntity<ErrorResponse> NoUniqueUserException(NoUniqueUserException e) {
         log.error("NoUniqueUserException", e);

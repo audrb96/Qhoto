@@ -1,6 +1,6 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.feed.ExpRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpRepository;
 import com.qhoto.qhoto_api.api.repository.feed.FeedRepository;
 import com.qhoto.qhoto_api.api.repository.user.UserRepository;
 import com.qhoto.qhoto_api.domain.Feed;
@@ -75,6 +75,7 @@ public class UserService implements UserDetailsService {
                     .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                     .questName(feed.getQuestName())
                     .typeCode(feed.getTypeCode())
+                    .feedType(feed.getFeedType())
                     .build());
         }
         return FeedResList;
