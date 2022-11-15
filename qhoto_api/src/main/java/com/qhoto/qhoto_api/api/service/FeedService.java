@@ -3,6 +3,8 @@ package com.qhoto.qhoto_api.api.service;
 import com.qhoto.qhoto_api.api.repository.activequest.ActiveDailyRepository;
 import com.qhoto.qhoto_api.api.repository.activequest.ActiveMonthlyRepository;
 import com.qhoto.qhoto_api.api.repository.activequest.ActiveWeeklyRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpGradeRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpRepository;
 import com.qhoto.qhoto_api.api.repository.feed.*;
 import com.qhoto.qhoto_api.api.repository.quest.QuestRepository;
 import com.qhoto.qhoto_api.api.repository.user.UserRepository;
@@ -11,10 +13,7 @@ import com.qhoto.qhoto_api.domain.type.CommentStatus;
 import com.qhoto.qhoto_api.domain.type.FeedLikePK;
 import com.qhoto.qhoto_api.domain.type.FeedStatus;
 import com.qhoto.qhoto_api.domain.type.FeedType;
-import com.qhoto.qhoto_api.dto.request.CreateCommentReq;
-import com.qhoto.qhoto_api.dto.request.CreateFeedReq;
-import com.qhoto.qhoto_api.dto.request.FeedAllReq;
-import com.qhoto.qhoto_api.dto.request.LikeReq;
+import com.qhoto.qhoto_api.dto.request.*;
 import com.qhoto.qhoto_api.dto.response.feed.CommentRes;
 import com.qhoto.qhoto_api.dto.response.feed.FeedAllDto;
 import com.qhoto.qhoto_api.dto.response.feed.FeedDetailRes;
@@ -36,12 +35,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -85,7 +84,7 @@ public class FeedService {
                 .userImage(user.getImage())
                 .nickname(user.getNickname())
                 .feedImage(feed.getImage())
-                .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                 .questName(feed.getQuest().getName())
                 .questType(feed.getQuest().getQuestType().getCode())
                 .questPoint(feed.getQuest().getScore())
@@ -110,7 +109,7 @@ public class FeedService {
                     .nickname(comment.getUser().getNickname())
                     .userImage(comment.getUser().getImage())
                     .commentContext(comment.getContext())
-                    .commentTime(comment.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .commentTime(comment.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                     .build());
         return commentResList;
 
@@ -265,5 +264,30 @@ public class FeedService {
         return QO;
     }
 
+    public List<FeedDetailRes> getFeedListByTime(User user, DateReq date) {
+        LocalDate requestDate = LocalDate.parse(date.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        List<Feed> feedList = feedRepository.findByTimeBetweenAndStatusAndUser(requestDate.atStartOfDay(), requestDate.atTime(LocalTime.MAX),FeedStatus.USING,user);
+        return feedList.stream().map((feed) -> {
+            List<CommentRes> commentResList = getCommentList(feed.getId());
+            return FeedDetailRes.builder()
+                    .feedId(feed.getId())
+                    .userId(user.getId())
+                    .userImage(user.getImage())
+                    .nickname(user.getNickname())
+                    .feedImage(feed.getImage())
+                    .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
+                    .duration(feed.getDuration())
+                    .questName(feed.getQuest().getName())
+                    .questType(feed.getQuest().getQuestType().getCode())
+                    .questPoint(feed.getQuest().getScore())
+                    .expGrade(user.getExpGrade())
+                    .expPoint(user.getTotalExp())
+                    .likeCount(feedLikeRepository.countAllById(feed.getId()).orElseThrow(() -> new NoFeedByIdException("no feed by id")))
+                    .likeStatus((feedLikeRepository.findById(user.getId(), feed.getId()).isPresent()) ? LikeStatus.LIKE : LikeStatus.UNLIKE)
+                    .commentList(commentResList)
+                    .feedType(feed.getFeedType())
+                    .build();
+        }).collect(Collectors.toList());
 
+    }
 }

@@ -1,6 +1,6 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.feed.ExpRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpRepository;
 import com.qhoto.qhoto_api.api.repository.feed.FeedRepository;
 import com.qhoto.qhoto_api.api.repository.user.UserRepository;
 import com.qhoto.qhoto_api.domain.Feed;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -71,9 +72,10 @@ public class UserService implements UserDetailsService {
             FeedResList.add(MyFeedRes.builder()
                     .feedId(feed.getId())
                     .feedImage(feed.getImage())
-                    .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-DD HH:MM")))
+                    .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                     .questName(feed.getQuestName())
                     .typeCode(feed.getTypeCode())
+                    .feedType(feed.getFeedType())
                     .build());
         }
         return FeedResList;
@@ -112,7 +114,7 @@ public class UserService implements UserDetailsService {
                             .feedId(feed.getId())
                             .feedImage(feed.getImage())
                             .feedType(feed.getFeedType())
-                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                             .questName(feed.getQuestName())
                             .typeCode(feed.getTypeCode())
                             .build());

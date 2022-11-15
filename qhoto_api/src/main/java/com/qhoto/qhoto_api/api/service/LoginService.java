@@ -9,7 +9,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.qhoto.qhoto_api.api.repository.feed.ExpRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpRepository;
 import com.qhoto.qhoto_api.api.repository.quest.QuestTypeRepository;
 import com.qhoto.qhoto_api.api.repository.user.UserRepository;
 import com.qhoto.qhoto_api.domain.AuthProvider;
