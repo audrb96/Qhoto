@@ -22,6 +22,8 @@ import SignUp from './src/pages/SignUp';
 import FriendsFeedStackScreen from './src/pages/feed/FriendsFeedStackScreen';
 import FriendListStackScreen from './src/pages/FriendListStackScreen';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export type LoggedInParamList = {
   FriendsFeed: undefined;
   AllFeedStackScreen: undefined;
@@ -45,13 +47,14 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const appTheme = DefaultTheme;
 appTheme.colors.background = 'white';
+// const token = false;
+const token: any = AsyncStorage.getItem('accessToken');
 
 function AppInner() {
-  const isLoggedIn = useSelector((state: RootState) => state.user.loggedIn);
   return (
     <GestureHandlerRootView style={{flex: 1, maxWidth: 420}}>
       <NavigationContainer theme={appTheme}>
-        {isLoggedIn ? (
+        {token ? (
           <Tab.Navigator
             initialRouteName="MyQuest"
             screenOptions={({route}) => ({

@@ -20,6 +20,8 @@ import {setFeedLike, setFeedDislike} from '../../api/feed';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+import {useNavigation} from '@react-navigation/native';
+
 interface Props {
   feed: Feed;
   handleCommentClick: Function;
@@ -122,18 +124,27 @@ const FeedItem: React.FC<Props> = props => {
     }
   };
 
+  const navigation = useNavigation();
+
+  // const moveProfile = () => {
+  //   navigate('OtherPage');
+  // };
+
   return (
     <View style={styles.feedContainer}>
       <View style={styles.profileBar}>
-        <Pressable style={styles.userInfo}>
-          <Avatar.Image size={50} source={{uri: userImage}} />
+        <View style={styles.userInfo}>
+          <Pressable
+            onPress={() => navigation.navigate('OtherPage', {userId: userId})}>
+            <Avatar.Image size={50} source={{uri: userImage}} />
+          </Pressable>
           <View style={{justifyContent: 'center', paddingHorizontal: 12}}>
             <Text style={[styles.gradeText, {color: gradeColorCode}]}>
               {colorName}
             </Text>
             <Text style={styles.userNameText}>{nickname}</Text>
           </View>
-        </Pressable>
+        </View>
         <Icon
           name={iconName}
           color={questColorCode}

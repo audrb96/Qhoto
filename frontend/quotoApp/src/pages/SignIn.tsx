@@ -48,11 +48,60 @@ function SignIn({navigation}: SignInScreenProps) {
         loginKakao(
           token.accessToken,
           async (res: any) => {
+            console.log('카카오로그인');
+            console.log(res.data);
+
+            getUserInfoApi(
+              (response: any) => {
+                let {
+                  nickname,
+                  email,
+                  joinDate,
+                  phone,
+                  profileOpen,
+                  description,
+                  userImage,
+                  contactAgreeDate,
+                  expGrade,
+                  totalExp,
+                  name,
+                } = response.data;
+
+                dispatch(
+                  userSlice.actions.setUser({
+                    nickname: nickname,
+                    email: email,
+                    joinDate: joinDate,
+                    phone: phone,
+                    profileOpen: profileOpen,
+                    description: description,
+                    userImage: userImage,
+                    contactAgreeDate: contactAgreeDate,
+                    expGrade: expGrade,
+                    totalExp: totalExp,
+                    name: name,
+                  }),
+                );
+              },
+              (err: any) => {
+                console.log('실패');
+                console.log(err);
+              },
+            );
+
             if (!res.data.isJoined) {
               console.log('가입하지 않았어');
               return navigation.navigate('SignUp', {
                 accessToken: res.data.accessToken,
                 refreshToken: res.data.refreshToken,
+                email: email,
+                joinDate: joinDate,
+                profileOpen: profileOpen,
+                description: description,
+                userImage: userImage,
+                contactAgreeDate: contactAgreeDate,
+                expGrade: expGrade,
+                totalExp: totalExp,
               }); // 가입하지 않았어
             }
             if (res.data.isJoined && !res.data.isModified) {
@@ -61,6 +110,14 @@ function SignIn({navigation}: SignInScreenProps) {
               return navigation.navigate('SignUp', {
                 accessToken: res.data.accessToken,
                 refreshToken: res.data.refreshToken,
+                email: email,
+                joinDate: joinDate,
+                profileOpen: profileOpen,
+                description: description,
+                userImage: userImage,
+                contactAgreeDate: contactAgreeDate,
+                expGrade: expGrade,
+                totalExp: totalExp,
               }); // 가입은 했는데, 정보입력을 안했어
             }
 
@@ -69,23 +126,6 @@ function SignIn({navigation}: SignInScreenProps) {
               res.data.accessToken,
               () => {
                 console.log('accessToken : ' + res.data.accessToken);
-
-                getUserInfoApi(
-                  (response: any) => {
-                    let {nickname} = response.data;
-                    console.log('성공');
-                    dispatch(
-                      userSlice.actions.setUser({
-                        nickname: nickname,
-                        loggedIn: true,
-                      }),
-                    );
-                  },
-                  (err: any) => {
-                    console.log('실패');
-                    console.log(err);
-                  },
-                );
               },
             );
 
@@ -120,11 +160,57 @@ function SignIn({navigation}: SignInScreenProps) {
               loginGoogle(
                 userInfo.idToken,
                 async (res: any) => {
+                  console.log('구글로그인');
+                  console.log(res.data);
+
+                  await getUserInfoApi(
+                    (response: any) => {
+                      let {
+                        nickname,
+                        email,
+                        joinDate,
+                        phone,
+                        profileOpen,
+                        description,
+                        userImage,
+                        contactAgreeDate,
+                        expGrade,
+                        totalExp,
+                        name,
+                      } = response.data;
+
+                      dispatch(
+                        userSlice.actions.setUser({
+                          nickname: nickname,
+                          email: email,
+                          joinDate: joinDate,
+                          phone: phone,
+                          profileOpen: profileOpen,
+                          description: description,
+                          userImage: userImage,
+                          contactAgreeDate: contactAgreeDate,
+                          expGrade: expGrade,
+                          totalExp: totalExp,
+                          name: name,
+                        }),
+                      );
+                    },
+                    (err: any) => console.log(err),
+                  );
+
                   if (!res.data.isJoined) {
                     console.log('가입하지 않았어');
                     return navigation.navigate('SignUp', {
                       accessToken: res.data.accessToken,
                       refreshToken: res.data.refreshToken,
+                      email: email,
+                      joinDate: joinDate,
+                      profileOpen: profileOpen,
+                      description: description,
+                      userImage: userImage,
+                      contactAgreeDate: contactAgreeDate,
+                      expGrade: expGrade,
+                      totalExp: totalExp,
                     }); // 가입하지 않았어
                   }
                   if (res.data.isJoined && !res.data.isModified) {
@@ -133,6 +219,14 @@ function SignIn({navigation}: SignInScreenProps) {
                     return navigation.navigate('SignUp', {
                       accessToken: res.data.accessToken,
                       refreshToken: res.data.refreshToken,
+                      email: email,
+                      joinDate: joinDate,
+                      profileOpen: profileOpen,
+                      description: description,
+                      userImage: userImage,
+                      contactAgreeDate: contactAgreeDate,
+                      expGrade: expGrade,
+                      totalExp: totalExp,
                     }); // 가입은 했는데, 정보입력을 안했어
                   }
 
@@ -149,36 +243,6 @@ function SignIn({navigation}: SignInScreenProps) {
                     () => {
                       console.log('refreshToken : ' + res.data.refreshToken);
                     },
-                  );
-
-                  getUserInfoApi(
-                    (response: any) => {
-                      let {
-                        nickname,
-                        // email,
-                        // joinDate,
-                        // phone,
-                        // profileOpen,
-                        // description,
-                        userImage,
-                        // contactAgreeDate,
-                      } = response.data;
-
-                      dispatch(
-                        userSlice.actions.setUser({
-                          nickname: nickname,
-                          // email: email,
-                          // joinDate: joinDate,
-                          userImage: userImage,
-                          // phone: phone,
-                          // description: description,
-                          // contactAgreeDate: contactAgreeDate,
-                          // profileOpen: profileOpen,
-                          loggedIn: true,
-                        }),
-                      );
-                    },
-                    (err: any) => console.log(err),
                   );
                 },
                 (err: any) => {

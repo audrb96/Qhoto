@@ -71,7 +71,7 @@ function CommentPage({navigation, route}) {
             <Avatar.Image
               size={50}
               source={{
-                uri: 'https://parsley-bucket.s3.ap-northeast-2.amazonaws.com/005a177b-e5f0-403d-bf7b-20da2560d54a_%EA%BC%AC%EB%B6%80%EA%B8%B0.png',
+                uri: currUserImage,
               }}
             />
             <TextInput

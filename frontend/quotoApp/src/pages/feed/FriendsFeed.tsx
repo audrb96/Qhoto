@@ -63,9 +63,9 @@ function FriendsFeed({navigation}) {
       (res: any) => {
         const {dailyOptions, weeklyOptions, monthlyOptions} = res.data.options;
         const newQuestLists: {[key: string]: Quest[]} = {};
-        newQuestLists['DAY'] = dailyOptions;
-        newQuestLists['WEEK'] = weeklyOptions;
-        newQuestLists['MONTH'] = monthlyOptions;
+        newQuestLists.DAY = dailyOptions;
+        newQuestLists.WEEK = weeklyOptions;
+        newQuestLists.MONTH = monthlyOptions;
         setQuestLists(newQuestLists);
       },
       (err: any) => {
@@ -75,11 +75,15 @@ function FriendsFeed({navigation}) {
   }, []);
 
   useEffect(() => {
-    if (questLists !== undefined) setSelectedTab('DAY');
+    if (questLists !== undefined) {
+      setSelectedTab('DAY');
+    }
   }, [questLists]);
 
   useEffect(() => {
-    if (selectedTab !== '') setSelectedQuests([true, true, true]);
+    if (selectedTab !== '') {
+      setSelectedQuests([true, true, true]);
+    }
   }, [selectedTab]);
 
   useEffect(() => {
