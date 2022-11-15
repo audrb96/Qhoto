@@ -290,7 +290,10 @@ function MyPage({navigation}) {
             </TouchableOpacity>
           </View>
           <View style={{alignItems: 'center', paddingVertical: 20}}>
-            <LevelBox userGrade="orange" userPoint={60} />
+            <LevelBox
+              userGrade={userInfo.expGrade}
+              userPoint={userInfo.totalExp}
+            />
           </View>
         </View>
         <View style={{marginVertical: 10, paddingHorizontal: 30}}>
