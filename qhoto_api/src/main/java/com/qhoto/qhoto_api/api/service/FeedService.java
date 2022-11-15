@@ -3,6 +3,8 @@ package com.qhoto.qhoto_api.api.service;
 import com.qhoto.qhoto_api.api.repository.activequest.ActiveDailyRepository;
 import com.qhoto.qhoto_api.api.repository.activequest.ActiveMonthlyRepository;
 import com.qhoto.qhoto_api.api.repository.activequest.ActiveWeeklyRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpGradeRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpRepository;
 import com.qhoto.qhoto_api.api.repository.feed.*;
 import com.qhoto.qhoto_api.api.repository.quest.QuestRepository;
 import com.qhoto.qhoto_api.api.repository.user.UserRepository;
