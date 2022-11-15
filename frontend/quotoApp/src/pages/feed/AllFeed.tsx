@@ -18,7 +18,7 @@ import MissionModal from './MissionModal';
 import Video from 'react-native-video';
 
 import {useSelector} from 'react-redux';
-import {RootState} from './src/store/reducer';
+import {RootState} from '../../store/reducer';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,8 +30,6 @@ function AllFeed({navigation}) {
   const [duration, setDuration] = useState('D');
   const [commentList, setComment] = useState([]);
   const allQuest = useSelector((state: RootState) => state.quest);
-  console.log('올퀘스트입니다.');
-  console.log(allQuest.quest);
 
   useEffect(() => {
     let change_condition = '';

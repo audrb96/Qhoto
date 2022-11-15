@@ -3,6 +3,7 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import QhotoHeader from '../../components/QhotoHeader';
 import FriendsFeed from './FriendsFeed';
 import CommentPage from './CommentPage';
+import OtherPage from './../OtherPage';
 
 const TransitionScreenOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -25,6 +26,13 @@ function FriendsFeedStackScreen() {
         component={CommentPage}
         options={{
           title: '댓글',
+        }}
+      />
+      <FriendsFeedStack.Screen
+        name="OtherPage"
+        component={OtherPage}
+        options={{
+          header: () => <QhotoHeader leftIcon={false} />,
         }}
       />
     </FriendsFeedStack.Navigator>

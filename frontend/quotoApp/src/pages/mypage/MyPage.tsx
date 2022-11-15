@@ -108,15 +108,17 @@ function MyPage({navigation}) {
 
         dispatch(
           userSlice.actions.setUser({
+            nickname: nickname,
             email: email,
             joinDate: joinDate,
-            userImage: userImage,
             phone: phone,
-            nickname: nickname,
-            description: description,
-            contactAgreeDate: contactAgreeDate,
             profileOpen: profileOpen,
-            loggedIn: true,
+            description: description,
+            userImage: userImage,
+            contactAgreeDate: contactAgreeDate,
+            expGrade: expGrade,
+            totalExp: totalExp,
+            name: name,
           }),
         );
       },
