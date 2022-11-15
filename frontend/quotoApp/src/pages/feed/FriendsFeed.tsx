@@ -112,17 +112,19 @@ function FriendsFeed({navigation}) {
     setModalVisible(true);
   };
 
-  const handleCommentClick = (commentList: Comment[]) => {
-    navigation.navigate('CommentPage', {comments: commentList});
+  const handleCommentClick = (feedId: number) => {
+    navigation.navigate('CommentPage', {feedId});
   };
 
   return (
     <View style={{flex: 1}}>
       <View style={styles.tabMenuContainer}>
         {tabMenu.map((tab, index) => (
-          <Pressable key={index}>
+          <Pressable
+            key={index}
+            style={{padding: 5}}
+            onPress={() => setSelectedTab(tab)}>
             <Text
-              onPress={() => setSelectedTab(tab)}
               style={[
                 styles.tabMenuText,
                 {color: selectedTab === tab ? '#3B28B1' : '#9A9A9A'},
@@ -157,7 +159,7 @@ function FriendsFeed({navigation}) {
               <FeedItem
                 key={index}
                 feed={feed}
-                handleCommentClick={handleCommentClick}
+                handleCommentClick={() => handleCommentClick(feed.feedId)}
               />
             ))}
           </ScrollView>
@@ -179,7 +181,7 @@ const styles = StyleSheet.create({
     flex: 0.1,
   },
   tabMenuText: {
-    fontSize: 17,
+    fontSize: 15,
     marginHorizontal: 10,
     fontFamily: 'Comfortaa-Bold',
   },

@@ -79,16 +79,20 @@ async function getSelectedFeed(feedId, success, fail) {
   await api.get(`/api/feed/all/${feedId}`).then(success).catch(fail);
 }
 
+async function getCommentList(feedId, success, fail) {
+  await api.get(`/api/feed/comment/${feedId}`).then(success).catch(fail);
+}
+
 async function setFeedLike(feedId, success, fail) {
   await api.post('/api/feed/like', {feedId}).then(success).catch(fail);
 }
-async function setFeedDisLike(feedId, success, fail) {
+async function setFeedDislike(feedId, success, fail) {
   await api.delete(`/api/feed/like/${feedId}`).then(success).catch(fail);
 }
 
-async function setComment(params, success, fail) {
+async function setComment(feedId, commentContext, success, fail) {
   await api
-    .post('/api/feed/comment', {feedId: params[0], commentContext: params[1]})
+    .post('/api/feed/comment', {feedId, commentContext})
     .then(success)
     .catch(fail);
 }
@@ -101,8 +105,9 @@ export {
   getAllFeeds,
   getSelectedFeed,
   getFriendsFeeds,
+  getCommentList,
   setFeedLike,
-  setFeedDisLike,
+  setFeedDislike,
   setComment,
   setFeedMission,
 };
