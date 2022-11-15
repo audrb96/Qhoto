@@ -26,12 +26,13 @@ public class FeedFriendDto {
     private String time;
     private final String context;
     private final FeedType feedType;
+    private final Long commentCnt;
 
 
 
     @QueryProjection
     @Builder
-    public FeedFriendDto(Long feedId, Long userId, String feedImage, String feedTime, String questName, String questType, int questPoint, String expGrade, int expPoint, String likeStatus, Long likeCount, String nickname, String commentNickname, String commentUserImage, String userImage, String time, String context, FeedType feedType) {
+    public FeedFriendDto(Long feedId, Long userId, String feedImage, String feedTime, String questName, String questType, int questPoint, String expGrade, int expPoint, String likeStatus, Long likeCount, String nickname, String commentNickname, String commentUserImage, String userImage, String time, String context, FeedType feedType, Long commentCnt) {
         this.feedId = feedId;
         this.userId = userId;
         this.feedImage = feedImage;
@@ -50,5 +51,6 @@ public class FeedFriendDto {
         this.time = time;
         this.context = context;
         this.feedType = feedType;
+        this.commentCnt = commentCnt;
     }
 }
