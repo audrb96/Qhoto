@@ -51,7 +51,7 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
 
         //사용자 프로필 이미지 수정
         if(modifyUserReq.getFile() != null) {
-            String profileDir = "user/" + userInfo.getEmail();
+            String profileDir = "/user/" + userInfo.getEmail();
             //S3에 사용
             s3Utils.upload(modifyUserReq.getFile(), profileDir);
             //DB에 저장할 이미지 URL
