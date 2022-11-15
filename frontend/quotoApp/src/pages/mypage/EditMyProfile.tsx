@@ -125,32 +125,104 @@ function EditMyProfile({navigation, route}) {
         editMyProfile();
       }}
       style={styles.rightIcon}>
-      <Text style={{color: 'black'}}>완료</Text>
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          justifyContent: 'center',
+          fontSize: 15,
+          textAlign: 'center',
+        }}>
+        완료
+      </Text>
     </TouchableOpacity>
   ) : (
-    <Ionicons
-      name="settings-outline"
-      size={30}
-      color="#3B28B1"
-      // onPress={() => setEditable(true)}
+    <TouchableOpacity
       onPress={() => setEditable(true)}
-      style={styles.rightIcon} // Todo 해결!!!: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
-    />
+      style={styles.rightIcon}>
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          justifyContent: 'center',
+          fontSize: 15,
+          textAlign: 'center',
+        }}>
+        편집
+      </Text>
+    </TouchableOpacity>
+    // <Ionicons
+    //   name="settings-outline"
+    //   size={30}
+    //   color="#3B28B1"
+    //   // onPress={() => setEditable(true)}
+    //   onPress={() => setEditable(true)}
+    //   style={styles.rightIcon} // Todo 해결!!!: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
+    // />
   );
 
   return (
     <ScrollView>
       <QhotoHeader leftIcon={leftIcon} rightIcon={rightIcon} />
-      <Text style={{color: 'black'}}>이름</Text>
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 25,
+          marginLeft: 10,
+          marginVertical: 15,
+        }}>
+        프로필
+      </Text>
+
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 15,
+          marginLeft: 10,
+        }}>
+        이름
+      </Text>
       <TextInput
         value={newName}
         defaultValue={description}
         onChangeText={text => setNewName(text)}
         editable={editable}
-        style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
+        style={
+          editable
+            ? {
+                height: 40,
+                margin: 10,
+                borderWidth: 0.7,
+                borderRadius: 7,
+                padding: 10,
+                color: 'black',
+                backgroundColor: 'white',
+                marginVertical: 10,
+                fontSize: 13,
+              }
+            : {
+                height: 40,
+                margin: 10,
+                // borderWidth: 0.7,
+                borderRadius: 7,
+                padding: 10,
+                color: 'black',
+                backgroundColor: 'silver',
+                marginVertical: 10,
+                fontSize: 13,
+              }
+        }
       />
 
-      <Text style={{color: 'black'}}>
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 15,
+          marginLeft: 10,
+        }}>
         닉네임
         {messageType === 'disable' ? (
           <Text style={styles.duplicatedNickname}>{message}</Text>
@@ -163,44 +235,199 @@ function EditMyProfile({navigation, route}) {
         defaultValue={nickname}
         onChangeText={text => testNickname(text)}
         editable={editable}
-        style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
+        style={
+          editable
+            ? {
+                height: 40,
+                margin: 10,
+                borderWidth: 0.7,
+                borderRadius: 7,
+                padding: 10,
+                color: 'black',
+                backgroundColor: 'white',
+                marginVertical: 10,
+                fontSize: 13,
+              }
+            : {
+                height: 40,
+                margin: 10,
+                // borderWidth: 0.7,
+                borderRadius: 7,
+                padding: 10,
+                color: 'black',
+                backgroundColor: 'silver',
+                marginVertical: 10,
+                fontSize: 13,
+              }
+        }
       />
 
-      <Text style={{color: 'black'}}>자기소개</Text>
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 15,
+          marginLeft: 10,
+        }}>
+        자기소개
+      </Text>
       <TextInput
         value={newDescription}
         defaultValue={description}
         onChangeText={text => setNewDescription(text)}
         editable={editable}
-        style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
+        style={
+          editable
+            ? {
+                height: 40,
+                margin: 10,
+                borderWidth: 0.7,
+                borderRadius: 7,
+                padding: 10,
+                color: 'black',
+                backgroundColor: 'white',
+                marginVertical: 10,
+                fontSize: 13,
+              }
+            : {
+                height: 40,
+                margin: 10,
+                // borderWidth: 0.7,
+                borderRadius: 7,
+                padding: 10,
+                color: 'black',
+                backgroundColor: 'silver',
+                marginVertical: 10,
+                fontSize: 13,
+              }
+        }
       />
-      <Text style={{color: 'black'}}>전화번호</Text>
+
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 15,
+          marginLeft: 10,
+        }}>
+        전화번호
+      </Text>
       <TextInput
         value={newPhone}
         defaultValue={phone}
         onChangeText={text => setNewPhone(text)}
         editable={editable}
-        style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
+        style={
+          editable
+            ? {
+                height: 40,
+                margin: 10,
+                borderWidth: 0.7,
+                borderRadius: 7,
+                padding: 10,
+                color: 'black',
+                backgroundColor: 'white',
+                marginVertical: 10,
+                fontSize: 13,
+              }
+            : {
+                height: 40,
+                margin: 10,
+                // borderWidth: 0.7,
+                borderRadius: 7,
+                padding: 10,
+                color: 'black',
+                backgroundColor: 'silver',
+                marginVertical: 10,
+                fontSize: 13,
+              }
+        }
       />
-      <Text style={{color: 'black'}}>이메일</Text>
+
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 15,
+          marginLeft: 10,
+        }}>
+        이메일
+      </Text>
       <TextInput
         value={email}
         editable={false}
-        style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
+        style={{
+          height: 40,
+          margin: 10,
+          // borderWidth: 0.2,
+          borderRadius: 10,
+          padding: 10,
+          color: 'black',
+          backgroundColor: 'silver',
+          marginVertical: 10,
+          fontSize: 13,
+        }}
       />
-      <Text style={{color: 'black'}}>가입일자</Text>
+
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 15,
+          marginLeft: 10,
+        }}>
+        가입일자
+      </Text>
       <TextInput
         value={joinDate}
         editable={false}
-        style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
+        style={{
+          height: 40,
+          margin: 10,
+          // borderWidth: 0.2,
+          borderRadius: 10,
+          padding: 10,
+          color: 'black',
+          backgroundColor: 'silver',
+          marginVertical: 10,
+          fontSize: 13,
+        }}
       />
-      <Text style={{color: 'black'}}>정보제공동의일자</Text>
+
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 15,
+          marginLeft: 10,
+        }}>
+        정보제공동의일자
+      </Text>
       <TextInput
         value={contactAgreeDate}
         editable={false}
-        style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}
+        style={{
+          height: 40,
+          margin: 10,
+          // borderWidth: 0.2,
+          borderRadius: 10,
+          padding: 10,
+          color: 'black',
+          backgroundColor: 'silver',
+          marginVertical: 10,
+          fontSize: 13,
+        }}
       />
-      <Text style={{color: 'black'}}>프로필공개여부</Text>
+
+      <Text
+        style={{
+          color: '#3B28B1',
+          fontFamily: 'MICEGothic-Bold',
+          fontSize: 15,
+          marginLeft: 10,
+        }}>
+        프로필공개여부
+      </Text>
       {/* <Text
         style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}>
         {profileOpen ? 'true' : 'false'}
@@ -220,6 +447,7 @@ function EditMyProfile({navigation, route}) {
       ) : (
         <SwitchToggle
           switchOn={newProfileOpen}
+          onPress={() => console.log()}
           circleColorOn={'#3B28B1'} //
           backgroundColorOn={'#937DC2'}
           circleColorOff={'gray'}
@@ -244,12 +472,13 @@ const styles = StyleSheet.create({
   },
   rightIcon: {
     position: 'absolute',
-    // padding: 10,
-    // width: 40,
-    // height: 40,
-    // top: -10,
+    padding: 3,
+    top: -5,
     // left: 20,
-    backgroundColor: 'black',
+    right: -15,
+    width: 40,
+    height: 40,
+    // backgroundColor: 'black',
   },
   actionText: {
     color: 'black',
@@ -259,6 +488,8 @@ const styles = StyleSheet.create({
     width: 50,
     height: 25,
     borderRadius: 25,
+    marginVertical: 10,
+    marginLeft: 10,
     // padding: 5,
   },
   circle: {

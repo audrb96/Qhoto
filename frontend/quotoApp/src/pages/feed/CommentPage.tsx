@@ -33,6 +33,7 @@ function CommentPage({navigation, route}) {
       route.params.feedId,
       (res: any) => {
         console.log(res.data);
+
         setCommentList(res.data);
       },
       (err: any) => {
