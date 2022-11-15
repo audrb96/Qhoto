@@ -54,10 +54,6 @@ function MyQuest() {
 
   const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
 
-  const token: any = AsyncStorage.getItem('accessToken');
-  console.log('토큰뽑자');
-  console.log(token);
-
   useEffect(() => {
     getUserInfoApi(
       (response: any) => {

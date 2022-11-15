@@ -18,7 +18,7 @@ import MissionModal from './MissionModal';
 import Video from 'react-native-video';
 
 import {useSelector} from 'react-redux';
-import {RootState} from './src/store/reducer';
+import {RootState} from '../../store/reducer';
 
 function AllFeed({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
