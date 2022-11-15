@@ -35,4 +35,19 @@ async function receiveListApi(success, fail) {
     .catch(fail);
 }
 
-export {findFriendApi, addFriendApi, friendListApi, receiveListApi};
+// 연락처 접근
+async function getContactsApi(data, success, fail) {
+  console.log('data', data)
+  await api
+    .post('/api/contact', data, {headers: await createHeaders()})
+    .then(success)
+    .catch(fail);
+}
+
+export {
+  findFriendApi,
+  addFriendApi,
+  friendListApi,
+  receiveListApi,
+  getContactsApi,
+};
