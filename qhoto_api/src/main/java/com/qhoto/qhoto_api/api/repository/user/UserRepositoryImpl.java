@@ -85,7 +85,7 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
                         user.image,
                         user.expGrade,
                         new CaseBuilder().when(friendRequest.status.isNull()).then("관계없음")
-                                .when(friendRequest.requestUser.eq(userInfo)).then("내가요청")
+                                .when(friendRequest.responseUser.eq(userInfo).and(friendRequest.status.eq(RequestStatus.GET))).then("내가요청")
                                 .when(friendRequest.responseUser.eq(userInfo)).then("상대방요청")
                                 .otherwise("관계없음")
                 ))
