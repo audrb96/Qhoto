@@ -32,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -162,8 +163,8 @@ public class LoginService {
         //회원 생성
         User user = User.builder()
                 .authProvider(authProvider)
-                .contactAgree(false)
-                .contactAgreeDate(null)
+                .contactAgree(true)
+                .contactAgreeDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
                 .description(null)
                 .email(email)
                 .image(pictureUrl)
