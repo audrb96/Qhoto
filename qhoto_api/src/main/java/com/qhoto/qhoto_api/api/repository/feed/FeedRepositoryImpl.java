@@ -27,6 +27,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -175,15 +176,15 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
     }
 
     private BooleanExpression feedClassIn(String condition, String duration) {
-        List<Long> conList = null;
+        List<Long> conList = new ArrayList<>();
         if(hasText(condition)){
             conList = Arrays.stream(condition.split(",")).map(Long::parseLong).collect(Collectors.toList());
         }
         if(duration.equals("D")){
-            return conList==null? null: feed.activeDaily.id.in(conList);
+            return feed.activeDaily.id.in(conList);
         } else if (duration.equals("W")) {
-            return conList==null? null: feed.activeWeekly.id.in(conList);
+            return feed.activeWeekly.id.in(conList);
         }
-        return conList==null? null: feed.activeMonthly.id.in(conList);
+        return feed.activeMonthly.id.in(conList);
     }
 }
