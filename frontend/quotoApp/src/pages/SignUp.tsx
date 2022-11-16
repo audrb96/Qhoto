@@ -17,6 +17,8 @@ import {editMyProfileApi, getUserInfoApi} from '../api/mypage';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 
+import CheckBox from '@react-native-community/checkbox';
+
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
 function SignUp({navigation, route}: SignInScreenProps) {
@@ -28,6 +30,8 @@ function SignUp({navigation, route}: SignInScreenProps) {
   const phoneRef = useRef<TextInput | null>(null); /////Todo
   const nameRef = useRef<TextInput | null>(null);
   const nicknameRef = useRef<TextInput | null>(null);
+  const [value0, setValue0] = useState(false);
+  const [value1, setValue1] = useState(false);
 
   // const accessToken = route.params.accessToken;
   // const refreshToken = route.params.refreshToken;
@@ -91,6 +95,9 @@ function SignUp({navigation, route}: SignInScreenProps) {
     if (phone.length !== 10 && phone.length !== 11) {
       return Alert.alert('알림', '전화번호는 10~11자리만 가능합니다.');
     }
+    if (!value0 || !value1) {
+      return Alert.alert('알림', '개인정보 이용에 동의해주세요.');
+    }
 
     await editMyProfileApi(
       {
@@ -138,7 +145,7 @@ function SignUp({navigation, route}: SignInScreenProps) {
     );
   };
 
-  const canGoNext = phone && name && nickname;
+  const canGoNext = phone && name && nickname && value0 && value1;
 
   return (
     <DismissKeyboardView>
@@ -185,11 +192,92 @@ function SignUp({navigation, route}: SignInScreenProps) {
           placeholderTextColor="#666"
           textContentType="telephoneNumber" // Todo
           value={phone}
-          returnKeyType="send"
+          returnKeyType="next"
           keyboardType="decimal-pad"
           ref={phoneRef}
           blurOnSubmit={false} // Todo
           onSubmitEditing={onSubmit}
+        />
+      </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          height: 50,
+          padding: 10,
+        }}>
+        <Text
+          style={{
+            color: '#4B179F',
+            fontWeight: 'bold',
+            width: 50,
+            textAlign: 'center',
+          }}>
+          필수
+        </Text>
+
+        <Pressable
+          style={{
+            flex: 0.9,
+            height: '70%',
+            justifyContent: 'center',
+          }}
+          onPress={() => {
+            navigation.navigate('LocationAgree');
+          }}>
+          <Text
+            style={{
+              color: 'black',
+            }}>
+            위치기반서비스 이용약관 동의 &gt;
+          </Text>
+        </Pressable>
+        <CheckBox
+          value={value0}
+          tintColors={{true: '#4B179F', false: 'black'}}
+          onValueChange={() => setValue0(!value0)}
+        />
+      </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          height: 50,
+          padding: 10,
+          marginBottom: 20,
+        }}>
+        <Text
+          style={{
+            color: '#4B179F',
+            fontWeight: 'bold',
+            width: 50,
+            textAlign: 'center',
+          }}>
+          필수
+        </Text>
+
+        <Pressable
+          style={{
+            flex: 0.9,
+            height: '70%',
+            justifyContent: 'center',
+          }}
+          onPress={() => {
+            navigation.navigate('StateAgree');
+          }}>
+          <Text
+            style={{
+              color: 'black',
+            }}>
+            개인정보 수집 및 이용 동의 &gt;
+          </Text>
+        </Pressable>
+        <CheckBox
+          value={value1}
+          tintColors={{true: '#4B179F', false: 'black'}}
+          onValueChange={() => setValue1(!value1)}
         />
       </View>
       <View style={styles.buttonZone}>
