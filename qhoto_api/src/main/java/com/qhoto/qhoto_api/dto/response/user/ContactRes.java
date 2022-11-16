@@ -17,14 +17,18 @@ public class ContactRes {
     private String image;
     private String grade;
 
+    private String relation;
+
     @QueryProjection
     @Builder
-    public ContactRes(Long userId, String name, String nickname, String phone, String image,  String grade) {
+
+    public ContactRes(Long userId, String name, String nickname, String phone, String image, String grade, String relation) {
         this.userId = userId;
         this.name = name;
         this.nickname = nickname;
         this.phone = phone;
         this.image = image;
         this.grade = grade;
+        this.relation = relation;
     }
 }
