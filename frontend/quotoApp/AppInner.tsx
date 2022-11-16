@@ -20,6 +20,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {HEADER_LOGO} from './src/image';
 import QhotoHeader from './src/components/QhotoHeader';
 import SignUp from './src/pages/SignUp';
+import LocationAgree from './src/pages/LocationAgree';
+import StateAgree from './src/pages/StateAgree';
 import FriendsFeedStackScreen from './src/pages/feed/FriendsFeedStackScreen';
 import FriendListStackScreen from './src/pages/FriendListStackScreen';
 
@@ -44,6 +46,8 @@ export type LoggedInParamList = {
 export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
+  LocationAgree: undefined;
+  StateAgree: undefined;
 };
 
 const {width, height} = Dimensions.get('window');
@@ -61,7 +65,7 @@ function AppInner() {
     const getTokenAndRefresh = async () => {
       try {
         token = await AsyncStorage.getItem('accessToken');
-        if (!token) {
+        if (true) {
           return;
         }
         getUserInfoApi(
@@ -207,6 +211,22 @@ function AppInner() {
               name="SignUp"
               component={SignUp}
               options={{title: '회원가입', headerShown: false}}
+            />
+            <Stack.Screen
+              name="LocationAgree"
+              component={LocationAgree}
+              options={{
+                title: '위치기반서비스 이용약관 동의',
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="StateAgree"
+              component={StateAgree}
+              options={{
+                title: '개인정보 수집 및 이용 동의',
+                headerShown: false,
+              }}
             />
           </Stack.Navigator>
         )}

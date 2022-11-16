@@ -54,8 +54,6 @@ function MyQuest() {
 
   const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
 
-  const token: any = AsyncStorage.getItem('accessToken');
-
   useEffect(() => {
     getUserInfoApi(
       (response: any) => {
