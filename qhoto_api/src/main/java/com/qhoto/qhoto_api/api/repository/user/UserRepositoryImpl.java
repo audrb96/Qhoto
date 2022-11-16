@@ -20,10 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import static com.qhoto.qhoto_api.domain.QFriendRequest.*;
@@ -84,19 +82,31 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
                         user.phone,
                         user.image,
                         user.expGrade,
-                        new CaseBuilder().when(friendRequest.status.isNull()).then("관계없음")
-                                .when(friendRequest.responseUser.eq(userInfo).and(friendRequest.status.eq(RequestStatus.GET))).then("내가요청")
-                                .when(friendRequest.responseUser.eq(userInfo)).then("상대방요청")
-                                .otherwise("관계없음")
+                        JPAExpressions.select(new CaseBuilder()
+                                .when(friendRequest.status.isNull())
+                                .then("노관계")
+                                .when(friendRequest.status.eq(RequestStatus.GET))
+                                .then("내가요청")
+                                .when(friendRequest.status.eq(RequestStatus.REQUEST))
+                                .then("상대방요청")
+                                .otherwise("노관계")
+                        ).from(friendRequest)
+                                .where(friendRequest.responseUser.eq(userInfo)
+                                        .and(friendRequest.requestUser.eq(user))
+                                        .and(friendRequest.status.ne(RequestStatus.FRIEND))
+                                )
                 ))
-                .from(friendRequest)
-                .rightJoin(friendRequest.requestUser,user)
-                .on(friendRequest.requestUser.id.eq(user.id).and(friendRequest.status.ne(RequestStatus.FRIEND)))
+                .from(user)
                 .where(
                         contactsIn(contacts), user.ne(userInfo),
                         friendRequestIsNotFriend(userInfo)
                 )
                 .fetch();
+
+        contactResList.forEach((contactRes ->
+            contactRes.setName(contacts.get(contactRes.getPhone()))
+        ));
+
 
         return contactResList;
 
