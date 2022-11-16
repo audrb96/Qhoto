@@ -29,9 +29,11 @@ import {
 
 const {width, height} = Dimensions.get('window');
 
-function FriendList({navigation}) {
+function FriendList() {
+  const navigation = useNavigation();
+
   const [openFriendList, setOpenFriendList] = useState(true);
-  const [friendList, setFriendList] = useState('');
+  const [friendList, setFriendList] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
@@ -52,8 +54,6 @@ function FriendList({navigation}) {
       <Item
         item={item}
         onPress={() => setSelectedId(item.userId)}
-        // backgroundColor={{backgroundColor}}
-        // textColor={{color}}
         iconType={recieve}
       />
     );
@@ -71,20 +71,21 @@ function FriendList({navigation}) {
         console.log('friendListApi - err', err.response);
       },
     );
-  }, [isFocused]);
+  }, [isFocused]); // isFocused : navigation.goback 을 통해 오면 refresh 되게하는 거
 
   const Item = ({
     item,
     // onPress, backgroundColor, textColor,
     iconType,
   }) => (
-    <View
+    <TouchableOpacity
       style={{
         flex: 1,
         backgroundColor: 'gray',
         borderRadius: 10,
         marginVertical: 1,
-      }}>
+      }}
+      onPress={() => navigation.navigate('OtherPage', {userId: item.userId})}>
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 0.2}}>
           <ImageModal
@@ -110,27 +111,37 @@ function FriendList({navigation}) {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   //Icon
-  const rightIcon = (
+  const leftIcon = (
     <AntDesign
       name="adduser"
       size={30}
       color="#3B28B1"
       onPress={gotoFindFriend}
+      style={styles.leftIcon}
+    />
+  );
+
+  const rightIcon = (
+    <AntDesign
+      name="contacts"
+      size={30}
+      color="#3B28B1"
+      onPress={() => navigation.navigate('ContactsPage')}
       style={styles.rightIcon}
     />
   );
 
   return (
     <View>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('OtherPage', {userId: 10})}>
-        <Text style={{color: 'black'}}>38번 유저가기</Text>
-      </TouchableOpacity>
-      <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
+      <QhotoHeader
+        leftIcon={leftIcon}
+        rightIcon={rightIcon}
+        missionVisible={false}
+      />
       <View style={{marginVertical: 5}}>
         <List.Accordion
           // Todo: Customizing
@@ -140,12 +151,7 @@ function FriendList({navigation}) {
           title="친구목록" // Todo: 친구목록 개수
           expanded={openFriendList}
           onPress={() => setOpenFriendList(!openFriendList)}>
-          <FlatList
-            data={friendList}
-            renderItem={renderFriendList}
-            keyExtractor={item => item.userId}
-            extraData={selectedId}
-          />
+          <FlatList data={friendList} renderItem={renderFriendList} />
         </List.Accordion>
       </View>
     </View>
@@ -158,6 +164,11 @@ const styles = StyleSheet.create({
     padding: 5,
     width: width * 0.9,
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  leftIcon: {
+    position: 'absolute',
+    top: -10,
+    right: -20,
   },
   rightIcon: {
     position: 'absolute',

@@ -27,10 +27,13 @@ import {
 } from '../../image';
 import QhotoHeader from '../QhotoHeader';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import SelectedFeed from '../../pages/feed/SelectedFeed';
 
-function LevelInfo({navigation, route}) {
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+
+function LevelInfo({route}) {
+  const navigation = useNavigation();
   const userInfo = useSelector((state: RootState) => state.user);
+
   const goToMyPage = () => {
     navigation.navigate('MyPage');
   };

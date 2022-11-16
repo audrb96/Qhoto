@@ -4,10 +4,12 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -17,6 +19,7 @@ import {Avatar, List} from 'react-native-paper';
 import ImageModal from 'react-native-image-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import QhotoHeader from './../components/QhotoHeader';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 import {
   findFriendApi,
@@ -27,7 +30,9 @@ import {
 
 const {width, height} = Dimensions.get('window');
 
-function FindFriend({navigation, route}) {
+function FindFriend({route}) {
+  const navigation = useNavigation();
+
   const [text, onChangeText] = useState('');
   const [selectedId, setSelectedId] = useState(null);
 
@@ -44,7 +49,7 @@ function FindFriend({navigation, route}) {
   const nameRef = useRef<TextInput | null>(null);
 
   const [receiveList, setReceiveList] = useState('');
-  const [friendList, setFriendList] = useState('');
+  const [openFriend, setOpenFriend] = useState(false);
 
   // 친구요청 받은 리스트
   useEffect(() => {
@@ -98,7 +103,7 @@ function FindFriend({navigation, route}) {
   };
 
   // 친구검색
-  const findFriend = nickname => {
+  const findFriend = (nickname: any) => {
     findFriendApi(
       nickname,
       (res: any) => {
@@ -115,17 +120,9 @@ function FindFriend({navigation, route}) {
     );
   };
 
-  // } else if (searchResult.isFriend === 'REQUEST') {
-  //   // 내가 보낸(아직 받지않은)
-  //   iconName = 'user-check';
-  //   iconOrder = '친구 수락 대기중';
-  // } else if (searchResult.isFriend === 'FRIEND') {
-  //   iconName = 'user-friends';
-  //   iconOrder = '친구';
-
   // 친구 요청 + 수락
   // Todo: back api 완성시 resUserId 붙여야함
-  const addFriend = resUserId => {
+  const addFriend = (resUserId: any) => {
     if (iconOrder === '친구 수락 대기중') {
       return Alert.alert('알림', '친구 수락 대기중입니다.');
     }
@@ -184,13 +181,14 @@ function FindFriend({navigation, route}) {
     // onPress, backgroundColor, textColor,
     iconType,
   }) => (
-    <View
+    <TouchableOpacity
       style={{
         flex: 1,
         backgroundColor: 'gray',
         borderRadius: 10,
         marginVertical: 1,
-      }}>
+      }}
+      onPress={() => navigation.navigate('OtherPage', {userId: item.userId})}>
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 0.1}}>
           <ImageModal
@@ -225,7 +223,7 @@ function FindFriend({navigation, route}) {
           )}
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderReceiveList = ({item}: any) => {
@@ -242,22 +240,6 @@ function FindFriend({navigation, route}) {
       />
     );
   };
-
-  // const renderFriendList = ({item}: any) => {
-  //   // const backgroundColor = item.userId === selectedId ? 'green' : 'orange';
-  //   // const color = item.userId === selectedId ? 'white' : 'black';
-  //   const recieve = false;
-
-  //   return (
-  //     <Item
-  //       item={item}
-  //       onPress={() => setSelectedId(item.userId)}
-  //       // backgroundColor={{backgroundColor}}
-  //       // textColor={{color}}
-  //       iconType={recieve}
-  //     />
-  //   );
-  // };
 
   // 아코디언 오픈 / 클로즈
   const [openSearchFriend, setOpenSearchFriend] = useState(true);
@@ -279,7 +261,7 @@ function FindFriend({navigation, route}) {
     // Todo: ScrollView 와 FlatList 를 같이 사용해서 발생한 에러로 추정;
     // Todo: View - FlatList 로 스크롤이 되게 하든지
     // Todo: ScrollView 와 다른 반복문으로 사용하든지
-    <ScrollView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
       <View style={{marginVertical: 5}}>
         <List.Accordion
@@ -306,6 +288,7 @@ function FindFriend({navigation, route}) {
               onPress={() => {
                 console.log('targetId', targetId);
                 findFriend(targetId);
+                setOpenFriend(true);
               }}>
               <Text
                 style={{color: 'black', backgroundColor: 'red', padding: 5}}>
@@ -314,60 +297,80 @@ function FindFriend({navigation, route}) {
             </TouchableOpacity>
           </View>
 
-          <View // 프로필
-          >
-            <View
-              style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
+          {searchResult.nickName === '' ? (
+            <View />
+          ) : (
+            <View // 프로필
+            >
               <View
                 style={{
-                  flex: 1,
-                  alignItems: 'center',
+                  flexDirection: 'row',
+                  marginVertical: 0,
+                  justifyContent: 'center',
+
+                  // backgroundColor: 'green',
                 }}>
-                <View>
-                  <ImageModal
-                    source={{uri: searchResult.profileImg}}
-                    resizeMode="cover"
-                    modalImageResizeMode="contain"
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 100,
-                    }}
-                    swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
-                    overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
-                  />
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                  <Avatar.Image
-                    // badge
-                    size={22}
-                    source={{uri: searchResult.profileImg}} // Todo
-                  />
-                  <Text style={{color: 'black'}}>{searchResult.nickName}</Text>
-                </View>
-                <Text style={{color: 'black'}}>
-                  {searchResult.email.split('@', 1)[0]}
-                </Text>
                 <TouchableOpacity
                   style={{
-                    height: 40,
-                    backgroundColor: 'yellow',
+                    flex: 0.4,
+                    alignItems: 'center',
+                    // backgroundColor: 'red',
+                    marginVertical: 5,
+                    borderWidth: 0.5,
                   }}
-                  onPress={() => addFriend(searchResult.userId)}>
+                  onPress={() =>
+                    navigation.navigate('OtherPage', {
+                      userId: searchResult.userId,
+                    })
+                  }>
+                  <View style={{marginTop: 10}}>
+                    <ImageModal
+                      source={{uri: searchResult.profileImg}}
+                      resizeMode="cover"
+                      modalImageResizeMode="contain"
+                      style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 100,
+                      }}
+                      swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
+                      overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
+                    />
+                  </View>
                   <View style={{flexDirection: 'row'}}>
-                    {relationIcon()}
-                    <Text style={{color: 'black', fontSize: 15}}>
-                      {iconOrder}
+                    <Avatar.Image
+                      // badge
+                      size={22}
+                      source={{uri: searchResult.profileImg}} // Todo
+                    />
+                    <Text style={{color: 'black'}}>
+                      {searchResult.nickName}
                     </Text>
                   </View>
+                  <Text style={{color: 'black'}}>
+                    {searchResult.email.split('@', 1)[0]}
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      height: 40,
+                      backgroundColor: 'yellow',
+                    }}
+                    onPress={() => addFriend(searchResult.userId)}>
+                    <View style={{flexDirection: 'row'}}>
+                      {relationIcon()}
+                      <Text style={{color: 'black', fontSize: 15}}>
+                        {iconOrder}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          )}
         </List.Accordion>
       </View>
 
-      <View style={{marginVertical: 5}}>
+      <View style={{marginVertical: 5, flex: 1}}>
         <List.Accordion
           // Todo: Customizing
           // Todo: 각자 스마트폰 설정 폰트로 보이는지 확인
@@ -375,6 +378,7 @@ function FindFriend({navigation, route}) {
           // style={{backgroundColor: 'red', marginBottom: 20}}
           title="친구요청" // Todo: 친구요청 개수
           expanded={openReceiveList}
+          // style={{flex: 1}}
           onPress={() => setOpenReceiveList(!openReceiveList)}>
           <FlatList
             data={receiveList}
@@ -384,7 +388,7 @@ function FindFriend({navigation, route}) {
           />
         </List.Accordion>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 

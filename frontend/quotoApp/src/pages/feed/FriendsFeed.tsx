@@ -14,6 +14,7 @@ import FeedItem from '../../components/feed/FeedItem';
 import {getFriendsFeeds, setFeedMission} from '../../api/feed';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const tabMenu = ['DAY', 'WEEK', 'MONTH'];
 
@@ -50,22 +51,23 @@ interface Comment {
 
 const {width, height} = Dimensions.get('window');
 
-function FriendsFeed({navigation}) {
+function FriendsFeed() {
   const [modalVisible, setModalVisible] = useState(false);
   const [friendFeeds, setFriendFeeds] = useState<Feed[]>();
   const [selectedTab, setSelectedTab] = useState('');
   const [selectedQuests, setSelectedQuests] = useState([true, true, true]);
   const [questLists, setQuestLists] = useState<{[key: string]: Quest[]}>();
   const [selectedFeedId, setSelectedFeedId] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     setFeedMission(
       (res: any) => {
         const {dailyOptions, weeklyOptions, monthlyOptions} = res.data.options;
         const newQuestLists: {[key: string]: Quest[]} = {};
-        newQuestLists['DAY'] = dailyOptions;
-        newQuestLists['WEEK'] = weeklyOptions;
-        newQuestLists['MONTH'] = monthlyOptions;
+        newQuestLists.DAY = dailyOptions;
+        newQuestLists.WEEK = weeklyOptions;
+        newQuestLists.MONTH = monthlyOptions;
         setQuestLists(newQuestLists);
       },
       (err: any) => {
@@ -75,11 +77,15 @@ function FriendsFeed({navigation}) {
   }, []);
 
   useEffect(() => {
-    if (questLists !== undefined) setSelectedTab('DAY');
+    if (questLists !== undefined) {
+      setSelectedTab('DAY');
+    }
   }, [questLists]);
 
   useEffect(() => {
-    if (selectedTab !== '') setSelectedQuests([true, true, true]);
+    if (selectedTab !== '') {
+      setSelectedQuests([true, true, true]);
+    }
   }, [selectedTab]);
 
   useEffect(() => {
@@ -108,17 +114,19 @@ function FriendsFeed({navigation}) {
     setModalVisible(true);
   };
 
-  const handleCommentClick = (commentList: Comment[]) => {
-    navigation.navigate('CommentPage', {comments: commentList});
+  const handleCommentClick = (feedId: number) => {
+    navigation.navigate('CommentPage', {feedId});
   };
 
   return (
     <View style={{flex: 1}}>
       <View style={styles.tabMenuContainer}>
         {tabMenu.map((tab, index) => (
-          <Pressable key={index}>
+          <Pressable
+            key={index}
+            style={{padding: 5}}
+            onPress={() => setSelectedTab(tab)}>
             <Text
-              onPress={() => setSelectedTab(tab)}
               style={[
                 styles.tabMenuText,
                 {color: selectedTab === tab ? '#3B28B1' : '#9A9A9A'},
@@ -153,7 +161,7 @@ function FriendsFeed({navigation}) {
               <FeedItem
                 key={index}
                 feed={feed}
-                handleCommentClick={handleCommentClick}
+                handleCommentClick={() => handleCommentClick(feed.feedId)}
               />
             ))}
           </ScrollView>
@@ -175,7 +183,7 @@ const styles = StyleSheet.create({
     flex: 0.1,
   },
   tabMenuText: {
-    fontSize: 17,
+    fontSize: 15,
     marginHorizontal: 10,
     fontFamily: 'Comfortaa-Bold',
   },

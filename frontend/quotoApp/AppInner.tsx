@@ -1,13 +1,14 @@
 import * as React from 'react';
+import {useEffect} from 'react';
+
 import {useSelector} from 'react-redux';
-import {View, Image} from 'react-native';
+import {Dimensions} from 'react-native';
 
 import SignIn from './src/pages/SignIn';
 import MyQuest from './src/pages/MyQuest';
 import AllFeedStackScreen from './src/pages/feed/AllFeedStackScreen';
 import FindFriend from './src/pages/FindFriend';
 import MyPageStackScreen from './src/pages/mypage/MyPageStackScreen';
-import {RootState} from './src/store/reducer';
 
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -21,6 +22,12 @@ import QhotoHeader from './src/components/QhotoHeader';
 import SignUp from './src/pages/SignUp';
 import FriendsFeedStackScreen from './src/pages/feed/FriendsFeedStackScreen';
 import FriendListStackScreen from './src/pages/FriendListStackScreen';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getUserInfoApi} from './src/api/mypage';
+import {useAppDispatch} from './src/store';
+import userSlice from './src/slices/user';
+import {RootState} from './src/store/reducer';
 
 export type LoggedInParamList = {
   FriendsFeed: undefined;
@@ -39,16 +46,70 @@ export type RootStackParamList = {
   SignUp: undefined;
 };
 
+const {width, height} = Dimensions.get('window');
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const appTheme = DefaultTheme;
 appTheme.colors.background = 'white';
 
 function AppInner() {
-  const isLoggedIn = useSelector((state: RootState) => state.user.loggedIn);
+  const dispatch = useAppDispatch();
+  const isLoggedIn = useSelector((state: RootState) => state.user.email);
+  let token;
+  useEffect(() => {
+    const getTokenAndRefresh = async () => {
+      try {
+        token = await AsyncStorage.getItem('accessToken');
+        if (!token) {
+          return;
+        }
+        getUserInfoApi(
+          (response: any) => {
+            let {
+              nickname,
+              email,
+              joinDate,
+              phone,
+              profileOpen,
+              description,
+              userImage,
+              contactAgreeDate,
+              expGrade,
+              totalExp,
+              name,
+            } = response.data;
+
+            dispatch(
+              userSlice.actions.setUser({
+                nickname: nickname,
+                email: email,
+                joinDate: joinDate,
+                phone: phone,
+                profileOpen: profileOpen,
+                description: description,
+                userImage: userImage,
+                contactAgreeDate: contactAgreeDate,
+                expGrade: expGrade,
+                totalExp: totalExp,
+                name: name,
+              }),
+            );
+          },
+          (err: any) => {
+            console.log('실패');
+            console.log(err);
+          },
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getTokenAndRefresh();
+  }, [dispatch]);
 
   return (
-    <GestureHandlerRootView style={{flex: 1, backgroundColor: 'white'}}>
+    <GestureHandlerRootView style={{flex: 1, maxWidth: 420}}>
       <NavigationContainer theme={appTheme}>
         {isLoggedIn ? (
           <Tab.Navigator

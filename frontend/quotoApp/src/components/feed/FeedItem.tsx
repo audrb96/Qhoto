@@ -15,8 +15,12 @@ import {BlurView} from '@react-native-community/blur';
 
 import info from '../info';
 
+import {setFeedLike, setFeedDislike} from '../../api/feed';
+
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import {useNavigation} from '@react-navigation/native';
 
 interface Props {
   feed: Feed;
@@ -68,7 +72,7 @@ const levelInfo: {
   };
 } = info.levelInfo;
 
-const FeedItem: React.FC<Props> = (props, {navigation}) => {
+const FeedItem: React.FC<Props> = props => {
   const {
     feedId,
     userId,
@@ -92,19 +96,51 @@ const FeedItem: React.FC<Props> = (props, {navigation}) => {
   const {typeName, iconName, questColorCode} = questTypes[questType];
   const {colorName, gradeColorCode} = levelInfo[expGrade];
 
-  const [isLike, setIsLike] = useState(likeStatus === 'Like' ? true : false);
+  const [isLike, setIsLike] = useState(likeStatus === 'LIKE' ? true : false);
+  const [countLike, setLikeNum] = useState(likeCount);
 
-  const isAccessable = false;
+  const isAccessable = true;
 
   const handleLikeClick = () => {
-    setIsLike(!isLike);
+    if (isLike) {
+      setFeedDislike(
+        feedId,
+        (res: any) => {
+          setIsLike(!isLike);
+          setLikeNum(countLike - 1);
+        },
+        (err: any) => {
+          console.log(err.response);
+        },
+      );
+    } else {
+      setFeedLike(
+        feedId,
+        (res: any) => {
+          setIsLike(!isLike);
+          setLikeNum(countLike + 1);
+        },
+        (err: any) => {
+          console.log(err.response.data);
+        },
+      );
+    }
   };
+
+  const navigation = useNavigation();
+
+  // const moveProfile = () => {
+  //   navigate('OtherPage');
+  // };
 
   return (
     <View style={styles.feedContainer}>
       <View style={styles.profileBar}>
         <View style={styles.userInfo}>
-          <Avatar.Image size={50} source={{uri: userImage}} />
+          <Pressable
+            onPress={() => navigation.navigate('OtherPage', {userId: userId})}>
+            <Avatar.Image size={50} source={{uri: userImage}} />
+          </Pressable>
           <View style={{justifyContent: 'center', paddingHorizontal: 12}}>
             <Text style={[styles.gradeText, {color: gradeColorCode}]}>
               {colorName}
@@ -188,11 +224,30 @@ const FeedItem: React.FC<Props> = (props, {navigation}) => {
               <FontAwesome name="heart-o" size={28} color={questColorCode} />
             )}
           </Pressable>
+
+          <Text
+            style={{
+              textAlign: 'center',
+              color: questColorCode,
+              fontSize: 20,
+              marginLeft: 5,
+            }}>
+            {countLike}
+          </Text>
           <TouchableOpacity
             onPress={handleCommentClick}
             style={{marginLeft: 25, marginTop: -2}}>
             <FontAwesome name="comment-o" size={28} color={questColorCode} />
           </TouchableOpacity>
+          <Text
+            style={{
+              textAlign: 'center',
+              color: questColorCode,
+              fontSize: 20,
+              marginLeft: 5,
+            }}>
+            {likeCount}
+          </Text>
         </View>
 
         <View>

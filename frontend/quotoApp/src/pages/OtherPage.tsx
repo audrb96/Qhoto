@@ -19,20 +19,46 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImageModal from 'react-native-image-modal';
 
-import {getOtherInfoApi} from '../api/other';
-import {addFriendApi, findFriendApi} from '../api/friend';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
-function OtherPage({navigation, route}) {
+import {getOtherInfoApi, getOtherLogApi} from '../api/other';
+import {addFriendApi, findFriendApi} from '../api/friend';
+import QhotoHeader from '../components/QhotoHeader';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import LevelBox from './../components/mypage/LevelBox';
+import LogItem from './../components/mypage/LogItem';
+import {ScrollView} from 'react-native-gesture-handler';
+interface OtherLog {
+  feedId: number;
+  feedImage: string;
+  feedTime: string;
+  questName: string;
+  typeCode: string;
+  feedType: string;
+}
+
+function OtherPage({route}) {
+  const navigation = useNavigation();
   const dispatch = useAppDispatch();
+
+  const goToLevel = () => {
+    navigation.navigate('QhotoLevel');
+  };
+  const goToQuestLog = () => {
+    navigation.navigate('QhotoLog', {logs: otherLogs});
+  };
 
   const [otherInfo, setOtherInfo] = useState({
     email: '',
     image: '',
     description: '',
     nickname: '',
-    point: 0,
+    totalExp: 0,
     profileOpen: '',
+    expGrade: '',
   });
+
+  const [otherLogs, setOtherLogs] = useState<OtherLog[]>();
 
   const userId = route.params.userId;
 
@@ -48,9 +74,9 @@ function OtherPage({navigation, route}) {
           image: res.data.image,
           description: res.data.description,
           nickname: res.data.nickname,
-          point: res.data.point,
-          // profileOpen: res.data.profileOpen,
-          profileOpen: false,
+          totalExp: res.data.totalExp,
+          profileOpen: res.data.profileOpen,
+          expGrade: res.data.expGrade,
         });
         await findFriendApi(
           res.data.nickname,
@@ -64,6 +90,16 @@ function OtherPage({navigation, route}) {
       (err: any) => {
         console.log('getOtherInfoApi - err', err);
         console.log('getOtherInfoApi - err', err.response);
+      },
+    );
+    getOtherLogApi(
+      userId,
+      (res: any) => {
+        console.log('getOtherLogApi - res', res.data);
+        setOtherLogs(res.data);
+      },
+      (err: any) => {
+        console.log('getOtherLogApi - err', err);
       },
     );
   }, [isFriend]);
@@ -86,7 +122,7 @@ function OtherPage({navigation, route}) {
       iconOrder = '친구 요청';
     } else if (isFriend === null) {
       iconName = 'user-plus';
-      iconOrder = '         ';
+      iconOrder = '친구 요청';
     }
     return (
       <FontAwesome5
@@ -134,58 +170,20 @@ function OtherPage({navigation, route}) {
     );
   };
 
-  let backgroundColor = 'red';
-  let colorName = '';
-  let nextColorName = '';
-  let minPoint = 0;
-  let maxPoint = 0;
+  //Icon
+  const leftIcon = (
+    <FontAwesome5
+      name="angle-left"
+      size={30}
+      color="#3B28B1"
+      onPress={() => navigation.goBack()}
+      style={styles.leftIcon}
+    />
+  );
 
-  // Todo: 이것도 컴포넌트화 가능??
-  // 타입스크립트방식으로 해도 지저분하긴함..
-  if (otherInfo.point < 50) {
-    backgroundColor = '#F94720';
-    colorName = '레드';
-    nextColorName = '오렌지';
-    minPoint = 0;
-    maxPoint = 50;
-  } else if (otherInfo.point < 200) {
-    backgroundColor = '#FEAD0F';
-    colorName = '오렌지';
-    nextColorName = '옐로우';
-    minPoint = 50;
-    maxPoint = 200;
-  } else if (otherInfo.point < 500) {
-    backgroundColor = '#FFEB3B';
-    colorName = '옐로우';
-    nextColorName = '그린';
-    minPoint = 200;
-    maxPoint = 500;
-  } else if (otherInfo.point < 1000) {
-    backgroundColor = '#72D200';
-    colorName = '그린';
-    nextColorName = '블루';
-    minPoint = 500;
-    maxPoint = 1000;
-  } else if (otherInfo.point < 2500) {
-    backgroundColor = '#30C1FF';
-    colorName = '블루';
-    nextColorName = '네이비';
-    minPoint = 1000;
-    maxPoint = 2500;
-  } else if (otherInfo.point < 5000) {
-    backgroundColor = '#3CA1FF';
-    colorName = '네이비';
-    nextColorName = '퍼플';
-    minPoint = 2500;
-    maxPoint = 5000;
-  } else {
-    backgroundColor = '#8343E8';
-    colorName = '퍼플';
-    minPoint = 5000;
-  }
-
-  return (
-    <View>
+  return otherInfo === undefined || otherLogs === undefined ? null : (
+    <ScrollView>
+      <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
       <View // 프로필
       >
         <View style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
@@ -214,22 +212,28 @@ function OtherPage({navigation, route}) {
         </View>
       </View>
 
-      {/* 
+      {/*
       비공개 && !친구 -> 비공개
       공개           -> 공개
       비공개 && 친구  -> 공개
  */}
 
       {!otherInfo.profileOpen && isFriend !== 'FRIEND' ? (
-        <TouchableOpacity
-          onPress={() => {
-            addFriend();
-          }}>
-          <View style={styles.ifFriendIcon}>
-            {isFriendIcon()}
-            <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              addFriend();
+            }}>
+            <View style={styles.ifFriendIcon}>
+              {isFriendIcon()}
+              <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
+            </View>
+          </TouchableOpacity>
+          <View style={{flexDirection: 'row'}}>
+            <Fontisto name="locked" size={30} color={'#3B28B1'} />
+            <Text style={{color: 'black', fontSize: 30}}>비공개 유저다</Text>
           </View>
-        </TouchableOpacity>
+        </View>
       ) : (
         <View>
           <View>
@@ -238,91 +242,48 @@ function OtherPage({navigation, route}) {
                 {isFriendIcon()}
                 <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
               </View>
-              <TouchableOpacity
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                  flexDirection: 'row',
-                  //
-                }}>
-                <Text
-                  // onPress={goToLevel}
-                  style={{fontWeight: 'bold', color: '#3B28B1'}}>
-                  qhoto 레벨{' '}
-                </Text>
-                <FontAwesome5 name="angle-right" size={18} color={'#3B28B1'} />
-              </TouchableOpacity>
-            </View>
-            <View style={{alignItems: 'center'}}>
-              <View
-                style={{
-                  width: 300,
-                  height: 130,
-                  backgroundColor,
-                  borderRadius: 10,
-                }}>
-                <Text style={{marginHorizontal: 15, color: 'black'}}>
-                  {colorName}
-                </Text>
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 30,
-                    fontWeight: '600',
-                    marginHorizontal: 15,
-                  }}>
-                  {otherInfo.point}
-                </Text>
-                <Text style={{color: 'black', marginHorizontal: 15}}>
-                  총퀘스트점수
-                </Text>
-                <View style={{marginHorizontal: 15, marginVertical: 5}}>
-                  <View
-                    style={{
-                      width: 270,
-                      height: 5,
-                      backgroundColor: 'silver',
-                    }}
-                  />
-                  <View
-                    style={{
-                      width:
-                        270 *
-                        ((otherInfo.point - minPoint) / (maxPoint - minPoint)),
-                      height: 5,
-                      backgroundColor: 'black',
-                      position: 'absolute',
-                    }}
+              <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+                <View>
+                  <TouchableOpacity>
+                    <Text onPress={goToLevel} style={styles.subjectText}>
+                      qhoto 레벨 &nbsp;
+                      <FontAwesome5
+                        name="angle-right"
+                        size={20}
+                        color={'#3B28B1'}
+                      />
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{alignItems: 'center', paddingVertical: 20}}>
+                  <LevelBox
+                    userGrade={otherInfo.expGrade}
+                    userPoint={otherInfo.totalExp}
                   />
                 </View>
-                {otherInfo.point < 5000 ? (
-                  <Text style={{color: 'black', marginHorizontal: 15}}>
-                    {nextColorName} 레벨까지 {maxPoint - otherInfo.point} Points
-                    남음
+              </View>
+              <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+                <TouchableOpacity>
+                  <Text onPress={goToQuestLog} style={styles.subjectText}>
+                    qhoto 로그 &nbsp;
+                    <FontAwesome5
+                      name="angle-right"
+                      size={20}
+                      color={'#3B28B1'}
+                    />
                   </Text>
-                ) : (
-                  <Text />
-                )}
+                </TouchableOpacity>
+                <View>
+                  {otherLogs.map((log, index) => (
+                    <LogItem key={index} log={log} />
+                  ))}
+                </View>
               </View>
             </View>
           </View>
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 10,
-              flexDirection: 'row',
-              //
-            }}>
-            <Text
-              // onPress={goToQuestLog}
-              style={{fontWeight: 'bold', color: '#3B28B1'}}>
-              퀘스트 로그{' '}
-            </Text>
-            <FontAwesome5 name="angle-right" size={18} color={'#3B28B1'} />
-          </TouchableOpacity>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -331,6 +292,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     padding: 10,
+  },
+  leftIcon: {
+    position: 'absolute',
+    top: -10,
+    right: -20,
+  },
+  subjectText: {
+    color: '#3B28B1',
+    fontSize: 20,
+    fontFamily: 'MICEGothic-Bold',
+    marginBottom: 3,
   },
 });
 

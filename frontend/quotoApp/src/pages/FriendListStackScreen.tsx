@@ -8,6 +8,9 @@ import FriendsFeed from './feed/FriendsFeed';
 import OtherPage from './OtherPage';
 import FindFriend from './FindFriend';
 import FriendList from './FriendList';
+import ContactsPage from './ContactsPage';
+import QhotoLevel from './mypage/QhotoLevel';
+import QhotoLog from './mypage/QhotoLog';
 
 const FriendListStack = createStackNavigator();
 function FriendListStackScreen() {
@@ -30,6 +33,23 @@ function FriendListStackScreen() {
       <FriendListStack.Screen
         name="OtherPage"
         component={OtherPage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <FriendListStack.Screen
+        name="ContactsPage"
+        component={ContactsPage}
+        options={{headerShown: false}}
+      />
+      <FriendListStack.Screen
+        name="QhotoLevel"
+        component={QhotoLevel}
+        options={{headerShown: false}}
+      />
+      <FriendListStack.Screen
+        name="QhotoLog"
+        component={QhotoLog}
         options={{
           header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
         }}
