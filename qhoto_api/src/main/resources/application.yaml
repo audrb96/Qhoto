@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://qhoto-db.c2k2xt6qu8x0.ap-northeast-2.rds.amazonaws.com/qhoto?serverTimezone=Asia/Seoul
-    username: qhoto_admin
-    password: ssafyA707
+    url: ${QHOTO_DB_URL}
+    username: ${QHOTO_DB_USERNAME}
+    password: ${QHOTO_DB_PASSWORD}
 
   servlet:
     multipart:
@@ -32,13 +32,13 @@ cloud:
     region:
       static: ap-northeast-2
     credentials:
-      accessKey: AKIAVVSSTXJT4QWHBS7T
-      secretKey: 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
+      accessKey: ${QHOTO_S3_ACCESS_KEY}
+      secretKey: ${QHOTO_S3_SECRET_KEY}
     stack:
       auto: false
 
 app:
   auth:
     token:
-      secret-key: "c3NhZnlBNzA3"
+      secret-key: ${JWT_SECRET_KEY}
 
