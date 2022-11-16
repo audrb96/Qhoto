@@ -103,6 +103,11 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
                 )
                 .fetch();
 
+        contactResList.forEach((contactRes ->
+            contactRes.setName(contacts.get(contactRes.getPhone()))
+        ));
+
+
         return contactResList;
 
     }
