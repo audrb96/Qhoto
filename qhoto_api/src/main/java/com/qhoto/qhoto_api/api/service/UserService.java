@@ -7,6 +7,7 @@ import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.dto.response.feed.MyFeedRes;
+import com.qhoto.qhoto_api.dto.response.user.ContactRes;
 import com.qhoto.qhoto_api.dto.response.user.ContactResSet;
 import com.qhoto.qhoto_api.dto.response.user.MyInfoRes;
 import com.qhoto.qhoto_api.dto.response.user.UserInfoRes;
@@ -128,7 +129,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<ContactResSet> getUserContact(User user, Map<String,String> contacts) {
+    public List<ContactRes> getUserContact(User user, Map<String,String> contacts) {
         // 번호가 일치하는 회원들을 뽑아서 name이랑 같이 보내줌(친구 상태도 보내기)
         return userRepository.contactByCon(user, contacts);
     }

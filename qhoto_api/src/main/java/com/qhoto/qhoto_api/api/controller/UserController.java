@@ -5,11 +5,8 @@ import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
-import com.qhoto.qhoto_api.dto.response.user.ContactResSet;
-import com.qhoto.qhoto_api.dto.response.user.LoginRes;
+import com.qhoto.qhoto_api.dto.response.user.*;
 import com.qhoto.qhoto_api.dto.response.feed.MyFeedRes;
-import com.qhoto.qhoto_api.dto.response.user.MyInfoRes;
-import com.qhoto.qhoto_api.dto.response.user.UserInfoRes;
 import com.qhoto.qhoto_api.exception.NoUniqueUserException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -129,7 +126,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/contact")
-    public ResponseEntity<List<ContactResSet>> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {
+    public ResponseEntity<List<ContactRes>> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {
         return ResponseEntity.ok(userService.getUserContact(user, contacts));
     }
 

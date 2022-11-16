@@ -10,6 +10,8 @@ import com.qhoto.qhoto_api.dto.response.user.ContactResSet;
 import com.qhoto.qhoto_api.dto.response.user.QContactRes;
 import com.qhoto.qhoto_api.util.S3Utils;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +75,7 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
     }
 
     @Override
-    public List<ContactResSet> contactByCon(User userInfo, Map<String, String> contacts) {
+    public List<ContactRes> contactByCon(User userInfo, Map<String, String> contacts) {
         List<ContactRes> contactResList = jpaQueryFactory
                 .select(new QContactRes(
                         user.id,
@@ -81,56 +83,29 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
                         user.nickname,
                         user.phone,
                         user.image,
-                        user.expGrade
+                        user.expGrade,
+                        new CaseBuilder().when(friendRequest.status.isNull()).then("관계없음")
+                                .when(friendRequest.requestUser.eq(userInfo)).then("내가요청")
+                                .when(friendRequest.responseUser.eq(userInfo)).then("상대방요청")
+                                .otherwise("관계없음")
                 ))
                 .from(friendRequest)
                 .rightJoin(friendRequest.requestUser,user)
-                .on(friendRequest.requestUser.id.eq(user.id))
+                .on(friendRequest.requestUser.id.eq(user.id).and(friendRequest.status.ne(RequestStatus.FRIEND)))
                 .where(
                         contactsIn(contacts), user.ne(userInfo),
-                        friendRequestIsNotFriend())
-                .groupBy(user.id)
+                        friendRequestIsNotFriend(userInfo)
+                )
                 .fetch();
 
-        log.info("contactResList = {}", contactResList);
-
-        contactResList.forEach(contactRes ->
-            contactRes.setName(contacts.get(contactRes.getPhone())));
-
-        List<IsFriendDto> isFriendDtoList = jpaQueryFactory
-                .select(new QIsFriendDto(
-                    user.id,friendRequest.status
-                )).from(user, friendRequest)
-                .where( user.id.eq(friendRequest.requestUser.id),
-                        friendRequest.responseUser.eq(userInfo),
-                        friendRequestIsNotFriend()
-                        )
-                .fetch();
-
-        List<ContactResSet> contactResSetList = contactResList.stream().map(contactRes -> ContactResSet.builder()
-                .userId(contactRes.getUserId())
-                .grade(contactRes.getGrade())
-                .name(contacts.get(contactRes.getPhone()))
-                .nickname(contactRes.getNickname())
-                .image(contactRes.getImage())
-                .phone(contactRes.getPhone())
-                .build()).collect(Collectors.toList());
-
-        contactResSetList.forEach(contactResSet -> {
-                            isFriendDtoList.forEach((isFriendDto -> {
-                                if(Objects.equals(contactResSet.getUserId(), isFriendDto.getUserId()))
-                                contactResSet.setRequestStatus(isFriendDto.getRequestStatus());
-                            }));
-        });
-
-        log.info("contactResList = {}", contactResList);
-        log.info("isFriendDtoList ={}", isFriendDtoList);
-        return contactResSetList;
+        return contactResList;
 
     }
 
-    private BooleanExpression friendRequestIsNotFriend() {
-        return friendRequest.status.ne(RequestStatus.FRIEND).or(friendRequest.status.isNull());
+    private BooleanExpression friendRequestIsNotFriend(User userInfo) {
+        return user.notIn(
+                JPAExpressions.select(friendRequest.responseUser).from(friendRequest).where(friendRequest.status.eq(RequestStatus.FRIEND).and(friendRequest.requestUser.eq(userInfo)))
+        );
     }
 
     private BooleanExpression contactsIn(Map<String, String> contacts) {
