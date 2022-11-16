@@ -67,6 +67,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        
         JPAQuery<FeedAllDto> countQuery = jpaQueryFactory
                 .select(Projections.constructor(FeedAllDto.class,
                         feed.id,
