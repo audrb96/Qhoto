@@ -8,7 +8,9 @@ import {
 } from 'react-native';
 import QhotoHeader from '../../components/QhotoHeader';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {Pentagon} from '@digieggs/rn-polygon-chart';
+import {RootState} from '../../store/reducer';
+import {useSelector} from 'react-redux';
+import {Hexagon} from '@digieggs/rn-polygon-chart';
 import {StackedBarChart} from 'react-native-chart-kit';
 import {BarChart, LineChart, PieChart} from 'react-native-gifted-charts';
 import LevelBox from '../../components/mypage/LevelBox';
@@ -17,6 +19,7 @@ function QhotoLevel({navigation}) {
   const goToLevelInfo = () => {
     navigation.navigate('LevelInfo');
   };
+  const userInfo = useSelector((state: RootState) => state.user);
   // const MyStackedBarChart = () => {
   //   return (
   //     <>
@@ -81,9 +84,26 @@ function QhotoLevel({navigation}) {
   //   );
   // };
 
+  const leftIcon = (
+    <FontAwesome5
+      name="angle-left"
+      size={30}
+      color="#3B28B1"
+      onPress={() => navigation.goBack()}
+      style={{
+        position: 'absolute',
+        width: 40,
+        height: 40,
+        top: -10,
+        left: 20,
+        // backgroundColor: 'black',
+      }} // Todo 해결!!!: top, left 주면 안눌림, size 200 으로 키우면 잘눌림
+    />
+  );
+
   return (
     <View>
-      <QhotoHeader />
+      <QhotoHeader leftIcon={leftIcon} />
       <View>
         <View style={{marginVertical: 10, paddingHorizontal: 30}}>
           <View>
@@ -96,47 +116,36 @@ function QhotoLevel({navigation}) {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={{alignItems: 'center', paddingVertical: 20}}>
-            <TouchableOpacity>
-              <LevelBox userGrade="orange" userPoint={60} />
+          <View
+            style={{
+              alignItems: 'center',
+              paddingVertical: 20,
+            }}>
+            <TouchableOpacity onPress={goToLevelInfo}>
+              <LevelBox
+                userGrade={userInfo.expGrade}
+                userPoint={userInfo.totalExp}
+              />
             </TouchableOpacity>
           </View>
         </View>
         <View>
-          {/* <Pentagon
-            poles={[
-              {
-                score: 0.8,
-                innerStroke: {opacity: 1, stroke: '#30d158', strokeWidth: 2},
-                stroke: {opacity: 1, stroke: '#0a84ff'},
-              },
-              {
-                score: 0.6,
-                innerStroke: {opacity: 1, stroke: '#30d158', strokeWidth: 2},
-                stroke: {opacity: 1, stroke: '#0a84ff'},
-              },
-              {
-                score: 0.9,
-                innerStroke: {opacity: 1, stroke: '#30d158', strokeWidth: 2},
-                stroke: {opacity: 1, stroke: '#0a84ff'},
-              },
-              {
-                score: 0.8,
-                innerStroke: {opacity: 1, stroke: '#30d158', strokeWidth: 2},
-                stroke: {opacity: 1, stroke: '#0a84ff'},
-              },
-              {
-                score: 0.8,
-                innerStroke: {opacity: 1, stroke: '#30d158', strokeWidth: 2},
-                stroke: {opacity: 1, stroke: '#0a84ff'},
-              },
-            ]}
-            innerColor="#30d158"
-            innerOpacity={0.2}
-            // outerStroke={{stroke: 'green', opacity: 1, strokeWidth: 1}}
-            animation={{delay: 0, duration: 500}}
-            style={styles.pentagon}
-          /> */}
+          <View
+            style={{
+              width: 300,
+              height: 500,
+              backgroundColor: 'purple',
+              justifyContent: 'center',
+            }}>
+            <View
+              style={{
+                width: 280,
+                height: 450,
+                backgroundColor: 'white',
+                justifyContent: 'center',
+              }}
+            />
+          </View>
         </View>
         <View />
       </View>
@@ -147,7 +156,7 @@ function QhotoLevel({navigation}) {
 
 const styles = StyleSheet.create({
   pentagon: {width: 300, height: 600},
-
+  triangle: {width: 300, height: 600},
   header: {
     transform: [{rotate: '90deg'}],
   },
