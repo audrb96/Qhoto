@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  quest: [],
+  quest: {},
 };
 const questSlice = createSlice({
   name: 'quest',

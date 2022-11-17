@@ -15,6 +15,7 @@ import SwitchToggle from 'react-native-switch-toggle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {duplicateTestApi, editMyProfileApi} from '../../api/mypage';
 import {ScrollView} from 'react-native-gesture-handler';
+import {BackgroundImage} from '@rneui/base';
 
 function EditMyProfile({navigation, route}) {
   const [editable, setEditable] = useState(false);
@@ -93,20 +94,23 @@ function EditMyProfile({navigation, route}) {
     message = '';
     // setMessage('');
   } else if (newNickname === nickname) {
-    message = '사용가능합니다.';
+    message = '사용가능합니다';
     messageType = 'able';
     // setMessage('사용가능합니다');
     // setMessageType('able');
   } else if (!duplicated) {
-    message = '사용가능합니다.';
+    message = '사용가능합니다';
     messageType = 'able';
     // setMessage('사용가능합니다');
     // setMessageType('able');
   } else if (duplicated) {
-    message = '중복된 닉네임입니다.';
+    message = '중복된 닉네임입니다';
     messageType = 'disable';
     // setMessage('중복된 닉네임입니다');
     // setMessageType('disable');
+  } else if (newNickname === '') {
+    message = '사용할 수 없는 닉네임입니다';
+    messageType = 'disable';
   }
 
   //Icon
@@ -181,289 +185,111 @@ function EditMyProfile({navigation, route}) {
         }}>
         프로필
       </Text>
-
-      <Text
-        style={{
-          color: '#3B28B1',
-          fontFamily: 'MICEGothic-Bold',
-          fontSize: 15,
-          marginLeft: 10,
-        }}>
-        이름
-      </Text>
-      <TextInput
-        value={newName}
-        defaultValue={description}
-        onChangeText={text => setNewName(text)}
-        editable={editable}
-        style={
-          editable
-            ? {
-                height: 40,
-                margin: 10,
-                borderWidth: 0.7,
-                borderRadius: 7,
-                padding: 10,
-                color: 'black',
-                backgroundColor: 'white',
-                marginVertical: 10,
-                fontSize: 13,
-              }
-            : {
-                height: 40,
-                margin: 10,
-                // borderWidth: 0.7,
-                borderRadius: 7,
-                padding: 10,
-                color: 'black',
-                backgroundColor: 'silver',
-                marginVertical: 10,
-                fontSize: 13,
-              }
-        }
-      />
-
-      <Text
-        style={{
-          color: '#3B28B1',
-          fontFamily: 'MICEGothic-Bold',
-          fontSize: 15,
-          marginLeft: 10,
-        }}>
-        닉네임
-        {messageType === 'disable' ? (
-          <Text style={styles.duplicatedNickname}>{message}</Text>
-        ) : (
-          <Text style={styles.nonDuplicatedNickname}>{message}</Text>
-        )}
-      </Text>
-      <TextInput
-        value={newNickname}
-        defaultValue={nickname}
-        onChangeText={text => testNickname(text)}
-        editable={editable}
-        style={
-          editable
-            ? {
-                height: 40,
-                margin: 10,
-                borderWidth: 0.7,
-                borderRadius: 7,
-                padding: 10,
-                color: 'black',
-                backgroundColor: 'white',
-                marginVertical: 10,
-                fontSize: 13,
-              }
-            : {
-                height: 40,
-                margin: 10,
-                // borderWidth: 0.7,
-                borderRadius: 7,
-                padding: 10,
-                color: 'black',
-                backgroundColor: 'silver',
-                marginVertical: 10,
-                fontSize: 13,
-              }
-        }
-      />
-
-      <Text
-        style={{
-          color: '#3B28B1',
-          fontFamily: 'MICEGothic-Bold',
-          fontSize: 15,
-          marginLeft: 10,
-        }}>
-        자기소개
-      </Text>
-      <TextInput
-        value={newDescription}
-        defaultValue={description}
-        onChangeText={text => setNewDescription(text)}
-        editable={editable}
-        style={
-          editable
-            ? {
-                height: 40,
-                margin: 10,
-                borderWidth: 0.7,
-                borderRadius: 7,
-                padding: 10,
-                color: 'black',
-                backgroundColor: 'white',
-                marginVertical: 10,
-                fontSize: 13,
-              }
-            : {
-                height: 40,
-                margin: 10,
-                // borderWidth: 0.7,
-                borderRadius: 7,
-                padding: 10,
-                color: 'black',
-                backgroundColor: 'silver',
-                marginVertical: 10,
-                fontSize: 13,
-              }
-        }
-      />
-
-      <Text
-        style={{
-          color: '#3B28B1',
-          fontFamily: 'MICEGothic-Bold',
-          fontSize: 15,
-          marginLeft: 10,
-        }}>
-        전화번호
-      </Text>
-      <TextInput
-        value={newPhone}
-        defaultValue={phone}
-        onChangeText={text => setNewPhone(text)}
-        editable={editable}
-        style={
-          editable
-            ? {
-                height: 40,
-                margin: 10,
-                borderWidth: 0.7,
-                borderRadius: 7,
-                padding: 10,
-                color: 'black',
-                backgroundColor: 'white',
-                marginVertical: 10,
-                fontSize: 13,
-              }
-            : {
-                height: 40,
-                margin: 10,
-                // borderWidth: 0.7,
-                borderRadius: 7,
-                padding: 10,
-                color: 'black',
-                backgroundColor: 'silver',
-                marginVertical: 10,
-                fontSize: 13,
-              }
-        }
-      />
-
-      <Text
-        style={{
-          color: '#3B28B1',
-          fontFamily: 'MICEGothic-Bold',
-          fontSize: 15,
-          marginLeft: 10,
-        }}>
-        이메일
-      </Text>
-      <TextInput
-        value={email}
-        editable={false}
-        style={{
-          height: 40,
-          margin: 10,
-          // borderWidth: 0.2,
-          borderRadius: 10,
-          padding: 10,
-          color: 'black',
-          backgroundColor: 'silver',
-          marginVertical: 10,
-          fontSize: 13,
-        }}
-      />
-
-      <Text
-        style={{
-          color: '#3B28B1',
-          fontFamily: 'MICEGothic-Bold',
-          fontSize: 15,
-          marginLeft: 10,
-        }}>
-        가입일자
-      </Text>
-      <TextInput
-        value={joinDate}
-        editable={false}
-        style={{
-          height: 40,
-          margin: 10,
-          // borderWidth: 0.2,
-          borderRadius: 10,
-          padding: 10,
-          color: 'black',
-          backgroundColor: 'silver',
-          marginVertical: 10,
-          fontSize: 13,
-        }}
-      />
-
-      <Text
-        style={{
-          color: '#3B28B1',
-          fontFamily: 'MICEGothic-Bold',
-          fontSize: 15,
-          marginLeft: 10,
-        }}>
-        정보제공동의일자
-      </Text>
-      <TextInput
-        value={contactAgreeDate}
-        editable={false}
-        style={{
-          height: 40,
-          margin: 10,
-          // borderWidth: 0.2,
-          borderRadius: 10,
-          padding: 10,
-          color: 'black',
-          backgroundColor: 'silver',
-          marginVertical: 10,
-          fontSize: 13,
-        }}
-      />
-
-      <Text
-        style={{
-          color: '#3B28B1',
-          fontFamily: 'MICEGothic-Bold',
-          fontSize: 15,
-          marginLeft: 10,
-        }}>
-        프로필공개여부
-      </Text>
-      {/* <Text
+      <View style={styles.inputContainer}>
+        <Text style={styles.titleText}>이름</Text>
+        <TextInput
+          value={newName}
+          defaultValue={description}
+          onChangeText={text => setNewName(text)}
+          editable={editable}
+          style={[styles.inputBox, editable ? styles.editable : null]}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.titleText}>
+          닉네임 &nbsp;&nbsp;
+          <Text
+            style={[
+              styles.checkNicknameDuplicateText,
+              messageType === 'disable' ? {color: 'red'} : {color: 'blue'},
+            ]}>
+            {message}
+          </Text>
+        </Text>
+        <TextInput
+          value={newNickname}
+          defaultValue={nickname}
+          onChangeText={text => testNickname(text)}
+          editable={editable}
+          style={[styles.inputBox, editable ? styles.editable : null]}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.titleText}>자기소개</Text>
+        <TextInput
+          value={newDescription}
+          defaultValue={description}
+          onChangeText={text => setNewDescription(text)}
+          editable={editable}
+          style={[styles.inputBox, editable ? styles.editable : null]}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.titleText}>전화번호</Text>
+        <TextInput
+          value={newPhone}
+          defaultValue={phone}
+          onChangeText={text => setNewPhone(text)}
+          editable={editable}
+          style={[styles.inputBox, editable ? styles.editable : null]}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.titleText}>이메일</Text>
+        <TextInput
+          value={email}
+          editable={false}
+          style={[styles.inputBox, editable ? styles.editable : null]}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.titleText}>가입일자</Text>
+        <TextInput
+          value={joinDate}
+          editable={false}
+          style={[styles.inputBox, editable ? styles.editable : null]}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.titleText}>정보제공동의일자</Text>
+        <TextInput
+          value={contactAgreeDate}
+          editable={false}
+          style={[styles.inputBox, editable ? styles.editable : null]}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.titleText}>프로필공개여부</Text>
+        {/* <Text
         style={{color: 'black', backgroundColor: 'silver', marginVertical: 10}}>
         {profileOpen ? 'true' : 'false'}
       </Text> */}
-      {editable ? (
-        <SwitchToggle
-          switchOn={newProfileOpen}
-          onPress={() => setNewProfileOpen(!newProfileOpen)}
-          circleColorOn={'#3B28B1'} //
-          backgroundColorOn={'#937DC2'}
-          circleColorOff={'gray'}
-          backgroundColorOff={'silver'}
-          // duration={2} // 움직이는 속도
-          containerStyle={styles.toggleContainer}
-          circleStyle={styles.circle}
-        />
-      ) : (
-        <SwitchToggle
-          switchOn={newProfileOpen}
-          onPress={() => console.log()}
-          circleColorOn={'#3B28B1'} //
-          backgroundColorOn={'#937DC2'}
-          circleColorOff={'gray'}
-          backgroundColorOff={'silver'}
-          // duration={2} // 움직이는 속도
-          containerStyle={styles.toggleContainer}
-          circleStyle={styles.circle}
-        />
-      )}
+        {editable ? (
+          <SwitchToggle
+            switchOn={newProfileOpen}
+            onPress={() => setNewProfileOpen(!newProfileOpen)}
+            circleColorOn={'#3B28B1'} //
+            backgroundColorOn={'#937DC2'}
+            circleColorOff={'gray'}
+            backgroundColorOff={'silver'}
+            // duration={2} // 움직이는 속도
+            containerStyle={styles.toggleContainer}
+            circleStyle={styles.circle}
+          />
+        ) : (
+          <SwitchToggle
+            switchOn={newProfileOpen}
+            onPress={() => console.log()}
+            circleColorOn={'#3B28B1'} //
+            backgroundColorOn={'#937DC2'}
+            circleColorOff={'gray'}
+            backgroundColorOff={'silver'}
+            duration={1} // 움직이는 속도
+            containerStyle={styles.toggleContainer}
+            circleStyle={styles.circle}
+          />
+        )}
+      </View>
       <Button title="로그아웃" onPress={handleLogoutClick} />
     </ScrollView>
   );
@@ -488,9 +314,25 @@ const styles = StyleSheet.create({
     height: 40,
     // backgroundColor: 'black',
   },
-  actionText: {
-    color: 'black',
+  titleText: {
+    color: '#3B28B1',
+    fontFamily: 'MICEGothic-Bold',
+    fontSize: 17,
+    marginLeft: 10,
+    paddingLeft: 8,
   },
+  inputContainer: {
+    marginVertical: 8,
+  },
+  inputBox: {
+    margin: 10,
+    padding: 10,
+    color: '#262626',
+    marginVertical: 10,
+    fontSize: 14,
+    fontFamily: 'MICEGothic-Bold',
+  },
+  editable: {borderBottomColor: '#7954C8', borderBottomWidth: 1},
   toggleContainer: {
     // marginTop: 16,
     width: 50,
@@ -505,11 +347,11 @@ const styles = StyleSheet.create({
     height: 25,
     borderRadius: 25,
   },
-  duplicatedNickname: {
+  checkNicknameDuplicateText: {
     color: 'red',
-  },
-  nonDuplicatedNickname: {
-    color: 'black',
+    fontFamily: 'MICEGothic-Medium',
+    fontSize: 13,
+    marginLeft: 10,
   },
 });
 

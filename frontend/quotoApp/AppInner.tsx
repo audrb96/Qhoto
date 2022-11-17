@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {useEffect} from 'react';
 
 import {useSelector} from 'react-redux';
 import {Dimensions} from 'react-native';
@@ -60,15 +59,17 @@ appTheme.colors.background = 'white';
 function AppInner() {
   const dispatch = useAppDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.user.email);
-  let token;
-  useEffect(() => {
+  const [isReady, setIsReady] = React.useState(false);
+
+  React.useEffect(() => {
     const getTokenAndRefresh = async () => {
       try {
-        token = await AsyncStorage.getItem('accessToken');
+        const token = await AsyncStorage.getItem('accessToken');
         if (!token) {
           return;
         }
-        getUserInfoApi(
+
+        await getUserInfoApi(
           (response: any) => {
             let {
               nickname,
@@ -101,136 +102,124 @@ function AppInner() {
             );
           },
           (err: any) => {
-            console.log('실패');
-            console.log(err);
+            console.log(err.response);
           },
         );
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsReady(true);
       }
     };
+
     getTokenAndRefresh();
   }, [dispatch]);
 
   return (
     <GestureHandlerRootView style={{flex: 1, maxWidth: 420}}>
-      <NavigationContainer theme={appTheme}>
-        {isLoggedIn ? (
-          <Tab.Navigator
-            initialRouteName="MyQuest"
-            screenOptions={({route}) => ({
-              tabBarIcon: ({focused, color}) => {
-                let iconName = '';
-                let size = 25;
+      {isReady ? (
+        <NavigationContainer theme={appTheme}>
+          {isLoggedIn ? (
+            <Tab.Navigator
+              initialRouteName="MyQuest"
+              screenOptions={({route}) => ({
+                tabBarIcon: ({focused, color}) => {
+                  let iconName = '';
+                  let size = 25;
 
-                if (route.name === 'MyQuest') {
-                  iconName = 'exclamation-circle';
-                  size = 30;
-                } else if (route.name === 'FriendsFeedStackScreen') {
-                  iconName = 'house-user';
-                } else if (route.name === 'AllFeedStackScreen') {
-                  iconName = 'search';
-                } else if (route.name === 'FriendListStackScreen') {
-                  iconName = 'users';
-                } else if (route.name === 'MyPageStackScreen') {
-                  iconName = 'user-circle';
-                  size = 28;
-                }
-
-                // You can return any component that you like here!
-                return (
-                  <FontAwesome5 name={iconName} size={size} color={color} />
-                );
-              },
-              tabBarStyle: {
-                height: 70,
-                backgroundColor: 'white',
-                borderTopWidth: 2,
-                paddingTop: 5,
-                paddingBottom: 10,
-              },
-              tabBarLabelStyle: {fontFamily: 'Happiness-Sans-Regular'},
-              tabBarActiveTintColor: '#4B179F',
-              tabBarInactiveTintColor: 'gray',
-              headerShown: true,
-              tabBarHideOnKeyboard: true,
-            })}>
-            <Tab.Screen
-              name="FriendsFeedStackScreen"
-              component={FriendsFeedStackScreen}
-              options={{
-                title: '친구 피드',
-                headerShown: false,
-                unmountOnBlur: true,
-              }}
-            />
-            <Tab.Screen
-              name="AllFeedStackScreen"
-              component={AllFeedStackScreen}
-              options={{
-                title: '전체 피드',
-                headerShown: false,
-              }}
-            />
-            <Tab.Screen
-              name="MyQuest"
-              component={MyQuest}
-              options={{
-                title: '퀘스트',
-                header: () => <QhotoHeader leftIcon={false} />,
-                unmountOnBlur: true,
-              }}
-            />
-            <Tab.Screen
-              name="FriendListStackScreen"
-              component={FriendListStackScreen}
-              options={{
-                title: '친구 목록',
-                headerShown: false,
-              }}
-            />
-            <Tab.Screen
-              name="MyPageStackScreen"
-              component={MyPageStackScreen}
-              options={{
-                title: '마이페이지',
-                header: () => <QhotoHeader leftIcon={false} />,
-                headerShown: false,
-                unmountOnBlur: true,
-              }}
-            />
-          </Tab.Navigator>
-        ) : (
-          <Stack.Navigator>
-            <Stack.Screen
-              name="SignIn"
-              component={SignIn}
-              options={{title: '로그인', headerShown: false}}
-            />
-            <Stack.Screen
-              name="SignUp"
-              component={SignUp}
-              options={{title: '회원가입', headerShown: false}}
-            />
-            <Stack.Screen
-              name="LocationAgree"
-              component={LocationAgree}
-              options={{
-                title: '위치기반서비스 이용약관 동의',
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="StateAgree"
-              component={StateAgree}
-              options={{
-                title: '개인정보 수집 및 이용 동의',
-                headerShown: false,
-              }}
-            />
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
+                  if (route.name === 'MyQuest') {
+                    iconName = 'exclamation-circle';
+                    size = 30;
+                  } else if (route.name === 'FriendsFeedStackScreen') {
+                    iconName = 'house-user';
+                  } else if (route.name === 'AllFeedStackScreen') {
+                    iconName = 'search';
+                  } else if (route.name === 'FriendListStackScreen') {
+                    iconName = 'users';
+                  } else if (route.name === 'MyPageStackScreen') {
+                    iconName = 'user-circle';
+                    size = 28;
+                  }
+                  // You can return any component that you like here!
+                  return (
+                    <FontAwesome5 name={iconName} size={size} color={color} />
+                  );
+                },
+                tabBarStyle: {
+                  height: 70,
+                  backgroundColor: 'white',
+                  borderTopWidth: 2,
+                  paddingTop: 5,
+                  paddingBottom: 10,
+                },
+                tabBarLabelStyle: {fontFamily: 'Happiness-Sans-Regular'},
+                tabBarActiveTintColor: '#4B179F',
+                tabBarInactiveTintColor: 'gray',
+                headerShown: true,
+                tabBarHideOnKeyboard: true,
+              })}>
+              <Tab.Screen
+                name="FriendsFeedStackScreen"
+                component={FriendsFeedStackScreen}
+                options={{
+                  title: '친구 피드',
+                  headerShown: false,
+                  unmountOnBlur: true,
+                }}
+              />
+              <Tab.Screen
+                name="AllFeedStackScreen"
+                component={AllFeedStackScreen}
+                options={{
+                  title: '전체 피드',
+                  headerShown: false,
+                  unmountOnBlur: true,
+                }}
+              />
+              <Tab.Screen
+                name="MyQuest"
+                component={MyQuest}
+                options={{
+                  title: '퀘스트',
+                  header: () => <QhotoHeader leftIcon={false} />,
+                  unmountOnBlur: true,
+                }}
+              />
+              <Tab.Screen
+                name="FriendListStackScreen"
+                component={FriendListStackScreen}
+                options={{
+                  title: '친구 목록',
+                  headerShown: false,
+                }}
+              />
+              <Tab.Screen
+                name="MyPageStackScreen"
+                component={MyPageStackScreen}
+                options={{
+                  title: '마이페이지',
+                  header: () => <QhotoHeader leftIcon={false} />,
+                  headerShown: false,
+                  unmountOnBlur: true,
+                }}
+              />
+            </Tab.Navigator>
+          ) : (
+            <Stack.Navigator>
+              <Stack.Screen
+                name="SignIn"
+                component={SignIn}
+                options={{title: '로그인', headerShown: false}}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUp}
+                options={{title: '회원가입', headerShown: false}}
+              />
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      ) : null}
     </GestureHandlerRootView>
   );
 }
