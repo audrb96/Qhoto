@@ -163,10 +163,10 @@ function FriendList() {
   }) => (
     <TouchableOpacity
       style={{
-        flex: 1,
         backgroundColor: 'gray',
-        borderRadius: 10,
-        marginVertical: 1,
+        padding: 10,
+        // borderRadius: 10,
+        // marginVertical: 1,
       }}
       onPress={() => navigation.navigate('OtherPage', {userId: item.userId})}>
       <View style={{flexDirection: 'row'}}>
@@ -209,7 +209,7 @@ function FriendList() {
   );
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <QhotoHeader
         leftIcon={false}
         rightIcon={rightIcon}
@@ -228,16 +228,24 @@ function FriendList() {
           />
         </List.Accordion>
       </View>
-      <View style={{marginVertical: 5}}>
+      <View style={{flex: 1, marginBottom: 65}}>
         <List.Accordion
-          // Todo: Customizing
-          // Todo: 각자 스마트폰 설정 폰트로 보이는지 확인
-          // theme={{colors: {background: 'red'}}}
-          // style={{backgroundColor: 'red', marginBottom: 20}}
           title="친구목록" // Todo: 친구목록 개수
           expanded={openFriendList}
-          onPress={() => setOpenFriendList(!openFriendList)}>
-          <FlatList data={friendList} renderItem={renderFriendList} />
+          onPress={() => setOpenFriendList(!openFriendList)}
+          style={{height: 65}}>
+          <FlatList
+            data={friendList}
+            renderItem={renderFriendList}
+            keyExtractor={item => item.id}
+          />
+          {/* <View style={{marginBottom: 100}}>
+          <FlatList
+            data={DATA}
+            renderItem={renderItem2}
+            keyExtractor={item => item.id}
+          />
+        </View> */}
         </List.Accordion>
       </View>
     </View>
@@ -260,6 +268,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -10,
     right: -20,
+  },
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 22,
   },
 });
 export default FriendList;
