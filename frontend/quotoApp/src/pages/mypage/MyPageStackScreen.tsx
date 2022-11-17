@@ -5,6 +5,7 @@ import QhotoLevel from './QhotoLevel';
 import QhotoHeader from '../../components/QhotoHeader';
 import EditMyProfile from './EditMyProfile';
 import QhotoLog from './QhotoLog';
+import MyLoader from './../../components/MyLoader';
 
 const TransitionScreenOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -34,6 +35,11 @@ function MyPageStackScreen() {
       <MyPageStack.Screen
         name="EditMyProfile"
         component={EditMyProfile}
+        options={{headerShown: false}}
+      />
+      <MyPageStack.Screen
+        name="MyLoader"
+        component={MyLoader}
         options={{headerShown: false}}
       />
     </MyPageStack.Navigator>

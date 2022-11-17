@@ -65,7 +65,7 @@ function AppInner() {
     const getTokenAndRefresh = async () => {
       try {
         token = await AsyncStorage.getItem('accessToken');
-        if (true) {
+        if (!token) {
           return;
         }
         getUserInfoApi(
