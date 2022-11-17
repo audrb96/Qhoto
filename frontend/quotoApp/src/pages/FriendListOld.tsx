@@ -12,19 +12,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-  PermissionsAndroid,
-  Platform,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {
-  FlatList,
-  TextInput,
-  TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
+import {FlatList, TextInput} from 'react-native-gesture-handler';
 import {Avatar, List} from 'react-native-paper';
 import ImageModal from 'react-native-image-modal';
-import Contacts from 'react-native-contacts';
-
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import QhotoHeader from './../components/QhotoHeader';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
@@ -34,7 +26,6 @@ import {
   friendListApi,
   addFriendApi,
   receiveListApi,
-  getContactsApi,
 } from '../api/friend';
 
 const {width, height} = Dimensions.get('window');
@@ -43,14 +34,11 @@ function FriendList() {
   const navigation = useNavigation();
 
   const [openFriendList, setOpenFriendList] = useState(true);
-  const [openContactList, setOpenContactList] = useState(false);
+  const [openContactList, setOpenContactList] = useState(true);
   const [friendList, setFriendList] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
-  const [myContacts, setMyContacts] = useState([]);
-  const [callbackState, setCallbackState] = useState(true);
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
@@ -73,50 +61,8 @@ function FriendList() {
     );
   };
 
-  // useEffect(contact 기반 추천 리스트 + 친구목록)
+  // 친구 리스트
   useEffect(() => {
-    // contact 기반 추천 리스트
-    requestContactPermission()
-      .then((didGetPermission: Boolean) => {
-        if (didGetPermission) {
-          // Contacts.getAll((err, contacts) => {
-          //   if (err) {
-          //     throw err;
-          //   }
-          Contacts.getAll().then(async contacts => {
-            let contactList = [];
-            await contacts.forEach(contact =>
-              contactList.push(
-                contact.phoneNumbers[0].number.replaceAll('-', '') +
-                  ':' +
-                  contact.displayName,
-              ),
-            );
-
-            let contactData = JSON.stringify(contactList)
-              .replace('[', '{')
-              .replace(']', '}')
-              .replaceAll(':', '":"');
-
-            await getContactsApi(
-              contactData,
-              async (res: any) => {
-                await console.log('getContactsApi - res', res.data);
-                await setMyContacts(res.data);
-              },
-              (err: any) => {
-                console.log('getContactsApi - err', err);
-              },
-            );
-          });
-        } else {
-          Alert.alert('no permission : 연락처 접근 권한이 없습니다.');
-        }
-      })
-      .catch(() => {
-        Alert.alert('알림', '연락처 접근 권한을 허용해주세요.');
-      });
-    // 친구목록
     friendListApi(
       (res: any) => {
         console.log('friendListApi - res', res);
@@ -127,35 +73,8 @@ function FriendList() {
         console.log('friendListApi - err', err.response);
       },
     );
-  }, [isFocused, callbackState]); // isFocused : navigation.goback 을 통해 오면 refresh 되게하는 거
+  }, [isFocused]); // isFocused : navigation.goback 을 통해 오면 refresh 되게하는 거
 
-  // 권한 확인
-  async function requestContactPermission() {
-    if (Platform.OS === 'ios') {
-      // console.warn('iOS');
-      return true;
-    } else {
-      // console.warn('Android');
-
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS,
-        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-      ]);
-
-      if (
-        granted['android.permission.WRITE_CONTACTS'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-        granted['android.permission.READ_CONTACTS'] ===
-          PermissionsAndroid.RESULTS.GRANTED
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
-  // 친구목록
   const Item = ({
     item,
     // onPress, backgroundColor, textColor,
@@ -198,12 +117,22 @@ function FriendList() {
   );
 
   //Icon
-  const rightIcon = (
+  const leftIcon = (
     <AntDesign
       name="adduser"
       size={30}
       color="#3B28B1"
       onPress={gotoFindFriend}
+      style={styles.leftIcon}
+    />
+  );
+
+  const rightIcon = (
+    <AntDesign
+      name="contacts"
+      size={30}
+      color="#3B28B1"
+      onPress={() => navigation.navigate('ContactsPage')}
       style={styles.rightIcon}
     />
   );
@@ -211,21 +140,16 @@ function FriendList() {
   return (
     <View>
       <QhotoHeader
-        leftIcon={false}
+        leftIcon={leftIcon}
         rightIcon={rightIcon}
         missionVisible={false}
       />
       <View>
         <List.Accordion
-          title="추천친구"
+          title="추천 친구"
           expanded={openContactList}
           onPress={() => setOpenContactList(!openContactList)}>
-          <ContactsPage
-            myContacts={myContacts}
-            setMyContacts={setMyContacts}
-            setCallbackState={setCallbackState}
-            callbackState={callbackState}
-          />
+          <ContactsPage />
         </List.Accordion>
       </View>
       <View style={{marginVertical: 5}}>
