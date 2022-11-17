@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Modal,
   Pressable,
+  RefreshControl,
   StyleSheet,
   NativeModules,
 } from 'react-native';
@@ -39,6 +40,15 @@ interface OtherLog {
 
 function OtherPage({route}) {
   const navigation = useNavigation();
+  const [callbackState, setCallbackState] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+  const pullDownScreen = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+    }, 10);
+    setCallbackState(!callbackState);
+  };
   const dispatch = useAppDispatch();
 
   const goToLevel = () => {
@@ -102,7 +112,7 @@ function OtherPage({route}) {
         console.log('getOtherLogApi - err', err);
       },
     );
-  }, [isFriend]);
+  }, [isFriend, callbackState]);
 
   let iconName = '';
   let iconOrder = '';
@@ -182,7 +192,13 @@ function OtherPage({route}) {
   );
 
   return otherInfo === undefined || otherLogs === undefined ? null : (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refresh}
+          onRefresh={() => pullDownScreen()}
+        />
+      }>
       <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
       <View // 프로필
       >

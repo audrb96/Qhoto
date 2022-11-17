@@ -228,12 +228,12 @@ function FriendList() {
           />
         </List.Accordion>
       </View>
-      <View style={{flex: 1, marginBottom: 65}}>
+      <View style={{flex: 1, marginBottom: 60}}>
         <List.Accordion
           title="친구목록" // Todo: 친구목록 개수
           expanded={openFriendList}
           onPress={() => setOpenFriendList(!openFriendList)}
-          style={{height: 65}}>
+          style={{height: 60}}>
           <FlatList
             data={friendList}
             renderItem={renderFriendList}
