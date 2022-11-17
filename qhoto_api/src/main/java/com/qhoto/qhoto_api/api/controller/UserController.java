@@ -123,7 +123,7 @@ public class UserController {
      * 연락처에 있는 사용자 정보를 가져오는 api
      * @param user
      * @param contacts
-     * @return
+     * @return {@link List<ContactRes>}
      */
     @PostMapping("/contact")
     public ResponseEntity<List<ContactRes>> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {

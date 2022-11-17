@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 public class QuestCountRes {
-    private String typeCode;
-    private int sumPoint;
+    private final String typeCode;
+    private final int sumPoint;
 
 
     @Builder

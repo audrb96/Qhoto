@@ -17,7 +17,22 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     @Query("select f.status from FriendRequest f where f.requestUser.id = :id and f.responseUser.id = :friendId")
     Optional<RequestStatus> findRequestStatusById(@Param("id") Long Id, @Param("friendId") Long friendId);
 
+    /**
+     * 친구 요청유저, 받은 유저를 받고 요청 상태와 다른 친구요청정보를 가져온다.
+     * @param reqUser
+     * @param ResUser
+     * @param status
+     * @return {@link Optional<FriendRequest>}
+     */
     Optional<FriendRequest> findByRequestUserAndResponseUserAndStatusNot(User reqUser, User ResUser, RequestStatus status);
+
+    /**
+     * 친구 요청유저, 받은 유저, 요청 상태에 맞는 FriendRequest를 가져온다.
+     * @param reqUser
+     * @param ResUser
+     * @param status
+     * @return {@link Optional<FriendRequest>}
+     */
     Optional<FriendRequest> findByRequestUserAndResponseUserAndStatus(User reqUser, User ResUser, RequestStatus status);
 
     @Query("select f from FriendRequest f where (f.requestUser.id=:userId and f.responseUser.id=:friendId) or (f.requestUser.id=:friendId and f.responseUser.id=:userId)")

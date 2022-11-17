@@ -47,10 +47,6 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
         this.jpaQueryFactory = new JPAQueryFactory(em);
     }
 
-//    @Override
-//    public Page<FeedAllDto> findAllByCondition(FeedAllReq feedAllReq, Pageable pageable){
-//        return null;
-//    }
     @Override
     public Page<FeedAllDto> findByCondition(User user, FeedAllReq feedAllReq, Pageable pageable) {
         List<FeedAllDto> feedList = jpaQueryFactory
@@ -68,7 +64,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCon{
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        
+
         JPAQuery<FeedAllDto> countQuery = jpaQueryFactory
                 .select(Projections.constructor(FeedAllDto.class,
                         feed.id,

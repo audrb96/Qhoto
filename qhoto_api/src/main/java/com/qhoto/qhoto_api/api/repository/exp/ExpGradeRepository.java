@@ -10,7 +10,12 @@ import java.util.List;
 
 public interface ExpGradeRepository extends JpaRepository<ExpGrade, Long> {
 
-
+    /**
+     * 경험치로 경험치등급을 확인한다.
+     * @param point
+     * @param pageable
+     * @return {@link List<ExpGrade>}
+     */
     @Query("select e from ExpGrade e where e.boundaryPoint<=:point")
     List<ExpGrade> findByBoundaryPoint(@Param("point") int point, Pageable pageable);
 

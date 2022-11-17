@@ -8,5 +8,5 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class IsClearRes {
-    private boolean isClear;
+    private final boolean isClear;
 }

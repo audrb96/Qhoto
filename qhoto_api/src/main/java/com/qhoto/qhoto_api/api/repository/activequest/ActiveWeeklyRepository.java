@@ -13,15 +13,27 @@ import java.util.List;
 
 @Repository
 public interface ActiveWeeklyRepository extends JpaRepository<ActiveWeekly, Long> {
-
+    /**
+     * 활성 주간 퀘스트를 찾는다.
+      * @param activeWeeklyId
+     * @return {@link ActiveWeekly}
+     */
     ActiveWeekly findWeeklyById(Long activeWeeklyId);
 
-    List<ActiveWeekly> findTop3ByStatusOrderByDateDesc(QuestStatus questStatus);
-
+    /**
+     * 활정 주간 퀘스트를 disable 에서 active 로 변경
+     * @param today
+     * @return {@link int}
+     */
     @Modifying
     @Query("update ActiveWeekly a set a.status = 'A' where a.date = :today ")
     int updateWeeklyQuestDtoA(@Param("today") LocalDate today);
 
+    /**
+     * 활성 주간 퀘스트를 active 에서 disable 로 변경
+     * @param lastWeek
+     * @return
+     */
     @Modifying
     @Query("update ActiveWeekly a set a.status = 'D' where a.date = :lastWeek")
     int updateWeeklyQuestAtoD(@Param("lastWeek") LocalDate lastWeek);
