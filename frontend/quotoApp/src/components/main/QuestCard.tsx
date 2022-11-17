@@ -63,13 +63,15 @@ const QuestCard: React.FC<Props> = props => {
           questName={frontCard.questName}
           questType={frontCard.questType}
           questImage={frontCard.questImage}
+          questDifficulty={frontCard.questDifficulty}
           handleRerollClick={handleRerollClick}
           isComplete={isComplete}
         />
         <CardTemplate
           questName={backCard.questName}
           questType={backCard.questType}
-          questImage={frontCard.questImage}
+          questImage={backCard.questImage}
+          questDifficulty={backCard.questDifficulty}
           handleRerollClick={handleRerollClick}
           isComplete={isComplete}
         />

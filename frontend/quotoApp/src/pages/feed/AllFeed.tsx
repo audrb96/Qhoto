@@ -2,275 +2,349 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
+  Dimensions,
   SafeAreaView,
   TouchableOpacity,
   FlatList,
   Image,
   Pressable,
-  Modal,
   StyleSheet,
 } from 'react-native';
-import QhotoHeader from '../../components/QhotoHeader';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import SelectedFeed from './SelectedFeed';
-import {getAllFeeds, getSelectedFeed} from '../../api/feed';
-import MissionModal from './MissionModal';
 import Video from 'react-native-video';
+import Modal from 'react-native-modal';
+import CheckBox from '@react-native-community/checkbox';
 
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/reducer';
 
+import info from '../../components/info';
+
+import {setFeedMission, getAllFeeds} from '../../api/feed';
+
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FeedDetail from '../../components/feed/FeedDetail';
+import AllFeedStackScreen from './AllFeedStackScreen';
+
+interface Quest {
+  questId: number;
+  activeQuestId: number;
+  questName: string;
+  questType: string;
+}
+
+interface Feed {
+  feedId: number;
+  userId: number;
+  userImage: string;
+  nickname: string;
+  feedImage: string;
+  feedTime: string;
+  questName: string;
+  questType: string;
+  questPoint: number;
+  expPoint: number;
+  expGrade: string;
+  likeStatus: string;
+  likeCount: number;
+  feedType: string;
+  commentList: Comment[];
+}
+
+interface Comment {
+  userId: number;
+  commentContext: string;
+  commentTime: string;
+}
+
+const questTypes: {
+  [key: string]: {
+    typeName: string;
+    iconName: string;
+    questColorCode: string;
+    stamp: any;
+  };
+} = info.questTypes;
+
+const tabMenu = ['DAY', 'WEEK', 'MONTH'];
+const {width, height} = Dimensions.get('window');
+const columnNum = 3;
+
 function AllFeed({navigation}) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [missionVisible, setMissionVisible] = useState(false);
-  const [selectedIdx, setSelectedIdx] = useState(0);
-  const [Feeds, setFeeds] = useState([]);
-  const [selectedBox, setSelectedBox] = useState([true, true, true]);
-  const [condition, setCondition] = useState([121, 122, 123]);
-  const [duration, setDuration] = useState('D');
-  const [commentList, setComment] = useState([]);
-  const allQuest = useSelector((state: RootState) => state.quest);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [detailModalVisible, setDetailModalVisible] = useState(false);
+  const [allFeeds, setAllFeeds] = useState<Feed[]>();
+  const [selectedTab, setSelectedTab] = useState('');
+  const [selectedQuests, setSelectedQuests] = useState([true, true, true]);
+  const [questLists, setQuestLists] = useState<{[key: string]: Quest[]}>();
 
   useEffect(() => {
-    let change_condition = '';
-    condition.forEach(elem => {
-      change_condition += elem + ',';
-    });
-    const curcondtion = change_condition.substring(
-      0,
-      change_condition.length - 1,
+    setFeedMission(
+      (res: any) => {
+        const {dailyOptions, weeklyOptions, monthlyOptions} = res.data.options;
+        console.log(dailyOptions);
+        const newQuestLists: {[key: string]: Quest[]} = {};
+        newQuestLists.DAY = dailyOptions;
+        newQuestLists.WEEK = weeklyOptions;
+        newQuestLists.MONTH = monthlyOptions;
+        setQuestLists(newQuestLists);
+      },
+      (err: any) => {
+        console.log(err.response);
+      },
     );
-    const params = [duration, curcondtion];
-    async function SetAllFeeds() {
-      await getAllFeeds(
-        params,
-        res => {
-          setFeeds(res.data.content);
+  }, []);
+
+  useEffect(() => {
+    if (questLists !== undefined) {
+      setSelectedTab('DAY');
+    }
+  }, [questLists]);
+
+  useEffect(() => {
+    if (selectedTab !== '') {
+      setSelectedQuests([true, true, true]);
+    }
+  }, [selectedTab]);
+
+  useEffect(() => {
+    if (questLists !== undefined) {
+      let condition = '';
+      questLists[selectedTab].forEach((item, index) => {
+        if (selectedQuests[index]) {
+          condition += `${item.activeQuestId},`;
+        }
+      });
+      getAllFeeds(
+        selectedTab.charAt(0),
+        condition,
+        (res: any) => {
+          console.log(res.data.content);
+          setAllFeeds(res.data.content);
         },
-        err => {
-          console.log(err);
+        (err: any) => {
+          console.log(err.response.data);
         },
       );
     }
-    SetAllFeeds();
-  }, [duration, condition]);
-
-  const rightIcon = (
-    <TouchableOpacity
-      onPress={() => {
-        console.log('미션필터펼치기');
-        setMissionVisible(true);
-      }}>
-      <Ionicons
-        name="options-outline"
-        size={40}
-        color="#3B28B1"
-        style={{
-          position: 'absolute',
-          width: 40,
-          height: 40,
-          right: 0,
-          top: -20,
-        }}
-      />
-    </TouchableOpacity>
-  );
-
-  // content.feedId = 14, 33이 있다.
-  const Item = ({content, width, height}) =>
-    content.feedType === 'VIDEO' ? (
-      <View
-        style={{
-          width,
-          height,
-        }}>
-        {/* <Text>{content.feedImage}</Text> */}
-
-        <TouchableOpacity
-          onPress={async () => {
-            await getSelectedFeed(
-              content.feedId,
-              res => {
-                setComment(res.data);
-              },
-              err => {
-                console.log(err);
-              },
-            );
-            setModalVisible(true);
-          }}>
-          <Video
-            source={{
-              uri: content.feedImage,
-            }}
-            style={[
-              {width: '100%', height: '100%'},
-              {
-                opacity: missionVisible ? 0.3 : 1,
-              },
-            ]}
-            // fullscreen={true}
-            // resizeMode={'contain'}
-            resizeMode={'cover'}
-            // resizeMode={'stretch'}
-            repeat={true}
-            // controls={true}
-            paused={true}
-          />
-        </TouchableOpacity>
-      </View>
-    ) : (
-      <View
-        style={{
-          width,
-          height,
-        }}>
-        {/* <Text>{content.feedImage}</Text> */}
-
-        <TouchableOpacity
-          onPress={async () => {
-            await getSelectedFeed(
-              content.feedId,
-              res => {
-                setComment(res.data);
-              },
-              err => {
-                console.log(err);
-              },
-            );
-            setModalVisible(true);
-          }}>
-          <Image
-            style={[
-              {width: '100%', height: '100%', resizeMode: 'stretch'},
-              {
-                opacity: missionVisible ? 0.3 : 1,
-              },
-            ]}
-            source={{
-              uri: content.feedImage,
-            }}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-
-  const [containerWidth, setContainerWidth] = useState(0);
-  const numColumns = 3;
-  const parentFunction = () => {
-    setModalVisible(!modalVisible);
-  };
-  const missionvisibleFunction = () => {
-    setMissionVisible(!missionVisible);
-  };
+  }, [selectedQuests]);
 
   return (
-    <SafeAreaView
-      style={[
-        {flex: 1},
-        {backgroundColor: missionVisible ? 'rgba(0, 0, 0, 0.3)' : 'white'},
-      ]}>
-      <QhotoHeader
-        leftIcon={false}
-        rightIcon={rightIcon}
-        missionVisible={missionVisible}
-      />
-
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          flex: 0.1,
-          alignItems: 'center',
-        }}>
-        <TouchableOpacity
-          onPress={() => {
-            setSelectedIdx(0);
-            setDuration('D');
-          }}>
-          <Text style={selectedIdx === 0 ? styles.onText : styles.offText}>
-            DAY
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            setSelectedIdx(1);
-            setDuration('W');
-          }}>
-          <Text style={selectedIdx === 1 ? styles.onText : styles.offText}>
-            WEEK
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            setSelectedIdx(2);
-            setDuration('M');
-          }}>
-          <Text style={selectedIdx === 2 ? styles.onText : styles.offText}>
-            MONTH
-          </Text>
-        </TouchableOpacity>
+    <View style={{flex: 1}}>
+      <View style={styles.tabMenuContainer}>
+        {tabMenu.map((tab, index) => (
+          <Pressable
+            key={index}
+            style={{
+              width: 90,
+              paddingVertical: 10,
+            }}
+            onPress={() => setSelectedTab(tab)}>
+            <Text
+              style={[
+                styles.tabMenuText,
+                {color: selectedTab === tab ? '#3B28B1' : '#9A9A9A'},
+              ]}>
+              {tab}
+            </Text>
+          </Pressable>
+        ))}
       </View>
       <View style={{flex: 1}}>
-        <FlatList
-          data={Feeds}
-          onLayout={e => setContainerWidth(e.nativeEvent.layout.width)}
-          renderItem={({item}) => (
-            <Item
-              content={item}
-              width={containerWidth / numColumns}
-              height={containerWidth / numColumns}
-            />
-          )}
-          numColumns={numColumns}
-        />
-      </View>
-
-      <View>
-        <Modal
-          animationType="none"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <Pressable
-            style={styles.centeredView}
-            onPress={() => {
-              setModalVisible(!modalVisible);
+        {allFeeds?.length === 0 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            <Pressable style={styles.modalView}>
-              <SelectedFeed
-                parentFunction={parentFunction}
-                props={commentList}
-              />
-            </Pressable>
-          </Pressable>
-        </Modal>
+            <FontAwesome name="times-circle" size={110} color="#3B28B1" />
+            <Text
+              style={{
+                color: '#3B28B1',
+                fontFamily: 'esamanru-Medium',
+                fontSize: 22,
+                marginTop: 20,
+              }}>
+              완료한 퀘스트가 없습니다
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={allFeeds}
+            onLayout={e => {}}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.allFeedItem}
+                onPress={() => setDetailModalVisible(!detailModalVisible)}>
+                {item.feedType === 'IMAGE' ? (
+                  <Image
+                    style={[
+                      {width: '100%', height: '100%', resizeMode: 'cover'},
+                    ]}
+                    source={{
+                      uri: item.feedImage,
+                    }}
+                  />
+                ) : (
+                  <Video
+                    source={{
+                      uri: item.feedImage,
+                    }}
+                    style={[{width: '100%', height: '100%'}]}
+                    resizeMode={'cover'}
+                    repeat={true}
+                    paused={true}
+                  />
+                )}
+              </TouchableOpacity>
+            )}
+            numColumns={columnNum}
+          />
+        )}
       </View>
 
-      <View>
+      <Modal
+        isVisible={detailModalVisible}
+        onBackdropPress={() => setDetailModalVisible(!detailModalVisible)}
+        onBackButtonPress={() => setDetailModalVisible(!detailModalVisible)}
+        backdropOpacity={0.1}
+        deviceWidth={width}
+        deviceHeight={height}
+        backdropTransitionInTiming={100}
+        backdropTransitionOutTiming={100}
+        animationIn="bounceIn"
+        animationOut="bounceOut"
+        style={{margin: 15}}>
+        <View style={styles.detailContainer}>
+          <View style={{}}>
+            <FontAwesome name="close" />
+          </View>
+        </View>
+      </Modal>
+
+      <TouchableOpacity
+        style={styles.filterButton}
+        onPress={() => setFilterModalVisible(!filterModalVisible)}>
+        <FontAwesome name="th-list" color="white" size={30} />
+      </TouchableOpacity>
+      {questLists === undefined || selectedTab === '' ? null : (
         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={missionVisible}
-          onRequestClose={() => {
-            setMissionVisible(!missionVisible);
-          }}>
-          <MissionModal
-            parentFunction={missionvisibleFunction}
-            props={duration}
-            setCondition={setCondition}
-            selectedBox={selectedBox}
-            setSelectedBox={setSelectedBox}
-          />
+          isVisible={filterModalVisible}
+          onBackdropPress={() => setFilterModalVisible(!filterModalVisible)}
+          onBackButtonPress={() => setFilterModalVisible(!filterModalVisible)}
+          backdropOpacity={0.1}
+          deviceWidth={width}
+          deviceHeight={height}
+          backdropTransitionInTiming={200}
+          backdropTransitionOutTiming={200}
+          style={{margin: 0}}>
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <View
+              style={{
+                borderTopRightRadius: 20,
+                borderTopLeftRadius: 20,
+                overflow: 'hidden',
+                backgroundColor: 'white',
+              }}>
+              <View style={{backgroundColor: '#3B28B1', paddingVertical: 15}}>
+                <Text
+                  style={{
+                    fontFamily: 'esamanru-Bold',
+                    fontSize: 25,
+                    color: 'white',
+                    textAlign: 'center',
+                  }}>
+                  QUEST!
+                </Text>
+              </View>
+              {questLists[selectedTab].map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.filterOptionItem,
+                    {
+                      backgroundColor: selectedQuests[index]
+                        ? 'white'
+                        : 'white',
+                    },
+                  ]}
+                  onPress={() => {
+                    const newSelectBox = [...selectedQuests];
+                    newSelectBox[index] = !newSelectBox[index];
+                    setSelectedQuests(newSelectBox);
+                  }}>
+                  <CheckBox
+                    value={selectedQuests[index]}
+                    animationDuration={0.1}
+                    onChange={() => {
+                      const newSelectBox = [...selectedQuests];
+                      newSelectBox[index] = !newSelectBox[index];
+                      setSelectedQuests(newSelectBox);
+                    }}
+                    tintColors={{
+                      true: questTypes[item.questType].questColorCode,
+                      false: '#9A9A9A',
+                    }}
+                  />
+                  <Text
+                    style={[
+                      styles.filterOptionText,
+                      {
+                        color: selectedQuests[index]
+                          ? questTypes[item.questType].questColorCode
+                          : '#9A9A9A',
+                      },
+                    ]}>
+                    {item.questName.split('<br>').map(item => `${item} `)}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
         </Modal>
-      </View>
-    </SafeAreaView>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  tabMenuContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 0.1,
+  },
+  tabMenuText: {
+    fontSize: 16,
+    marginHorizontal: 0,
+    fontFamily: 'Comfortaa-Bold',
+    textAlign: 'center',
+  },
+  filterButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    padding: 20,
+    borderRadius: 40,
+    backgroundColor: '#3B28B1',
+    elevation: 5,
+  },
+  filterOptionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 30,
+    paddingLeft: 15,
+  },
+  filterOptionText: {
+    fontFamily: 'esamanru-Medium',
+    fontSize: 20,
+    marginLeft: 10,
+  },
+  allFeedItem: {
+    width: width / columnNum,
+    height: width / columnNum,
+  },
+  detailContainer: {flex: 1, backgroundColor: 'red'},
   centeredView: {
     flex: 1,
     justifyContent: 'center',

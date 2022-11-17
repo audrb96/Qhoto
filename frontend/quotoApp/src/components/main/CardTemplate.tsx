@@ -1,14 +1,23 @@
 import React from 'react';
-import {Dimensions, StyleSheet, View, Text, Image} from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 
 import info from '../info';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 interface Props {
   questName: string;
   questType: string;
   questImage: string;
+  questDifficulty: number;
   handleRerollClick: any;
   isComplete: boolean;
 }
@@ -25,29 +34,47 @@ const questTypes: {
 } = info.questTypes;
 
 const CardTemplate: React.FC<Props> = props => {
-  const {questName, questType, questImage, handleRerollClick, isComplete} =
-    props;
+  const {
+    questName,
+    questType,
+    questImage,
+    handleRerollClick,
+    isComplete,
+    questDifficulty,
+  } = props;
+
+  const {typeName, iconName, questColorCode, stamp} = questTypes[questType];
 
   return (
     <View style={styles.card}>
       {isComplete ? null : (
-        <Icon
-          name="sync"
-          style={styles.rerollIcon}
-          onPress={handleRerollClick}
-        />
+        <TouchableOpacity style={styles.rerollIcon} onPress={handleRerollClick}>
+          <Icon name="sync" color="#C7C7C7" size={20} />
+        </TouchableOpacity>
       )}
       <View style={styles.labelContainer}>
         <View
           style={[
             styles.label,
             {
-              backgroundColor: questTypes[questType].questColorCode,
+              backgroundColor: questColorCode,
             },
           ]}>
           <Text style={styles.labelContent}>
-            <Icon name={questTypes[questType].iconName} size={15} />
-            &nbsp;&nbsp; {questTypes[questType].typeName} 퀘스트
+            <Icon name={iconName} size={15} />
+            &nbsp;&nbsp; {typeName} 퀘스트
+          </Text>
+        </View>
+        <View style={{paddingTop: 10}}>
+          <Text>
+            {[...Array(questDifficulty)].map((item, index) => (
+              <FontAwesome
+                key={index}
+                name={isComplete ? 'star' : 'star-o'}
+                color={questColorCode}
+                size={19}
+              />
+            ))}
           </Text>
         </View>
       </View>
@@ -58,7 +85,7 @@ const CardTemplate: React.FC<Props> = props => {
             style={[
               styles.questContent,
               {
-                color: questTypes[questType].questColorCode,
+                color: questColorCode,
               },
             ]}>
             {item}
@@ -66,11 +93,7 @@ const CardTemplate: React.FC<Props> = props => {
         ))}
       </View>
       {isComplete ? (
-        <Image
-          resizeMode="contain"
-          source={questTypes[questType].stamp}
-          style={styles.stampImage}
-        />
+        <Image resizeMode="contain" source={stamp} style={styles.stampImage} />
       ) : null}
     </View>
   );
@@ -84,17 +107,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
-    elevation: 5,
+    elevation: 8,
   },
   rerollIcon: {
-    color: '#C7C7C7',
-    fontSize: 20,
     position: 'absolute',
-    top: 15,
-    right: 20,
+    top: 12,
+    right: 15,
+    padding: 5,
   },
   labelContainer: {
     flex: 1,
+    alignItems: 'center',
   },
   label: {
     width: 150,

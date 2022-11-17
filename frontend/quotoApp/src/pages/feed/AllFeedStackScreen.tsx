@@ -15,7 +15,7 @@ function AllFeedStackScreen() {
         name="AllFeed"
         component={AllFeed}
         options={{
-          headerShown: false,
+          header: () => <QhotoHeader leftIcon={false} />,
         }}
       />
       <AllFeedStack.Screen
