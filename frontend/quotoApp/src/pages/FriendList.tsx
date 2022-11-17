@@ -219,7 +219,11 @@ function FriendList() {
         <List.Accordion
           title="추천친구"
           expanded={openContactList}
-          onPress={() => setOpenContactList(!openContactList)}>
+          onPress={() => setOpenContactList(!openContactList)}
+          titleStyle={{
+            fontFamily: 'MICEGothic-Bold',
+            marginVertical: 3,
+          }}>
           <ContactsPage
             myContacts={myContacts}
             setMyContacts={setMyContacts}
@@ -228,12 +232,16 @@ function FriendList() {
           />
         </List.Accordion>
       </View>
-      <View style={{flex: 1, marginBottom: 65}}>
+      <View style={{flex: 1, marginBottom: 60}}>
         <List.Accordion
           title="친구목록" // Todo: 친구목록 개수
           expanded={openFriendList}
           onPress={() => setOpenFriendList(!openFriendList)}
-          style={{height: 65}}>
+          style={{height: 60}}
+          titleStyle={{
+            fontFamily: 'MICEGothic-Bold',
+            marginVertical: 3,
+          }}>
           <FlatList
             data={friendList}
             renderItem={renderFriendList}
