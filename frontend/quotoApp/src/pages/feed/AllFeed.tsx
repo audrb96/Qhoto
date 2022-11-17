@@ -15,6 +15,7 @@ import Modal from 'react-native-modal';
 import CheckBox from '@react-native-community/checkbox';
 
 import {useSelector} from 'react-redux';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {RootState} from '../../store/reducer';
 
 import info from '../../components/info';

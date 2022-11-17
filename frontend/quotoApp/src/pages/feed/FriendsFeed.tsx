@@ -7,6 +7,7 @@ import {
   Pressable,
   Dimensions,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/reducer';
@@ -20,6 +21,7 @@ import info from '../../components/info';
 import {getFriendsFeeds, setFeedMission} from '../../api/feed';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const tabMenu = ['DAY', 'WEEK', 'MONTH'];
 
@@ -65,12 +67,23 @@ const questTypes: {
 
 const {width, height} = Dimensions.get('window');
 
-function FriendsFeed({navigation}) {
+function FriendsFeed() {
   const [modalVisible, setModalVisible] = useState(false);
   const [friendFeeds, setFriendFeeds] = useState<Feed[]>();
   const [selectedTab, setSelectedTab] = useState('');
   const [selectedQuests, setSelectedQuests] = useState([true, true, true]);
   const [questLists, setQuestLists] = useState<{[key: string]: Quest[]}>();
+  const [callbackState, setCallbackState] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+
+  const navigation = useNavigation();
+  const pullDownScreen = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+    }, 10);
+    setCallbackState(!callbackState);
+  };
 
   useEffect(() => {
     setFeedMission(
@@ -87,7 +100,8 @@ function FriendsFeed({navigation}) {
         console.log(err.response);
       },
     );
-  }, []);
+    console.log('-------');
+  }, [callbackState]);
 
   useEffect(() => {
     if (questLists !== undefined) {
@@ -172,7 +186,13 @@ function FriendsFeed({navigation}) {
             </Text>
           </View>
         ) : (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refresh}
+                onRefresh={() => pullDownScreen()}
+              />
+            }>
             {friendFeeds.map((feed, index) => (
               <FeedItem
                 key={index}

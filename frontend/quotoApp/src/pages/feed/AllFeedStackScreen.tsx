@@ -28,9 +28,7 @@ function AllFeedStackScreen() {
       <AllFeedStack.Screen
         name="OtherPage"
         component={OtherPage}
-        options={{
-          header: () => <QhotoHeader leftIcon={false} />,
-        }}
+        options={{headerShown: false}}
       />
     </AllFeedStack.Navigator>
   );

@@ -19,6 +19,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {HEADER_LOGO} from './src/image';
 import QhotoHeader from './src/components/QhotoHeader';
 import SignUp from './src/pages/SignUp';
+import LocationAgree from './src/pages/LocationAgree';
+import StateAgree from './src/pages/StateAgree';
 import FriendsFeedStackScreen from './src/pages/feed/FriendsFeedStackScreen';
 import FriendListStackScreen from './src/pages/FriendListStackScreen';
 
@@ -43,6 +45,8 @@ export type LoggedInParamList = {
 export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
+  LocationAgree: undefined;
+  StateAgree: undefined;
 };
 
 const {width, height} = Dimensions.get('window');
@@ -136,7 +140,6 @@ function AppInner() {
                     iconName = 'user-circle';
                     size = 28;
                   }
-
                   // You can return any component that you like here!
                   return (
                     <FontAwesome5 name={iconName} size={size} color={color} />

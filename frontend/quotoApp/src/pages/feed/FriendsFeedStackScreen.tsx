@@ -32,7 +32,7 @@ function FriendsFeedStackScreen() {
         name="OtherPage"
         component={OtherPage}
         options={{
-          header: () => <QhotoHeader leftIcon={false} />,
+          headerShown: false,
         }}
       />
     </FriendsFeedStack.Navigator>

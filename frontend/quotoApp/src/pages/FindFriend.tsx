@@ -4,10 +4,12 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -17,6 +19,7 @@ import {Avatar, List} from 'react-native-paper';
 import ImageModal from 'react-native-image-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import QhotoHeader from './../components/QhotoHeader';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 import {
   findFriendApi,
@@ -27,7 +30,9 @@ import {
 
 const {width, height} = Dimensions.get('window');
 
-function FindFriend({navigation, route}) {
+function FindFriend({route}) {
+  const navigation = useNavigation();
+
   const [text, onChangeText] = useState('');
   const [selectedId, setSelectedId] = useState(null);
 
@@ -300,15 +305,25 @@ function FindFriend({navigation, route}) {
               <View
                 style={{
                   flexDirection: 'row',
-                  paddingTop: 10,
                   marginVertical: 0,
+                  justifyContent: 'center',
+
+                  // backgroundColor: 'green',
                 }}>
-                <View
+                <TouchableOpacity
                   style={{
-                    flex: 1,
+                    flex: 0.4,
                     alignItems: 'center',
-                  }}>
-                  <View>
+                    // backgroundColor: 'red',
+                    marginVertical: 5,
+                    borderWidth: 0.5,
+                  }}
+                  onPress={() =>
+                    navigation.navigate('OtherPage', {
+                      userId: searchResult.userId,
+                    })
+                  }>
+                  <View style={{marginTop: 10}}>
                     <ImageModal
                       source={{uri: searchResult.profileImg}}
                       resizeMode="cover"
@@ -348,7 +363,7 @@ function FindFriend({navigation, route}) {
                       </Text>
                     </View>
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
           )}
