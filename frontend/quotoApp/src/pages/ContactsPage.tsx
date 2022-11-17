@@ -65,9 +65,9 @@ const ContactsPage: React.FC<props> = props => {
           style={{
             width: width * 0.54,
             height: height * 0.38,
-            // margin: 0,
+            marginRight: -12,
             // padding: 0,
-            backgroundColor: 'green',
+            // backgroundColor: 'green',
           }}>
           <TouchableOpacity
             onPress={() =>
@@ -93,7 +93,7 @@ const ContactsPage: React.FC<props> = props => {
                 }}>
                 {myContact.name}
               </Card.Title>
-              <Card.Divider style={{margin: 0, padding: 0}} />
+              <Card.Divider style={{margin: 0, padding: 0, marginRight: 12}} />
               <View
                 style={{
                   justifyContent: 'center',
@@ -152,6 +152,7 @@ const ContactsPage: React.FC<props> = props => {
         style={{
           flexDirection: 'row',
           // flexWrap: 'wrap',
+          marginRight: 12,
         }}>
         {renderSectionOne()}
       </View>
