@@ -5,23 +5,15 @@ import {
   Alert,
   TouchableOpacity,
   View,
-  TextInput,
-  Platform,
-  SafeAreaView,
-  Modal,
-  Pressable,
   RefreshControl,
   StyleSheet,
+  Dimensions,
   NativeModules,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImageModal from 'react-native-image-modal';
-
 import Fontisto from 'react-native-vector-icons/Fontisto';
-
 import {getOtherInfoApi, getOtherLogApi} from '../api/other';
 import {addFriendApi, findFriendApi} from '../api/friend';
 import QhotoHeader from '../components/QhotoHeader';
@@ -37,6 +29,8 @@ interface OtherLog {
   typeCode: string;
   feedType: string;
 }
+
+const {width, height} = Dimensions.get('window');
 
 function OtherPage({route}) {
   const navigation = useNavigation();
@@ -202,26 +196,43 @@ function OtherPage({route}) {
       <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
       <View // 프로필
       >
-        <View style={{flexDirection: 'row', paddingTop: 10, marginVertical: 0}}>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <View>
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingTop: height * 0.015,
+          }}>
+          <View
+            style={(styles.profileContainer, {flex: 1, alignItems: 'center'})}>
+            <View style={styles.profileImageContainer}>
               <ImageModal
                 source={{uri: otherInfo.image}}
                 resizeMode="cover"
                 modalImageResizeMode="contain"
                 style={{
-                  width: 120,
-                  height: 120,
+                  width: width * 0.3,
+                  height: width * 0.3,
                   borderRadius: 100,
                 }}
                 swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
                 overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
               />
             </View>
-            <Text style={{fontSize: 16, color: 'black'}}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: '#424242',
+                fontFamily: 'MICEGothic-Bold',
+                marginVertical: 3,
+              }}>
               {otherInfo.nickname}
             </Text>
-            <Text style={{fontSize: 12, color: 'black'}}>
+            <Text
+              style={{
+                fontSize: 12,
+                color: '#424242',
+                fontFamily: 'MICEGothic-Bold',
+                marginVertical: 3,
+              }}>
               {otherInfo.description}
             </Text>
           </View>
@@ -245,9 +256,24 @@ function OtherPage({route}) {
               <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
             </View>
           </TouchableOpacity>
-          <View style={{flexDirection: 'row'}}>
-            <Fontisto name="locked" size={30} color={'#3B28B1'} />
-            <Text style={{color: 'black', fontSize: 30}}>비공개 유저다</Text>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: height / 10,
+              // backgroundColor: 'red',
+            }}>
+            <Fontisto name="locked" size={110} color="#3B28B1" />
+            <Text
+              style={{
+                color: '#3B28B1',
+                fontFamily: 'esamanru-Medium',
+                fontSize: 22,
+                marginTop: height * 0.025,
+              }}>
+              비공개 계정입니다
+            </Text>
           </View>
         </View>
       ) : (
@@ -258,7 +284,11 @@ function OtherPage({route}) {
                 {isFriendIcon()}
                 <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
               </View>
-              <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+              <View
+                style={{
+                  marginVertical: height * 0.0125,
+                  paddingHorizontal: width * 0.073,
+                }}>
                 <View>
                   <TouchableOpacity>
                     <Text onPress={goToLevel} style={styles.subjectText}>
@@ -271,14 +301,22 @@ function OtherPage({route}) {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <View style={{alignItems: 'center', paddingVertical: 20}}>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    paddingVertical: height * 0.025,
+                  }}>
                   <LevelBox
                     userGrade={otherInfo.expGrade}
                     userPoint={otherInfo.totalExp}
                   />
                 </View>
               </View>
-              <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+              <View
+                style={{
+                  marginVertical: height * 0.0125,
+                  paddingHorizontal: width * 0.073,
+                }}>
                 <TouchableOpacity>
                   <Text onPress={goToQuestLog} style={styles.subjectText}>
                     qhoto 로그 &nbsp;
@@ -319,6 +357,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'MICEGothic-Bold',
     marginBottom: 3,
+  },
+  profileContainer: {marginTop: height * 0.015, alignItems: 'center'},
+
+  profileImageContainer: {
+    width: width * 0.3,
+    height: width * 0.3,
+    marginBottom: height * 0.015,
   },
 });
 
