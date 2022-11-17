@@ -7,6 +7,7 @@ import {
   VictoryArea,
   VictoryLabel,
   VictoryGroup,
+  VictoryPolarAxis,
 } from 'victory-native';
 import ReactDOM from 'react-dom';
 import {Defs, LinearGradient, Stop} from 'react-native-svg';
@@ -62,7 +63,10 @@ function QhotoLevel({navigation}) {
     {type: '건강', count: 0, fill: '#C25445'},
     {type: '이색', count: 0, fill: '#2271CE'},
   ];
-  const characterData = {색깔: 0, 일상: 0, 환경: 0, 건강: 0, 이색: 0};
+  const characterData = [
+    {색깔: 0, 일상: 0, 환경: 0, 건강: 0, 이색: 0},
+    {색깔: 0, 일상: 0, 환경: 0, 건강: 0, 이색: 0},
+  ];
   const [data, setData] = useState([d, w, m]);
   const [pentagon, setPentagon] = useState(characterData);
   useEffect(() => {
@@ -96,20 +100,29 @@ function QhotoLevel({navigation}) {
         setData(allData);
         console.log('----------------------');
         console.log(data);
-        let pentagon = {
-          색깔: res.data.exp.C.totalCnt,
-          일상: res.data.exp.D.totalCnt,
-          환경: res.data.exp.E.totalCnt,
-          건강: res.data.exp.H.totalCnt,
-          이색: res.data.exp.S.totalCnt,
-        };
-        setPentagon(pentagon);
+        let pentagonData = [
+          {
+            색깔: 10,
+            일상: 10,
+            환경: 10,
+            건강: 10,
+            이색: 10,
+          },
+          {
+            색깔: 5,
+            일상: 0,
+            환경: 4,
+            건강: 2,
+            이색: 7,
+          },
+        ];
+        setPentagon(pentagonData);
       },
       (err: any) => {
         console.log(err.response);
       },
     );
-  }, [data, pentagon]);
+  }, []);
   const leftIcon = (
     <FontAwesome5
       name="angle-left"
@@ -133,6 +146,23 @@ function QhotoLevel({navigation}) {
     {label: 'weeky', value: 2},
     ,
   ];
+
+  const processData = data => {
+    const maxByGroup = {
+      색깔: 10,
+      일상: 10,
+      환경: 10,
+      건강: 10,
+      이색: 10,
+    };
+    const makeDataArray = d => {
+      return Object.keys(d).map(key => {
+        return {x: key, y: d[key] / maxByGroup[key]};
+      });
+    };
+    return data.map(datum => makeDataArray(datum));
+  };
+  const pentaData = processData(pentagon);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -177,15 +207,8 @@ function QhotoLevel({navigation}) {
             <View>
               <View>
                 <TouchableOpacity>
-                  <Text
-                    onPress={goToLevelInfo}
-                    style={[styles.subjectText, {marginLeft: 0}]}>
-                    <Text>qhoto 애널리틱스 &nbsp;</Text>
-                    <FontAwesome5
-                      name="question-circle"
-                      size={20}
-                      color={'gray'}
-                    />
+                  <Text style={[styles.subjectText, {marginLeft: 0}]}>
+                    <Text>qhoto 애널리틱스 &#x1F4CA;</Text>
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -193,30 +216,66 @@ function QhotoLevel({navigation}) {
                 style={{
                   paddingVertical: 20,
                 }}>
-                <View style={[styles.purpleBox]}>
+                <View style={[styles.pentagonBox]}>
                   <Text
                     style={[styles.subjectText, {flex: 1, textAlign: 'left'}]}>
                     나의 퀘스트 성향
                   </Text>
-                  <View style={(styles.innerBox, {alignItems: 'center'})}>
-                    <View>
+                  <View style={styles.pentagonInner}>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginRight: 20,
+                      }}>
                       <VictoryChart
                         polar
                         theme={VictoryTheme.material}
                         domain={{y: [0, 1]}}>
-                        <VictoryBar
-                          polar
-                          data={sampleData}
-                          labels={a => a.x.toFixed(0)}
-                          width={400}
-                          height={400}
-                          domain={{x: [0, 7], y: [0, 7]}}
+                        <VictoryGroup
+                          colorScale={['#fcf5fc', '#740aa1']}
+                          style={{data: {fillOpacity: 0.2, strokeWidth: 4}}}>
+                          {pentaData.map((pentaData, i) => {
+                            return (
+                              <VictoryArea
+                                key={i}
+                                data={pentaData}
+                                interpolation="cardinal" //둥글게 혹은 뾰족하게
+                              />
+                            );
+                          })}
+                        </VictoryGroup>
+                        {Object.keys(pentagon[0]).map((key, i) => {
+                          return (
+                            <VictoryPolarAxis
+                              key={i}
+                              dependentAxis
+                              style={{
+                                axisLabel: {padding: 10},
+                                axis: {stroke: 'none'},
+                                grid: {
+                                  stroke: 'grey',
+                                  strokeWidth: 0.3,
+                                  opacity: 0.5,
+                                },
+                              }}
+                              tickLabelComponent={
+                                <VictoryLabel labelPlacement="vertical" />
+                              }
+                              labelPlacement="perpendicular"
+                              axisValue={i + 1}
+                              label={key}
+                              tickFormat={t => Math.ceil(t * pentagon[0][key])}
+                              tickValues={[0.5]}
+                            />
+                          );
+                        })}
+                        <VictoryPolarAxis
+                          labelPlacement="parallel"
+                          tickFormat={() => ''}
                           style={{
-                            data: {
-                              fill: '#c43a31',
-                              stroke: 'black',
-                              strokeWidth: 2,
-                            },
+                            axis: {stroke: 'none'},
+                            grid: {stroke: 'grey', opacity: 0.5},
                           }}
                         />
                       </VictoryChart>
@@ -228,10 +287,10 @@ function QhotoLevel({navigation}) {
                 style={{
                   paddingVertical: 20,
                 }}>
-                <View style={[styles.purpleBox]}>
+                <View style={[styles.graphBox]}>
                   <Text
                     style={[styles.subjectText, {flex: 1, textAlign: 'left'}]}>
-                    타입별 완료한 퀘스트 그래프
+                    완료한 퀘스트 그래프
                   </Text>
                   <View style={[styles.innerBox, {alignItems: 'center'}]}>
                     <View>
@@ -246,11 +305,14 @@ function QhotoLevel({navigation}) {
                         formHorizontal={true}
                         labelHorizontal={false}
                         buttonColor={'#dfc0ed'}
-                        selectedButtonColor={'purple'}
-                        selectedLabelColor={'purple'}
+                        selectedButtonColor={'#740aa1'}
+                        selectedLabelColor={'#740aa1'}
                         labelColor={'#dfc0ed'}
-                        buttonInnerColor={'purple'}
-                        style={{justifyContent: 'center'}}
+                        buttonInnerColor={'#740aa1'}
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
                         animation={true}
                       />
                       <VictoryChart
@@ -309,9 +371,10 @@ const styles = StyleSheet.create({
   },
   subjectText: {
     color: '#3B28B1',
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: 'MICEGothic-Bold',
     marginBottom: 3,
+    marginTop: 3,
     alignItems: 'center',
   },
   rightIcon: {
@@ -323,7 +386,24 @@ const styles = StyleSheet.create({
     // left: 20,
     backgroundColor: 'black',
   },
-  purpleBox: {
+  pentagonBox: {
+    width: 310,
+    height: 390,
+    backgroundColor: '#f5e0ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderRadius: 20,
+    elevation: 5,
+  },
+  pentagonInner: {
+    width: 280,
+    height: 340,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  graphBox: {
     width: 310,
     height: 450,
     backgroundColor: '#f5e0ff',
@@ -339,6 +419,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     borderRadius: 20,
+    padding: 30,
   },
 });
 
