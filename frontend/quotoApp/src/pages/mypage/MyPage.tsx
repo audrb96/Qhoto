@@ -264,42 +264,38 @@ function MyPage() {
       }>
       <SafeAreaView>
         <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
-        <View // 로그아웃 ~ 수정버튼
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 20,
-          }}
-        />
-        <View // 프로필
-        >
-          <View style={{alignItems: 'center'}}>
-            <View style={styles.profileImageContainer}>
-              <Image
-                style={styles.profileImage}
-                source={{uri: userInfo.userImage}}
-                resizeMode="cover"
-              />
-              <TouchableOpacity
-                style={{
-                  position: 'absolute',
-                  backgroundColor: 'white',
-                  bottom: 10,
-                  right: 10,
-                  borderRadius: 50,
-                }}
-                onPress={modalOpen}>
-                <AntDesign name="camerao" size={20} color={'#3B28B1'} />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={{fontSize: 16, color: 'black'}}>
-              {userInfo.nickname}
-            </Text>
-            <Text style={{fontSize: 12, color: 'black'}}>
-              {userInfo.description}
-            </Text>
+        <View style={styles.profileContainer}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              style={styles.profileImage}
+              source={{uri: userInfo.userImage}}
+              resizeMode="cover"
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                backgroundColor: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 30,
+                height: 30,
+                bottom: 5,
+                right: 5,
+                borderRadius: 50,
+                borderWidth: 1,
+                borderColor: '#E0E0E0',
+              }}
+              onPress={modalOpen}>
+              <AntDesign name="camerao" size={20} color={'#3B28B1'} />
+            </TouchableOpacity>
           </View>
+
+          <Text style={{fontSize: 16, color: 'black'}}>
+            {userInfo.nickname}
+          </Text>
+          <Text style={{fontSize: 12, color: 'black'}}>
+            {userInfo.description}
+          </Text>
         </View>
         <View style={{marginVertical: 10, paddingHorizontal: 30}}>
           <View>
@@ -395,6 +391,7 @@ const styles = StyleSheet.create({
     fontFamily: 'MICEGothic-Bold',
     marginBottom: 3,
   },
+  profileContainer: {marginTop: 30, alignItems: 'center'},
   profileImageContainer: {
     width: width * 0.3,
     height: width * 0.3,
@@ -428,7 +425,6 @@ const styles = StyleSheet.create({
     // height: 40,
     // top: -10,
     // left: 20,
-    backgroundColor: 'black',
   },
   actionText: {
     color: 'black',

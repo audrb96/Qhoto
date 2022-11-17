@@ -7,7 +7,7 @@ function QhotoLevel() {
     <View>
       <View>
         <View>
-          <Pentagon
+          {/* <Pentagon
             poles={[
               {
                 score: 0.8,
@@ -40,7 +40,7 @@ function QhotoLevel() {
             // outerStroke={{stroke: 'green', opacity: 1, strokeWidth: 1}}
             animation={{delay: 0, duration: 500}}
             style={styles.pentagon}
-          />
+          /> */}
         </View>
       </View>
       <View></View>
