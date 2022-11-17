@@ -6,6 +6,7 @@ import {
   StatusBar,
   Pressable,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 
@@ -59,6 +60,15 @@ function FriendsFeed() {
   const [questLists, setQuestLists] = useState<{[key: string]: Quest[]}>();
   const [selectedFeedId, setSelectedFeedId] = useState(null);
   const navigation = useNavigation();
+  const [callbackState, setCallbackState] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+  const pullDownScreen = async () => {
+    await setRefresh(true);
+    await setTimeout(() => {
+      setRefresh(false);
+    }, 10);
+    await setCallbackState(!callbackState);
+  };
 
   useEffect(() => {
     setFeedMission(
@@ -74,7 +84,8 @@ function FriendsFeed() {
         console.log(err.response);
       },
     );
-  }, []);
+    console.log('-------');
+  }, [callbackState]);
 
   useEffect(() => {
     if (questLists !== undefined) {
@@ -156,7 +167,13 @@ function FriendsFeed() {
             </Text>
           </View>
         ) : (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refresh}
+                onRefresh={() => pullDownScreen()}
+              />
+            }>
             {friendFeeds.map((feed, index) => (
               <FeedItem
                 key={index}

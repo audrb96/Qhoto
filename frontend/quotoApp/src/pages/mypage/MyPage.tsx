@@ -11,6 +11,7 @@ import {
   StyleSheet,
   NativeModules,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/reducer';
@@ -65,6 +66,15 @@ function MyPage() {
   const isFocused = useIsFocused();
 
   const dispatch = useAppDispatch();
+
+  const [refresh, setRefresh] = useState(false);
+  const pullDownScreen = async () => {
+    await setRefresh(true);
+    await setTimeout(() => {
+      setRefresh(false);
+    }, 10);
+    await setCallbackState(!callbackState);
+  };
 
   const goToLevel = () => {
     navigation.navigate('QhotoLevel');
@@ -245,7 +255,13 @@ function MyPage() {
   );
 
   return userInfo === undefined || userLogs === undefined ? null : (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refresh}
+          onRefresh={() => pullDownScreen()}
+        />
+      }>
       <SafeAreaView>
         <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
         <View // 로그아웃 ~ 수정버튼
