@@ -91,6 +91,8 @@ function MyPage() {
   const [callbackState, setCallbackState] = useState(true);
 
   useEffect(() => {
+    console.log(width, height, '=-----==============');
+
     getUserInfoApi(
       (res: any) => {
         console.log(res.data);
@@ -277,8 +279,8 @@ function MyPage() {
                 backgroundColor: 'white',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 30,
-                height: 30,
+                width: width * 0.073,
+                height: height * 0.037,
                 bottom: 5,
                 right: 5,
                 borderRadius: 50,
@@ -290,14 +292,30 @@ function MyPage() {
             </TouchableOpacity>
           </View>
 
-          <Text style={{fontSize: 16, color: 'black'}}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: '#424242',
+              fontFamily: 'MICEGothic-Bold',
+              marginVertical: 3,
+            }}>
             {userInfo.nickname}
           </Text>
-          <Text style={{fontSize: 12, color: 'black'}}>
+          <Text
+            style={{
+              fontSize: 12,
+              color: '#424242',
+              fontFamily: 'MICEGothic-Bold',
+              marginVertical: 3,
+            }}>
             {userInfo.description}
           </Text>
         </View>
-        <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+        <View
+          style={{
+            marginVertical: height * 0.0125,
+            paddingHorizontal: width * 0.073,
+          }}>
           <View>
             <TouchableOpacity>
               <Text onPress={goToLevel} style={styles.subjectText}>
@@ -306,14 +324,18 @@ function MyPage() {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={{alignItems: 'center', paddingVertical: 20}}>
+          <View style={{alignItems: 'center', paddingVertical: height * 0.025}}>
             <LevelBox
               userGrade={userInfo.expGrade}
               userPoint={userInfo.totalExp}
             />
           </View>
         </View>
-        <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+        <View
+          style={{
+            marginVertical: height * 0.0125,
+            paddingHorizontal: width * 0.073,
+          }}>
           <TouchableOpacity>
             <Text onPress={goToQuestLog} style={styles.subjectText}>
               qhoto 로그 &nbsp;
@@ -391,10 +413,11 @@ const styles = StyleSheet.create({
     fontFamily: 'MICEGothic-Bold',
     marginBottom: 3,
   },
-  profileContainer: {marginTop: 30, alignItems: 'center'},
+  profileContainer: {marginTop: height * 0.015, alignItems: 'center'},
   profileImageContainer: {
     width: width * 0.3,
     height: width * 0.3,
+    marginBottom: height * 0.015,
   },
   profileImage: {
     width: width * 0.3,

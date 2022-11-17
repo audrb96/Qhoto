@@ -271,7 +271,11 @@ function FindFriend({route}) {
           // style={{backgroundColor: 'red', marginBottom: 20}}
           title="친구검색" // Todo: 친구목록 개수
           expanded={openSearchFriend}
-          onPress={() => setOpenSearchFriend(!openSearchFriend)}>
+          onPress={() => setOpenSearchFriend(!openSearchFriend)}
+          titleStyle={{
+            fontFamily: 'MICEGothic-Bold',
+            marginVertical: 3,
+          }}>
           <View style={{flexDirection: 'row'}}>
             <TextInput
               style={styles.textInput}
@@ -379,7 +383,11 @@ function FindFriend({route}) {
           title="친구요청" // Todo: 친구요청 개수
           expanded={openReceiveList}
           // style={{flex: 1}}
-          onPress={() => setOpenReceiveList(!openReceiveList)}>
+          onPress={() => setOpenReceiveList(!openReceiveList)}
+          titleStyle={{
+            fontFamily: 'MICEGothic-Bold',
+            marginVertical: 3,
+          }}>
           <FlatList
             data={receiveList}
             renderItem={renderReceiveList}
