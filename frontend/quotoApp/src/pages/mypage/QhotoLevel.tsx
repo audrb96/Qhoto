@@ -1,11 +1,24 @@
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryTheme,
+  VictoryLine,
+  VictoryArea,
+  VictoryLabel,
+  VictoryGroup,
+} from 'victory-native';
+import ReactDOM from 'react-dom';
+import {Defs, LinearGradient, Stop} from 'react-native-svg';
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
+import {getQuestPoints} from '../../api/quest';
 import QhotoHeader from '../../components/QhotoHeader';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {RootState} from '../../store/reducer';
@@ -14,76 +27,89 @@ import {Hexagon} from '@digieggs/rn-polygon-chart';
 import {StackedBarChart} from 'react-native-chart-kit';
 import {BarChart, LineChart, PieChart} from 'react-native-gifted-charts';
 import LevelBox from '../../components/mypage/LevelBox';
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel,
+} from 'react-native-simple-radio-button';
 
 function QhotoLevel({navigation}) {
   const goToLevelInfo = () => {
     navigation.navigate('LevelInfo');
   };
   const userInfo = useSelector((state: RootState) => state.user);
-  // const MyStackedBarChart = () => {
-  //   return (
-  //     <>
-  //       <Text style={(styles.header, {transform: [{rotate: '90deg'}]})}>
-  //         Stacked Bar Chart
-  //       </Text>
-  //       <StackedBarChart
-  //         data={{
-  //           labels: ['Test1', 'Test2', 'Test3', 'Test4', 'Test5'],
-  //           legend: ['day', 'week', 'month'],
-  //           data: [
-  //             [60, 60, 60],
-  //             [30, 30, 60],
-  //             [10, 20, 30],
-  //             [50, 10, 5],
-  //             [70, 100, 10],
-  //           ],
-  //           barColors: ['#dfe4ea', '#ced6e0', '#a4b0be'],
-  //         }}
-  //         width={400}
-  //         height={400}
-  //         chartConfig={{
-  //           backgroundColor: '#1cc910',
-  //           backgroundGradientFrom: '#eff3ff',
-  //           backgroundGradientTo: '#efefef',
-  //           decimalPlaces: 2,
-  //           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-  //           style: {
-  //             borderRadius: 16,
-  //             // transform: [{rotate: '90deg'}],
-  //           },
-  //         }}
-  //         style={{
-  //           marginVertical: 8,
-  //           borderRadius: 16,
-  //           transform: [{rotate: '90deg'}],
-  //         }}
-  //       />
-  //     </>
-  //   );
-  // };
-  const data = [{value: 50}, {value: 80}, {value: 90}, {value: 70}];
-  // const UserStackedBarChart = () => {
-  //   const barData = [
-  //     {value: 230, label: 'Jan', frontColor: '#4ABFF4'},
-  //     {value: 180, label: 'Feb', frontColor: '#79C3DB'},
-  //     {value: 195, label: 'Mar', frontColor: '#28B2B3'},
-  //     {value: 250, label: 'Apr', frontColor: '#4ADDBA'},
-  //     {value: 320, label: 'May', frontColor: '#91E3E3'},
-  //   ];
-  //   return (
-  //     <View>
-  //       <BarChart
-  //         showFractionalValue
-  //         showYAxisIndices
-  //         noOfSections={4}
-  //         maxValue={400}
-  //         data={barData}
-  //         isAnimated
-  //       />
-  //     </View>
-  //   );
-  // };
+  const [value, setValue] = useState(value);
+  const [chart, setChart] = useState(0);
+  const d = [
+    {type: '색깔', count: 0, fill: '#592CB8'},
+    {type: '일상', count: 0, fill: '#ECB21D'},
+    {type: '환경', count: 0, fill: '#70A348'},
+    {type: '건강', count: 0, fill: '#C25445'},
+    {type: '이색', count: 0, fill: '#2271CE'},
+  ];
+  const w = [
+    {type: '색깔', count: 0, fill: '#592CB8'},
+    {type: '일상', count: 0, fill: '#ECB21D'},
+    {type: '환경', count: 0, fill: '#70A348'},
+    {type: '건강', count: 0, fill: '#C25445'},
+    {type: '이색', count: 0, fill: '#2271CE'},
+  ];
 
+  const m = [
+    {type: '색깔', count: 0, fill: '#592CB8'},
+    {type: '일상', count: 0, fill: '#ECB21D'},
+    {type: '환경', count: 0, fill: '#70A348'},
+    {type: '건강', count: 0, fill: '#C25445'},
+    {type: '이색', count: 0, fill: '#2271CE'},
+  ];
+  const characterData = {색깔: 0, 일상: 0, 환경: 0, 건강: 0, 이색: 0};
+  const [data, setData] = useState([d, w, m]);
+  const [pentagon, setPentagon] = useState(characterData);
+  useEffect(() => {
+    getQuestPoints(
+      (res: any) => {
+        let d = [
+          {type: '색깔', count: res.data.exp.C.dailyCnt, fill: '#592CB8'},
+          {type: '일상', count: res.data.exp.D.dailyCnt, fill: '#ECB21D'},
+          {type: '환경', count: res.data.exp.E.dailyCnt, fill: '#70A348'},
+          {type: '건강', count: res.data.exp.H.dailyCnt, fill: '#C25445'},
+          {type: '이색', count: res.data.exp.S.dailyCnt, fill: '#2271CE'},
+        ];
+        let w = [
+          {type: '색깔', count: res.data.exp.C.weeklyCnt, fill: '#592CB8'},
+          {type: '일상', count: res.data.exp.D.weeklyCnt, fill: '#ECB21D'},
+          {type: '환경', count: res.data.exp.E.weeklyCnt, fill: '#70A348'},
+          {type: '건강', count: res.data.exp.H.weeklyCnt, fill: '#C25445'},
+          {type: '이색', count: res.data.exp.S.weeklyCnt, fill: '#2271CE'},
+        ];
+        let m = [
+          {type: '색깔', count: res.data.exp.C.monthlyCnt, fill: '#592CB8'},
+          {type: '일상', count: res.data.exp.D.monthlyCnt, fill: '#ECB21D'},
+          {type: '환경', count: res.data.exp.E.monthlyCnt, fill: '#70A348'},
+          {type: '건강', count: res.data.exp.H.monthlyCnt, fill: '#C25445'},
+          {type: '이색', count: res.data.exp.S.monthlyCnt, fill: '#2271CE'},
+        ];
+        let allData = [];
+        allData.push(d);
+        allData.push(w);
+        allData.push(m);
+        setData(allData);
+        console.log('----------------------');
+        console.log(data);
+        let pentagon = {
+          색깔: res.data.exp.C.totalCnt,
+          일상: res.data.exp.D.totalCnt,
+          환경: res.data.exp.E.totalCnt,
+          건강: res.data.exp.H.totalCnt,
+          이색: res.data.exp.S.totalCnt,
+        };
+        setPentagon(pentagon);
+      },
+      (err: any) => {
+        console.log(err.response);
+      },
+    );
+  }, [data, pentagon]);
   const leftIcon = (
     <FontAwesome5
       name="angle-left"
@@ -101,60 +127,181 @@ function QhotoLevel({navigation}) {
     />
   );
 
+  var radio_props = [
+    {label: 'day', value: 0},
+    {label: 'month', value: 1},
+    {label: 'weeky', value: 2},
+    ,
+  ];
+
   return (
-    <View>
-      <QhotoHeader leftIcon={leftIcon} />
-      <View>
-        <View style={{marginVertical: 10, paddingHorizontal: 30}}>
-          <View>
-            <TouchableOpacity>
-              <Text
-                onPress={goToLevelInfo}
-                style={[styles.subjectText, {alignItems: 'center'}]}>
-                <Text>qhoto 레벨 &nbsp;</Text>
-                <FontAwesome5 name="question-circle" size={20} color={'gray'} />
-              </Text>
-            </TouchableOpacity>
-          </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.scrollview}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.qhotoLevel}>
+          <QhotoHeader leftIcon={leftIcon} />
           <View
             style={{
               alignItems: 'center',
-              paddingVertical: 20,
-            }}>
-            <TouchableOpacity onPress={goToLevelInfo}>
-              <LevelBox
-                userGrade={userInfo.expGrade}
-                userPoint={userInfo.totalExp}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View>
-          <View
-            style={{
-              width: 300,
-              height: 500,
-              backgroundColor: 'purple',
               justifyContent: 'center',
+              flexDirection: 'column',
             }}>
-            <View
-              style={{
-                width: 280,
-                height: 450,
-                backgroundColor: 'white',
-                justifyContent: 'center',
-              }}
-            />
+            <View>
+              <View>
+                <TouchableOpacity>
+                  <Text
+                    onPress={goToLevelInfo}
+                    style={[styles.subjectText, {alignItems: 'center'}]}>
+                    <Text>qhoto 레벨 &nbsp;</Text>
+                    <FontAwesome5
+                      name="question-circle"
+                      size={20}
+                      color={'gray'}
+                    />
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingVertical: 20,
+                }}>
+                <TouchableOpacity onPress={goToLevelInfo}>
+                  <LevelBox
+                    userGrade={userInfo.expGrade}
+                    userPoint={userInfo.totalExp}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View>
+              <View>
+                <TouchableOpacity>
+                  <Text
+                    onPress={goToLevelInfo}
+                    style={[styles.subjectText, {marginLeft: 0}]}>
+                    <Text>qhoto 애널리틱스 &nbsp;</Text>
+                    <FontAwesome5
+                      name="question-circle"
+                      size={20}
+                      color={'gray'}
+                    />
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingVertical: 20,
+                }}>
+                <View style={[styles.purpleBox]}>
+                  <Text
+                    style={[styles.subjectText, {flex: 1, textAlign: 'left'}]}>
+                    나의 퀘스트 성향
+                  </Text>
+                  <View style={(styles.innerBox, {alignItems: 'center'})}>
+                    <View>
+                      <VictoryChart
+                        polar
+                        theme={VictoryTheme.material}
+                        domain={{y: [0, 1]}}>
+                        <VictoryBar
+                          polar
+                          data={sampleData}
+                          labels={a => a.x.toFixed(0)}
+                          width={400}
+                          height={400}
+                          domain={{x: [0, 7], y: [0, 7]}}
+                          style={{
+                            data: {
+                              fill: '#c43a31',
+                              stroke: 'black',
+                              strokeWidth: 2,
+                            },
+                          }}
+                        />
+                      </VictoryChart>
+                    </View>
+                  </View>
+                </View>
+              </View>
+              <View
+                style={{
+                  paddingVertical: 20,
+                }}>
+                <View style={[styles.purpleBox]}>
+                  <Text
+                    style={[styles.subjectText, {flex: 1, textAlign: 'left'}]}>
+                    타입별 완료한 퀘스트 그래프
+                  </Text>
+                  <View style={[styles.innerBox, {alignItems: 'center'}]}>
+                    <View>
+                      {/* https://www.npmjs.com/package/react-native-simple-radio-button 참고 */}
+                      <RadioForm
+                        radio_props={radio_props}
+                        initial={0}
+                        onPress={value => {
+                          setValue(value);
+                          setChart(value);
+                        }}
+                        formHorizontal={true}
+                        labelHorizontal={false}
+                        buttonColor={'#dfc0ed'}
+                        selectedButtonColor={'purple'}
+                        selectedLabelColor={'purple'}
+                        labelColor={'#dfc0ed'}
+                        buttonInnerColor={'purple'}
+                        style={{justifyContent: 'center'}}
+                        animation={true}
+                      />
+                      <VictoryChart
+                        animate={{
+                          onLoad: {duration: 600},
+                          duration: 1000,
+                          easing: 'bounce',
+                        }}
+                        width={270}
+                        height={320}>
+                        <VictoryBar
+                          // horizontal
+                          style={{
+                            data: {fill: ({datum}) => datum.fill},
+                            labels: {
+                              fill: ({datum}) => datum.fill,
+                              fontSize: 20,
+                              fontWeight: 'bold',
+                            },
+                          }}
+                          labelComponent={<VictoryLabel dy={-2} />}
+                          labels={({datum}) =>
+                            datum.count !== 0 ? datum.count : null
+                          }
+                          data={data[chart]}
+                          x="type"
+                          y="count"
+                        />
+                      </VictoryChart>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
-        <View />
-      </View>
-      <View>{/* <LineChart data={data} areaChart /> */}</View>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollview: {
+    marginHorizontal: 20,
+  },
+  qhotoLevel: {
+    padding: 10,
+  },
   pentagon: {width: 300, height: 600},
   triangle: {width: 300, height: 600},
   header: {
@@ -175,6 +322,23 @@ const styles = StyleSheet.create({
     // top: -10,
     // left: 20,
     backgroundColor: 'black',
+  },
+  purpleBox: {
+    width: 310,
+    height: 450,
+    backgroundColor: '#f5e0ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderRadius: 20,
+    elevation: 5,
+  },
+  innerBox: {
+    width: 280,
+    height: 400,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    borderRadius: 20,
   },
 });
 
