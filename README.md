@@ -2,7 +2,7 @@
 
 ![qhoto-logo](/uploads/a7e4d7a0f9e4f7ab200f83224ef65b30/qhoto-logo.png)
 
-## Quest, Photo, Daily <br>
+## 💝 Quest, Photo, Daily 💝 <br>
 
 ### 매일 똑같은 하루를 보내는 당신!
 
@@ -11,11 +11,26 @@
 ### 이제 똑같은 하루는 그만멈추고 재미와 함께 갓생을 살아보세요. 🤩
 
 > **저희 앱 Qhoto에서는 매일, 매주, 매달**<br>
-> **건강, 환경, 이색등 다양한 테마의 퀘스트를 제공하여 매일 똑같은 하루가 아닌 즐거운 추억을 제공해줍니다.**<br> > **본인의 퀘스트 클리어 사진과 영상을 다른 사람과 공유해보세요!** <br> > **서로 공유하다보면 당신의 인생은 ✨갓생✨ 이 되어있을겁니다.**
+> **건강, 환경, 이색등 다양한 테마의 퀘스트를 제공하여 매일 똑같은 하루가 아닌 즐거운 추억을 제공해줍니다.**<br>**본인의 퀘스트 클리어 사진과 영상을 다른 사람과 공유해보세요!** <br>**서로 공유하다보면 당신의 인생은 ✨갓생✨ 이 되어있을겁니다.**
 
 🙋‍♂️팀장 박명규
 
 👨‍👩‍👦‍👦팀원 김상현, 김정아, 박영준, 유경훈, 정형진
+
+## 📱 Wireframe
+
+[Figma](https://www.figma.com/file/aFFFni2Q5Q9Myu0sxVAQme/qhoto?node-id=0%3A1&t=Am2MciN9gJYOk3wV-1)<br>
+![figma](/uploads/bd718c2fcf2f641c14cd5ec059fcaa64/image.png)
+
+## 📏 ERD
+
+![image](/uploads/16fa73c35c48fee6576f0eb6c3ab973f/image.png)
+
+## Software Architecture
+
+![아키텍쳐](/uploads/2b2c320cbe213066acdd5231b96d15b3/아키텍쳐.jpg)
+
+## Convention
 
 ### JIRA
 
