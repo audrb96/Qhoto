@@ -41,11 +41,6 @@ function MyPageStackScreen() {
         options={{headerShown: false}}
       />
       <MyPageStack.Screen
-        name="ContactsPage"
-        component={ContactsPage}
-        options={{headerShown: false}}
-      />
-      <MyPageStack.Screen
         name="LevelInfo"
         component={LevelInfo}
         options={{headerShown: false}}

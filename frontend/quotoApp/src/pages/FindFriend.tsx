@@ -406,6 +406,7 @@ const styles = StyleSheet.create({
     padding: 5,
     width: width * 0.9,
     borderBottomWidth: StyleSheet.hairlineWidth,
+    fontFamily: 'MICEGothic-Bold',
   },
   leftIcon: {
     position: 'absolute',
