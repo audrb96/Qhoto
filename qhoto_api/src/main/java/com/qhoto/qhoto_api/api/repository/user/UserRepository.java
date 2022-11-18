@@ -15,16 +15,43 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>,UserRepositoryByCon {
+
+    /**
+     * email과 authProvider를 통해 회원을 찾아온다.
+     * @param email
+     * @param authProvider
+     * @return {@link Optional<User>}
+     */
     Optional<User> findByEmailAndAuthProvider(String email, AuthProvider authProvider);
+
+    /**
+     * email을 통해 회원을 찾아온다.
+     * @param email
+     * @return {@link Optional<User>}
+     */
     Optional<User> findByEmail(String email);
+
+    /**
+     * email과 authProvider를 통해 회원의 수를 찾아온다.
+     * @param email
+     * @param authProvider
+     * @return {@link Long}
+     */
     Long countByEmailAndAuthProvider(String email, AuthProvider authProvider);
     Optional<User> findUserById(Long userId);
 
+    /**
+     * refresh token을 통해 회원을 찾아온다.
+     * @param refreshToken
+     * @return {@link Optional<User>}
+     */
     Optional<User> findByRefreshToken(String refreshToken);
-    boolean existsByEmail(String email);
-    @Query("select u.refreshToken from User u where u.id = :id")
-    String getRefreshTokenById(@Param("id") Long id);
 
+    /**
+     * 회원의 refresh token을 수정한다.
+     * @param id
+     * @param token
+     */
     @Transactional
     @Modifying
     @Query("update User u set u.refreshToken=:token where u.id=:id")

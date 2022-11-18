@@ -18,6 +18,11 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider tokenProvider;
 
+    /**
+     * access token과 refresh token을 재발급한다.
+     * @param bearerToken
+     * @return {@link AccessTokenRes}
+     */
     public AccessTokenRes reissue(String bearerToken) {
         // 1. Validation Refresh Token
         String oldRefreshToken = tokenProvider.resolveToken(bearerToken);

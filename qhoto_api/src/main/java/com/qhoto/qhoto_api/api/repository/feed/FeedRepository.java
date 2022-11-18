@@ -32,8 +32,21 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
     @Query(value = "select ifnull(type_code, 'TOTAL') as code, ifnull(quest_duration, 'ALL') as duration, count(*) as count from feed where user_id= :userId group by type_code, quest_duration with rollup order by code", nativeQuery = true)
     List<QuestAggregateRes> findAllQuestWithRollUp(@Param("userId") Long userId);
 
+    /**
+     * feed를 찾는다.
+     * @param feedId
+     * @return {@link Optional<Feed>}
+     */
     Optional<Feed> findFeedById(Long feedId);
 
+    /**
+     * 시간과 피드 상태에 맞는 피드를 가져온다.
+     * @param start
+     * @param end
+     * @param status
+     * @param user
+     * @return {@link List<Feed>}
+     */
     List<Feed> findByTimeBetweenAndStatusAndUser(LocalDateTime start, LocalDateTime end, FeedStatus status, User user);
 
     @Query("select f from Feed f where f.user.id=:userId order by f.time desc")

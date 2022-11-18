@@ -39,10 +39,11 @@ public class FriendService {
         Optional<User> resUser = userRepository.findUserById(friendRequestReq.getResUserId());
 
         // 이전에 요청을 보내는 사용자와 관련된 request가 있는지 확인
-        Optional<FriendRequest> friendRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatusNot(reqUser,resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")), DISCONNECTED);
+        Optional<FriendRequest> friendRequest = friendRequestRepository.findByRequestUserAndResponseUser(reqUser,resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")));
         // 요청을 받는 사용자가 이전에 보내는 사용자에게 요청을 보냈었는지 확인
         Optional<FriendRequest> isAcceptRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatus(resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")),reqUser, REQUEST);
-        if (reqUser.getId()==resUser.get().getId()){
+
+        if (reqUser.getId().equals(resUser.get().getId())){
             throw new SelfRequestException("자기 자신에게 요청을 보낼 수 없습니다.");
         }
         // 이전에 있던 요청 정보를 확인
@@ -56,6 +57,11 @@ public class FriendService {
                     // 요청을 보낸 사용자가 받은 요청이 있다면 친구를 만들어준다.
                     makeFriend(reqUser, resUser, isAcceptRequest.orElseThrow(() -> new NobodyRequestException("친구를 요청한 사람이 없는데 받은 사람만 있습니다.")),friendRequest.get());
                     break;
+                case DISCONNECTED:
+                    //이전에 단절 됐었다면
+                    // 요청상태를 다시 업데이트
+                    updateRequest(reqUser,resUser.get(),REQUEST);
+                    updateRequest(resUser.get(), reqUser,GET);
             }
         } else {
             // 새로운 요청 저장
@@ -63,6 +69,11 @@ public class FriendService {
             saveRequest(resUser.get(),reqUser,GET);
         }
     }
+
+    private void updateRequest(User reqUser, User resUser, RequestStatus status) {
+        friendRequestRepository.updateStatus(status, reqUser, resUser);
+    }
+
     //친구를 만들어 준다.
     private void makeFriend(User reqUser, Optional<User> resUser, FriendRequest isAcceptRequest, FriendRequest friendRequest) {
         //친구 요청의 상태를 이미 친구가 된것으로 변경

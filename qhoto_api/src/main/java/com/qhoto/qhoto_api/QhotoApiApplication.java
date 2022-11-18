@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 //@PropertySource("application-local.yaml")
 @EnableAsync
 public class QhotoApiApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(QhotoApiApplication.class, args);
 	}
