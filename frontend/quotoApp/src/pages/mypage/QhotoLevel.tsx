@@ -240,7 +240,7 @@ function QhotoLevel({navigation}) {
                               <VictoryArea
                                 key={i}
                                 data={pentaData}
-                                interpolation="cardinal" //둥글게 혹은 뾰족하게
+                                //둥글게 혹은 뾰족하게
                               />
                             );
                           })}
