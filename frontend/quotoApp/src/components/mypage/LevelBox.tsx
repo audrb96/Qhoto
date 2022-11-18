@@ -58,7 +58,7 @@ const LevelBox: React.FC<Props> = props => {
       <View style={{marginVertical: 3}}>
         <View
           style={{
-            width: 270,
+            width: '100%',
             height: 5,
             borderRadius: 3,
             backgroundColor: 'white',
@@ -66,7 +66,7 @@ const LevelBox: React.FC<Props> = props => {
         />
         <View
           style={{
-            width: 270 * ((userPoint - minPoint) / (maxPoint - minPoint)),
+            width: `${100 * ((userPoint - minPoint) / (maxPoint - minPoint))}%`,
             height: 5,
             borderRadius: 3,
             backgroundColor: 'black',
