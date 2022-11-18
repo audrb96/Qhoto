@@ -52,8 +52,8 @@ public class FeedController {
      * @return {@link FeedDetailRes}
      */
     @GetMapping("/all/{feedId}")
-    public ResponseEntity<FeedDetailRes> readFeedDetail(@AuthenticationPrincipal User user, @PathVariable Long feedId){
-        return new ResponseEntity<>(feedService.getFeedDetail(feedId, user), HttpStatus.OK);
+    public ResponseEntity<FeedDetailRes> readFeedDetail(@AuthenticationPrincipal User user, @PathVariable Long feedId, Pageable pageable){
+        return new ResponseEntity<>(feedService.getFeedDetail(feedId, user, pageable), HttpStatus.OK);
     }
 
     /**
@@ -126,9 +126,9 @@ public class FeedController {
      * @return {@link List<CommentRes>}
      */
     @GetMapping("/comment/{feedId}")
-    public ResponseEntity<List<CommentRes>> readComment(@PathVariable Long feedId){
+    public ResponseEntity<Page<CommentRes>> readComment(@PathVariable Long feedId, Pageable pageable){
         log.info("feedId={}", feedId );
-        return new ResponseEntity<>(feedService.getComment(feedId),HttpStatus.OK);
+        return new ResponseEntity<>(feedService.getComment(feedId, pageable),HttpStatus.OK);
     }
 
     /**
@@ -176,8 +176,8 @@ public class FeedController {
     }
 
     @GetMapping("/date/{date}")
-    public ResponseEntity<?> readFeedByDate(@AuthenticationPrincipal User user, @Valid DateReq date) {
-        return ResponseEntity.ok(feedService.getFeedListByTime(user, date));
+    public ResponseEntity<?> readFeedByDate(@AuthenticationPrincipal User user, @Valid DateReq date, Pageable pageable) {
+        return ResponseEntity.ok(feedService.getFeedListByTime(user, date, pageable));
     }
 
 

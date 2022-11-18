@@ -6,8 +6,7 @@ import com.qhoto.qhoto_api.dto.type.LikeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Getter
 @AllArgsConstructor
@@ -27,7 +26,7 @@ public class FeedDetailRes {
     private final int expPoint;
     private final LikeStatus likeStatus;
     private final int likeCount;
-    private final List<CommentRes> commentList;
+    private final Page<CommentRes> commentList;
     private final FeedType feedType;
     private final QuestDuration duration;
 
