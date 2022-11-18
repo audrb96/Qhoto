@@ -109,11 +109,11 @@ function QhotoLevel({navigation}) {
             이색: 10,
           },
           {
-            색깔: 5,
-            일상: 0,
-            환경: 4,
-            건강: 2,
-            이색: 7,
+            색깔: res.data.exp.C.totalCnt,
+            일상: res.data.exp.D.totalCnt,
+            환경: res.data.exp.E.totalCnt,
+            건강: res.data.exp.H.totalCnt,
+            이색: res.data.exp.S.totalCnt,
           },
         ];
         setPentagon(pentagonData);
