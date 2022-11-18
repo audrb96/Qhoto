@@ -76,6 +76,10 @@ function FriendsFeed() {
   const [callbackState, setCallbackState] = useState(true);
   const [refresh, setRefresh] = useState(false);
 
+  const {userDailyState, userWeeklyState, userMonthlyState} = useSelector(
+    (state: RootState) => state.user,
+  );
+
   const navigation = useNavigation();
   const pullDownScreen = () => {
     setRefresh(true);
@@ -198,6 +202,13 @@ function FriendsFeed() {
                 key={index}
                 feed={feed}
                 handleCommentClick={() => handleCommentClick(feed.feedId)}
+                isAccessable={
+                  selectedTab === 'DAY'
+                    ? userDailyState
+                    : selectedTab === 'WEEK'
+                    ? userWeeklyState
+                    : userMonthlyState
+                }
               />
             ))}
           </ScrollView>

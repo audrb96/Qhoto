@@ -25,6 +25,7 @@ import {useNavigation} from '@react-navigation/native';
 interface Props {
   feed: Feed;
   handleCommentClick: Function;
+  isAccessable: boolean;
 }
 
 interface Feed {
@@ -91,14 +92,12 @@ const FeedItem: React.FC<Props> = props => {
     feedType,
   } = props.feed;
 
-  const {handleCommentClick} = props;
+  const {handleCommentClick, isAccessable} = props;
 
   const {typeName, iconName, questColorCode} = questTypes[questType];
   const {colorName, gradeColorCode} = levelInfo[expGrade];
 
   const [isLike, setIsLike] = useState(likeStatus === 'LIKE' ? true : false);
-
-  const isAccessable = true;
 
   const handleLikeClick = () => {
     if (isLike) {
