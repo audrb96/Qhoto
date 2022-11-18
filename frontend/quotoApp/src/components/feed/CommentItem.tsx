@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   commentContainer: {flexDirection: 'row', padding: 10},
   commentContentContainer: {paddingHorizontal: 10, flex: 1},
   nicknameText: {fontWeight: 'bold', color: 'black', fontSize: 15},
-  contentText: {fontSize: 15},
+  contentText: {fontSize: 15, color: 'black'},
 });
 
 export default CommentItem;

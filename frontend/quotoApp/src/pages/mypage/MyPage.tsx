@@ -11,6 +11,7 @@ import {
   StyleSheet,
   NativeModules,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/reducer';
@@ -66,6 +67,15 @@ function MyPage() {
 
   const dispatch = useAppDispatch();
 
+  const [refresh, setRefresh] = useState(false);
+  const pullDownScreen = async () => {
+    await setRefresh(true);
+    await setTimeout(() => {
+      setRefresh(false);
+    }, 10);
+    await setCallbackState(!callbackState);
+  };
+
   const goToLevel = () => {
     navigation.navigate('QhotoLevel');
   };
@@ -81,6 +91,8 @@ function MyPage() {
   const [callbackState, setCallbackState] = useState(true);
 
   useEffect(() => {
+    console.log(width, height, '=-----==============');
+
     getUserInfoApi(
       (res: any) => {
         console.log(res.data);
@@ -245,47 +257,65 @@ function MyPage() {
   );
 
   return userInfo === undefined || userLogs === undefined ? null : (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refresh}
+          onRefresh={() => pullDownScreen()}
+        />
+      }>
       <SafeAreaView>
         <QhotoHeader leftIcon={false} rightIcon={rightIcon} />
-        <View // 로그아웃 ~ 수정버튼
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 20,
-          }}
-        />
-        <View // 프로필
-        >
-          <View style={{alignItems: 'center'}}>
-            <View style={styles.profileImageContainer}>
-              <Image
-                style={styles.profileImage}
-                source={{uri: userInfo.userImage}}
-                resizeMode="cover"
-              />
-              <TouchableOpacity
-                style={{
-                  position: 'absolute',
-                  backgroundColor: 'white',
-                  bottom: 10,
-                  right: 10,
-                  borderRadius: 50,
-                }}
-                onPress={modalOpen}>
-                <AntDesign name="camerao" size={20} color={'#3B28B1'} />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={{fontSize: 16, color: 'black'}}>
-              {userInfo.nickname}
-            </Text>
-            <Text style={{fontSize: 12, color: 'black'}}>
-              {userInfo.description}
-            </Text>
+        <View style={styles.profileContainer}>
+          <View style={styles.profileImageContainer}>
+            <Image
+              style={styles.profileImage}
+              source={{uri: userInfo.userImage}}
+              resizeMode="cover"
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                backgroundColor: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: width * 0.073,
+                height: height * 0.037,
+                bottom: 5,
+                right: 5,
+                borderRadius: 50,
+                borderWidth: 1,
+                borderColor: '#E0E0E0',
+              }}
+              onPress={modalOpen}>
+              <AntDesign name="camerao" size={20} color={'#3B28B1'} />
+            </TouchableOpacity>
           </View>
+
+          <Text
+            style={{
+              fontSize: 16,
+              color: '#424242',
+              fontFamily: 'MICEGothic-Bold',
+              marginVertical: 3,
+            }}>
+            {userInfo.nickname}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              color: '#424242',
+              fontFamily: 'MICEGothic-Bold',
+              marginVertical: 3,
+            }}>
+            {userInfo.description}
+          </Text>
         </View>
-        <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+        <View
+          style={{
+            marginVertical: height * 0.0125,
+            paddingHorizontal: width * 0.073,
+          }}>
           <View>
             <TouchableOpacity>
               <Text onPress={goToLevel} style={styles.subjectText}>
@@ -294,14 +324,18 @@ function MyPage() {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={{alignItems: 'center', paddingVertical: 20}}>
+          <View style={{alignItems: 'center', paddingVertical: height * 0.025}}>
             <LevelBox
               userGrade={userInfo.expGrade}
               userPoint={userInfo.totalExp}
             />
           </View>
         </View>
-        <View style={{marginVertical: 10, paddingHorizontal: 30}}>
+        <View
+          style={{
+            marginVertical: height * 0.0125,
+            paddingHorizontal: width * 0.073,
+          }}>
           <TouchableOpacity>
             <Text onPress={goToQuestLog} style={styles.subjectText}>
               qhoto 로그 &nbsp;
@@ -379,9 +413,11 @@ const styles = StyleSheet.create({
     fontFamily: 'MICEGothic-Bold',
     marginBottom: 3,
   },
+  profileContainer: {marginTop: height * 0.015, alignItems: 'center'},
   profileImageContainer: {
     width: width * 0.3,
     height: width * 0.3,
+    marginBottom: height * 0.015,
   },
   profileImage: {
     width: width * 0.3,
@@ -407,12 +443,8 @@ const styles = StyleSheet.create({
   },
   rightIcon: {
     position: 'absolute',
-    // padding: 10,
-    // width: 40,
-    // height: 40,
-    // top: -10,
-    // left: 20,
-    backgroundColor: 'black',
+    right: 0,
+    top: -10,
   },
   actionText: {
     color: 'black',

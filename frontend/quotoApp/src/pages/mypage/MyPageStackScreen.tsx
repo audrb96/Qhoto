@@ -5,6 +5,7 @@ import QhotoLevel from './QhotoLevel';
 import QhotoHeader from '../../components/QhotoHeader';
 import EditMyProfile from './EditMyProfile';
 import QhotoLog from './QhotoLog';
+import MyLoader from './../../components/MyLoader';
 
 import ContactsPage from '../ContactsPage';
 import LevelInfo from '../../components/mypage/LevelInfo';

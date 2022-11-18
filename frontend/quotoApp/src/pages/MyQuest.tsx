@@ -54,8 +54,6 @@ function MyQuest() {
 
   const functions = [setDailyQuestIdx, setWeeklyQuestIdx, setMonthlyQuestIdx];
 
-  const token: any = AsyncStorage.getItem('accessToken');
-
   useEffect(() => {
     getUserInfoApi(
       (response: any) => {
@@ -97,6 +95,7 @@ function MyQuest() {
     getQuestList(
       (res: any) => {
         const {daily, weekly, monthly} = res.data.questList;
+        console.log(daily);
         setDailyQuestList(daily);
         setWeeklyQuestList(weekly);
         setMonthlyQuestList(monthly);
@@ -105,18 +104,10 @@ function MyQuest() {
             quest: res.data.questList,
           }),
         );
-        let dayState = false;
-        let weekState = false;
-        let monthState = false;
-        if (daily.length === 1) {
-          dayState = true;
-        }
-        if (weekly.length === 1) {
-          weekState = true;
-        }
-        if (monthly.length === 1) {
-          monthState = true;
-        }
+        const dayState = daily.length === 1 ? true : false;
+        const weekState = weekly.length === 1 ? true : false;
+        const monthState = monthly.length === 1 ? true : false;
+
         dispatch(
           userSlice.actions.setQuestState({
             userDailyState: dayState,

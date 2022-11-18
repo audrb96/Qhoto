@@ -58,10 +58,10 @@ api.interceptors.response.use(
   },
 );
 
-async function getAllFeeds(params, success, fail) {
+async function getAllFeeds(duration, condition, success, fail) {
   await api
     .get('/api/feed/all', {
-      params: {condition: params[1], duration: params[0]},
+      params: {duration, condition},
     })
     .then(success)
     .catch(fail);
