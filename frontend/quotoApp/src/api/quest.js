@@ -6,7 +6,9 @@ const fileApi = fileApiInstance();
 const REFRESH_URL = '/api/auth/reissue';
 
 api.interceptors.request.use(async config => {
-  if (!config.headers) return config;
+  if (!config.headers) {
+    return config;
+  }
 
   let token = null;
 
@@ -58,7 +60,9 @@ api.interceptors.response.use(
 
 // request interceptor
 fileApi.interceptors.request.use(async config => {
-  if (!config.headers) return config;
+  if (!config.headers) {
+    return config;
+  }
 
   let token = null;
 
@@ -109,15 +113,19 @@ fileApi.interceptors.response.use(
 );
 
 async function getQuestList(success, fail) {
-  await api.get(`/api/quest`).then(success).catch(fail);
+  await api.get('/api/quest').then(success).catch(fail);
 }
 
 async function uploadPhoto(feed, success, fail) {
-  await fileApi.post(`/api/feed/upload/image`, feed).then(success).catch(fail);
+  await fileApi.post('/api/feed/upload/image', feed).then(success).catch(fail);
 }
 
 async function uploadVideo(feed, success, fail) {
-  await fileApi.post(`/api/feed/upload/video`, feed).then(success).catch(fail);
+  await fileApi.post('/api/feed/upload/video', feed).then(success).catch(fail);
 }
 
-export {getQuestList, uploadPhoto, uploadVideo};
+async function getQuestPoints(success, fail) {
+  await api.get('/api/quest/point').then(success).catch(fail);
+}
+
+export {getQuestList, uploadPhoto, uploadVideo, getQuestPoints};
