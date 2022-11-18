@@ -10,5 +10,5 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 public class QuestLevelRes {
-    private Map<String, QuestPointRes> exp;
+    private final Map<String, QuestPointRes> exp;
 }

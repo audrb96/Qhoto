@@ -77,6 +77,4 @@ public class QuestController {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getQuestLevel(userId), HttpStatus.OK);
     }
-
-
 }

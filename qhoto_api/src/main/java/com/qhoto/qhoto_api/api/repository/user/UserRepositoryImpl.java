@@ -36,7 +36,12 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
     private final EntityManager em;
     private final JPAQueryFactory jpaQueryFactory;
 
-    //회원 정보 수정
+    /**
+     * 회원의 요청에 따라 유저 정보를 수정한다.
+     * @param modifyUserReq
+     * @param userInfo
+     * @throws IOException
+     */
     @Override
     @Transactional
     public void modifyUserByCon(ModifyUserReq modifyUserReq, User userInfo) throws IOException {
@@ -72,6 +77,12 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
         updateClause.where(user.id.eq(userInfo.getId())).execute();
     }
 
+    /**
+     * 연락처를 받아서 연락처안에있는 유저들의 정보와 상태를 조회한다.
+     * @param userInfo
+     * @param contacts
+     * @return
+     */
     @Override
     public List<ContactRes> contactByCon(User userInfo, Map<String, String> contacts) {
         List<ContactRes> contactResList = jpaQueryFactory
@@ -112,12 +123,22 @@ public class UserRepositoryImpl implements UserRepositoryByCon {
 
     }
 
+    /**
+     * 친구인 유저들을 제외시킨다.
+     * @param userInfo
+     * @return {@link BooleanExpression}
+     */
     private BooleanExpression friendRequestIsNotFriend(User userInfo) {
         return user.notIn(
                 JPAExpressions.select(friendRequest.responseUser).from(friendRequest).where(friendRequest.status.eq(RequestStatus.FRIEND).and(friendRequest.requestUser.eq(userInfo)))
         );
     }
 
+    /**
+     * 연락처 안에있는 유저들을 확인한다.
+     * @param contacts
+     * @return {@link BooleanExpression}
+     */
     private BooleanExpression contactsIn(Map<String, String> contacts) {
         List<String> contactsList = new ArrayList<>(contacts.keySet());
         return user.phone.in(contactsList);

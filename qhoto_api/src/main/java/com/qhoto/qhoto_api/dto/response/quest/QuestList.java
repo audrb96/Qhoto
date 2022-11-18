@@ -10,5 +10,5 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 public class QuestList {
-    private Map<String, Object> questList;
+    private final Map<String, Object> questList;
 }
