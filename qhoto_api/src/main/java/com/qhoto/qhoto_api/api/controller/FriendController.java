@@ -4,10 +4,11 @@ import com.qhoto.qhoto_api.api.service.FriendService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.FriendRequestReq;
 import com.qhoto.qhoto_api.dto.response.ErrorResponse;
-import com.qhoto.qhoto_api.dto.response.FriendInfoRes;
-import com.qhoto.qhoto_api.dto.response.FriendRes;
+import com.qhoto.qhoto_api.dto.response.user.FriendInfoRes;
+import com.qhoto.qhoto_api.dto.response.user.FriendRes;
 import com.qhoto.qhoto_api.exception.AlreadyFriendException;
 import com.qhoto.qhoto_api.exception.AlreadyRequestException;
+import com.qhoto.qhoto_api.exception.SelfRequestException;
 import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,29 +42,6 @@ public class FriendController {
         return ResponseEntity.ok("request success");
     }
 
-    /**
-     * 이미 요청한 친구 요청일 경우 Exception handler
-     * @param e
-     * @return {@link ErrorResponse}
-     */
-    @ExceptionHandler(AlreadyRequestException.class)
-    protected ResponseEntity<ErrorResponse>  alreadyRequestException(AlreadyRequestException e) {
-      log.error("AlreadyRequestException", e);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ALREADY_REQUEST_USER);
-        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
-    }
-
-    /**
-     * 이미 친구인 경우 Exception handler
-     * @param e
-     * @return {@link ErrorResponse}
-     */
-    @ExceptionHandler(AlreadyFriendException.class)
-    protected ResponseEntity<ErrorResponse> alreadyFriendException(AlreadyFriendException e) {
-        log.error("AlreadyFriendException",e);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ALREADY_FRIEND);
-        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
-    }
 
     /**
      * 친구 목록 api
@@ -107,6 +85,36 @@ public class FriendController {
     public ResponseEntity<HttpStatus> updateConnection(@AuthenticationPrincipal User user, @PathVariable Long userId){
         friendService.putConnection(user, userId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 이미 요청한 친구 요청일 경우 Exception handler
+     * @param e
+     * @return {@link ErrorResponse}
+     */
+    @ExceptionHandler(AlreadyRequestException.class)
+    protected ResponseEntity<ErrorResponse>  alreadyRequestException(AlreadyRequestException e) {
+      log.error("AlreadyRequestException", e);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ALREADY_REQUEST_USER);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+    }
+
+    /**
+     * 이미 친구인 경우 Exception handler
+     * @param e
+     * @return {@link ErrorResponse}
+     */
+    @ExceptionHandler(AlreadyFriendException.class)
+    protected ResponseEntity<ErrorResponse> alreadyFriendException(AlreadyFriendException e) {
+        log.error("AlreadyFriendException",e);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ALREADY_FRIEND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+    }
+
+    @ExceptionHandler(SelfRequestException.class)
+    protected ResponseEntity<ErrorResponse> selfRequestException(SelfRequestException e){
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_SELF_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
     }
 
 }

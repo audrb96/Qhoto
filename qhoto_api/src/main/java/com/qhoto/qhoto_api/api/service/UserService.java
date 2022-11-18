@@ -1,14 +1,16 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.ExpRepository;
-import com.qhoto.qhoto_api.api.repository.FeedRepository;
-import com.qhoto.qhoto_api.api.repository.UserRepository;
+import com.qhoto.qhoto_api.api.repository.exp.ExpRepository;
+import com.qhoto.qhoto_api.api.repository.feed.FeedRepository;
+import com.qhoto.qhoto_api.api.repository.user.UserRepository;
 import com.qhoto.qhoto_api.domain.Feed;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
-import com.qhoto.qhoto_api.dto.response.MyFeedRes;
-import com.qhoto.qhoto_api.dto.response.MyInfoRes;
-import com.qhoto.qhoto_api.dto.response.UserInfoRes;
+import com.qhoto.qhoto_api.dto.response.feed.MyFeedRes;
+import com.qhoto.qhoto_api.dto.response.user.ContactRes;
+import com.qhoto.qhoto_api.dto.response.user.ContactResSet;
+import com.qhoto.qhoto_api.dto.response.user.MyInfoRes;
+import com.qhoto.qhoto_api.dto.response.user.UserInfoRes;
 import com.qhoto.qhoto_api.exception.NoUserByIdException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -70,9 +73,10 @@ public class UserService implements UserDetailsService {
             FeedResList.add(MyFeedRes.builder()
                     .feedId(feed.getId())
                     .feedImage(feed.getImage())
-                    .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-DD HH:MM")))
+                    .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                     .questName(feed.getQuestName())
                     .typeCode(feed.getTypeCode())
+                    .feedType(feed.getFeedType())
                     .build());
         }
         return FeedResList;
@@ -111,7 +115,7 @@ public class UserService implements UserDetailsService {
                             .feedId(feed.getId())
                             .feedImage(feed.getImage())
                             .feedType(feed.getFeedType())
-                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                            .feedTime(feed.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm").localizedBy(Locale.KOREA)))
                             .questName(feed.getQuestName())
                             .typeCode(feed.getTypeCode())
                             .build());
@@ -125,10 +129,8 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public String getUserContact(User user,Map<String,String> contacts) {
+    public List<ContactRes> getUserContact(User user, Map<String,String> contacts) {
         // 번호가 일치하는 회원들을 뽑아서 name이랑 같이 보내줌(친구 상태도 보내기)
-        userRepository.contactByCon(user, contacts);
-
-        return null;
+        return userRepository.contactByCon(user, contacts);
     }
 }

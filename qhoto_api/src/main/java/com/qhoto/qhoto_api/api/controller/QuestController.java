@@ -2,9 +2,9 @@ package com.qhoto.qhoto_api.api.controller;
 
 import com.qhoto.qhoto_api.api.service.QuestService;
 import com.qhoto.qhoto_api.domain.User;
-import com.qhoto.qhoto_api.dto.response.IsClearRes;
-import com.qhoto.qhoto_api.dto.response.QuestLevelRes;
-import com.qhoto.qhoto_api.dto.response.QuestList;
+import com.qhoto.qhoto_api.dto.response.quest.IsClearRes;
+import com.qhoto.qhoto_api.dto.response.quest.QuestLevelRes;
+import com.qhoto.qhoto_api.dto.response.quest.QuestList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,6 +77,4 @@ public class QuestController {
         Long userId = user.getId();
         return new ResponseEntity<>(questService.getQuestLevel(userId), HttpStatus.OK);
     }
-
-
 }

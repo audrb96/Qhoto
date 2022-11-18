@@ -1,16 +1,16 @@
 package com.qhoto.qhoto_api.api.service;
 
-import com.qhoto.qhoto_api.api.repository.FriendRepository;
-import com.qhoto.qhoto_api.api.repository.FriendRequestRepository;
-import com.qhoto.qhoto_api.api.repository.UserRepository;
+import com.qhoto.qhoto_api.api.repository.user.FriendRepository;
+import com.qhoto.qhoto_api.api.repository.user.FriendRequestRepository;
+import com.qhoto.qhoto_api.api.repository.user.UserRepository;
 import com.qhoto.qhoto_api.domain.Friend;
 import com.qhoto.qhoto_api.domain.FriendRequest;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.domain.type.RequestStatus;
 import com.qhoto.qhoto_api.dto.request.FriendRequestReq;
-import com.qhoto.qhoto_api.dto.response.FriendInfoRes;
-import com.qhoto.qhoto_api.dto.response.FriendRes;
-import com.qhoto.qhoto_api.dto.response.UserRes;
+import com.qhoto.qhoto_api.dto.response.user.FriendInfoRes;
+import com.qhoto.qhoto_api.dto.response.user.FriendRes;
+import com.qhoto.qhoto_api.dto.response.user.UserRes;
 import com.qhoto.qhoto_api.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +42,9 @@ public class FriendService {
         Optional<FriendRequest> friendRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatusNot(reqUser,resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")), DISCONNECTED);
         // 요청을 받는 사용자가 이전에 보내는 사용자에게 요청을 보냈었는지 확인
         Optional<FriendRequest> isAcceptRequest = friendRequestRepository.findByRequestUserAndResponseUserAndStatus(resUser.orElseThrow(() -> new NotFoundUserException("유저를 찾을 수 없습니다.")),reqUser, REQUEST);
-
+        if (reqUser.getId()==resUser.get().getId()){
+            throw new SelfRequestException("자기 자신에게 요청을 보낼 수 없습니다.");
+        }
         // 이전에 있던 요청 정보를 확인
         if(friendRequest.isPresent()) {
             switch (friendRequest.get().getStatus()) {

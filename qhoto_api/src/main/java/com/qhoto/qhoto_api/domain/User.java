@@ -72,6 +72,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Integer totalExp;
 
+    @OneToMany(mappedBy = "id")
+    @Builder.Default
+    private List<FriendRequest> friendRequests = new ArrayList<>();
+
     private String refreshToken;
 
     public void insertRefreshToken(String refreshToken) {

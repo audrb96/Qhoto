@@ -4,14 +4,16 @@ import com.qhoto.qhoto_api.api.service.LoginService;
 import com.qhoto.qhoto_api.api.service.UserService;
 import com.qhoto.qhoto_api.domain.User;
 import com.qhoto.qhoto_api.dto.request.ModifyUserReq;
-import com.qhoto.qhoto_api.dto.response.LoginRes;
-import com.qhoto.qhoto_api.dto.response.MyFeedRes;
-import com.qhoto.qhoto_api.dto.response.MyInfoRes;
-import com.qhoto.qhoto_api.dto.response.UserInfoRes;
+import com.qhoto.qhoto_api.dto.response.ErrorResponse;
+import com.qhoto.qhoto_api.dto.response.user.*;
+import com.qhoto.qhoto_api.dto.response.feed.MyFeedRes;
+import com.qhoto.qhoto_api.exception.NoUniqueUserException;
+import com.qhoto.qhoto_api.exception.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -117,10 +119,28 @@ public class UserController {
         return new ResponseEntity<>(userService.confirmUser(nickname),HttpStatus.OK);
     }
 
+    /**
+     * 연락처에 있는 사용자 정보를 가져오는 api
+     * @param user
+     * @param contacts
+     * @return {@link List<ContactRes>}
+     */
     @PostMapping("/contact")
-    public ResponseEntity<?> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {
+    public ResponseEntity<List<ContactRes>> readUserContact(@AuthenticationPrincipal User user, @RequestBody Map<String, String> contacts) {
         return ResponseEntity.ok(userService.getUserContact(user, contacts));
     }
 
+    /**
+     * 회원 정보와 관련된 유저가 2명이상 있을 때 터지는 Exception
+     * @param e
+     * @return {@link ErrorResponse}
+     */
+    @ExceptionHandler(NoUniqueUserException.class)
+    protected ResponseEntity<ErrorResponse> NoUniqueUserException(NoUniqueUserException e) {
+        log.error("NoUniqueUserException", e);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_UNIQUE_USER);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.resolve(errorResponse.getStatus()));
+    }
 
 }
