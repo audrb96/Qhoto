@@ -64,7 +64,20 @@ async function findFriendApi(nickname, success, fail) {
 
 // 친구요청(친구요청 + 요청수락)
 async function addFriendApi(resUserId, success, fail) {
-  await api.post('/api/friend', resUserId).then(success).catch(fail);
+  await api
+    // request Body
+    .post('/api/friend', resUserId)
+    .then(success)
+    .catch(fail);
+}
+
+// 친구삭제(친구삭제 + 요청취소)
+async function disconnectFriendApi(resUserId, success, fail) {
+  await api
+    // path variable
+    .post(`/api/friend/disconnect/${resUserId}`)
+    .then(success)
+    .catch(fail);
 }
 
 // 친구목록
@@ -72,7 +85,7 @@ async function friendListApi(success, fail) {
   await api.get('/api/friend').then(success).catch(fail);
 }
 
-// 친구요청받은거
+// 친구요청받은거 목록
 async function receiveListApi(success, fail) {
   await api.get('/api/friend/receive').then(success).catch(fail);
 }
@@ -89,4 +102,5 @@ export {
   friendListApi,
   receiveListApi,
   getContactsApi,
+  disconnectFriendApi,
 };

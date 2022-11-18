@@ -34,7 +34,7 @@ const ContactsPage: React.FC<props> = props => {
     addFriendApi(
       myContact.userId,
       res => {
-        console.log('addFriendApi - res', res);
+        console.log('addFriendApi - res', res.data);
         if (myContact.relation === '관계없음' || myContact.relation === null) {
           setTmpTitle('친구수락 대기중');
           setTmpColor('silver');
@@ -111,7 +111,11 @@ const ContactsPage: React.FC<props> = props => {
 
   const buttonFunc = myContact => {
     let buttonTitle = '';
-    if (myContact.relation === '관계없음' || myContact.relation === null) {
+    if (
+      myContact.relation === '관계없음' ||
+      myContact.relation === null ||
+      myContact.relation === '노관계'
+    ) {
       return (
         <Button
           buttonStyle={(styles.button, {backgroundColor: tmpColor})}
