@@ -443,11 +443,8 @@ const styles = StyleSheet.create({
   },
   rightIcon: {
     position: 'absolute',
-    // padding: 10,
-    // width: 40,
-    // height: 40,
-    // top: -10,
-    // left: 20,
+    right: 0,
+    top: -10,
   },
   actionText: {
     color: 'black',
