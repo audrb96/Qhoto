@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import MyPage from './MyPage';
 import QhotoLevel from './QhotoLevel';
@@ -6,6 +6,9 @@ import QhotoHeader from '../../components/QhotoHeader';
 import EditMyProfile from './EditMyProfile';
 import QhotoLog from './QhotoLog';
 import MyLoader from './../../components/MyLoader';
+
+import ContactsPage from '../ContactsPage';
+import LevelInfo from '../../components/mypage/LevelInfo';
 
 const TransitionScreenOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -38,8 +41,13 @@ function MyPageStackScreen() {
         options={{headerShown: false}}
       />
       <MyPageStack.Screen
-        name="MyLoader"
-        component={MyLoader}
+        name="ContactsPage"
+        component={ContactsPage}
+        options={{headerShown: false}}
+      />
+      <MyPageStack.Screen
+        name="LevelInfo"
+        component={LevelInfo}
         options={{headerShown: false}}
       />
     </MyPageStack.Navigator>
