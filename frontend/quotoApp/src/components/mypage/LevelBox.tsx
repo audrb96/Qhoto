@@ -23,6 +23,7 @@ const levelInfo: {
     minPoint: number;
     maxPoint: number;
     badge: any;
+    badge_ws: any;
   };
 } = info.levelInfo;
 
@@ -56,15 +57,13 @@ const LevelBox: React.FC<Props> = props => {
           </Text>
         </View>
         <View style={{flexDirection: 'row', marginRight: 0}}>
-          <Shadow>
-            <Image
-              source={levelInfo[userGrade].badge}
-              style={{
-                maxWidth: 100,
-                maxHeight: 100,
-              }}
-            />
-          </Shadow>
+          <Image
+            source={levelInfo[userGrade].badge_ws}
+            style={{
+              maxWidth: 100,
+              maxHeight: 100,
+            }}
+          />
         </View>
       </View>
       <Text

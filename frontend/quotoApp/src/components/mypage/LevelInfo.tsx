@@ -181,8 +181,7 @@ function LevelInfo({route}) {
               renderItem={renderItem}
               keyExtractor={(item, index) => index.toString()}
               style={{marginLeft: 30, marginTop: 10}}
-              scrollEnabled={true}
-              showsVerticalScrollIndicator={false}
+              scrollEnabled={false}
             />
           </View>
         </View>
