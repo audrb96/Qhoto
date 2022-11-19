@@ -25,6 +25,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Tooltip from 'react-native-walkthrough-tooltip';
 
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../store/reducer';
 
 interface Props {
   feed: Feed;
@@ -104,6 +106,16 @@ const FeedItem: React.FC<Props> = props => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const isAccessable = true;
+  const myNickname = useSelector((state: RootState) => state.user.nickname);
+  const navigation = useNavigation();
+
+  const goToOtherPage = () => {
+    if (nickname === myNickname) {
+      navigation.navigate('MyPage');
+    } else {
+      navigation.navigate('OtherPage', {userId: userId});
+    }
+  };
 
   const handleLikeClick = () => {
     if (isLike) {
@@ -129,8 +141,6 @@ const FeedItem: React.FC<Props> = props => {
     }
   };
 
-  const navigation = useNavigation();
-
   // const moveProfile = () => {
   //   navigate('OtherPage');
   // };
@@ -139,8 +149,7 @@ const FeedItem: React.FC<Props> = props => {
     <View style={styles.feedContainer}>
       <View style={styles.profileBar}>
         <View style={styles.userInfo}>
-          <Pressable
-            onPress={() => navigation.navigate('OtherPage', {userId: userId})}>
+          <Pressable onPress={() => goToOtherPage()}>
             <Avatar.Image size={50} source={{uri: userImage}} />
           </Pressable>
           <View style={{justifyContent: 'center', paddingHorizontal: 12}}>
