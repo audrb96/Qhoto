@@ -4,6 +4,7 @@ import {
   VictoryChart,
   VictoryTheme,
   VictoryLine,
+  VictoryAxis,
   VictoryArea,
   VictoryLabel,
   VictoryGroup,
@@ -335,12 +336,13 @@ function QhotoLevel({navigation}) {
                           }}
                           labelComponent={<VictoryLabel dy={-2} />}
                           labels={({datum}) =>
-                            datum.count !== 0 ? datum.count : null
+                            datum.count >= 1 ? datum.count : null
                           }
                           data={data[chart]}
                           x="type"
                           y="count"
                         />
+                        <VictoryAxis style={{axis: {stroke: 'none'}}} />
                       </VictoryChart>
                     </View>
                   </View>

@@ -46,6 +46,7 @@ function OtherPage({route}) {
   const dispatch = useAppDispatch();
 
   const goToLevel = () => {
+    // 여기에 userId 넘겨주면 되긴 함. userId넘겨준 후, QhotoLevelPage에서 요청 보낼때 userId 같이 보내는 걸로.
     navigation.navigate('QhotoLevel');
   };
   const goToQuestLog = () => {
@@ -291,7 +292,8 @@ function OtherPage({route}) {
                 }}>
                 <View>
                   <TouchableOpacity>
-                    <Text onPress={goToLevel} style={styles.subjectText}>
+                    {/* onPress={goToLevel} 삭제 해놨지만 추가 할 수도? 추가 하게 된다면 위에 goToLevel참조*/}
+                    <Text style={styles.subjectText}>
                       qhoto 레벨 &nbsp;
                       <FontAwesome5
                         name="angle-right"
