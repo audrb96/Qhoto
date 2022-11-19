@@ -161,7 +161,6 @@ function OtherPage({route}) {
       );
     }
     return;
-    // <FontAwesome5 name={iconName} size={30} color="#3B28B1" />;
   };
 
   const addFriend = () => {

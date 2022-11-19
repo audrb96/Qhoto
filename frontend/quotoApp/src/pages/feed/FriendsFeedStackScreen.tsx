@@ -7,6 +7,7 @@ import OtherPage from './../OtherPage';
 import LevelInfo from '../../components/mypage/LevelInfo';
 import QhotoLevel from '../mypage/QhotoLevel';
 import QhotoLog from '../mypage/QhotoLog';
+import MyPage from '../mypage/MyPage';
 
 const TransitionScreenOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -54,6 +55,11 @@ function FriendsFeedStackScreen() {
         options={{
           header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
         }}
+      />
+      <FriendsFeedStack.Screen
+        name="MyPage"
+        component={MyPage}
+        options={{headerShown: false}}
       />
     </FriendsFeedStack.Navigator>
   );

@@ -12,6 +12,7 @@ import ContactsPage from './ContactsPage';
 import QhotoLevel from './mypage/QhotoLevel';
 import QhotoLog from './mypage/QhotoLog';
 import LevelInfo from '../components/mypage/LevelInfo';
+import MyPage from './mypage/MyPage';
 
 const FriendListStack = createStackNavigator();
 function FriendListStackScreen() {
@@ -58,6 +59,11 @@ function FriendListStackScreen() {
       <FriendListStack.Screen
         name="LevelInfo"
         component={LevelInfo}
+        options={{headerShown: false}}
+      />
+      <FriendListStack.Screen
+        name="MyPage"
+        component={MyPage}
         options={{headerShown: false}}
       />
     </FriendListStack.Navigator>

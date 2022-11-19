@@ -9,6 +9,7 @@ import CommentPage from './CommentPage';
 import QhotoLog from '../mypage/QhotoLog';
 import QhotoLevel from '../mypage/QhotoLevel';
 import LevelInfo from '../../components/mypage/LevelInfo';
+import MyPage from '../mypage/MyPage';
 
 const AllFeedStack = createStackNavigator();
 function AllFeedStackScreen() {
@@ -49,6 +50,11 @@ function AllFeedStackScreen() {
         options={{
           header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
         }}
+      />
+      <AllFeedStack.Screen
+        name="MyPage"
+        component={MyPage}
+        options={{headerShown: false}}
       />
     </AllFeedStack.Navigator>
   );

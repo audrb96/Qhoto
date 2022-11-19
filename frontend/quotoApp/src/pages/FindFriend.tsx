@@ -37,10 +37,7 @@ const {width, height} = Dimensions.get('window');
 function FindFriend({route}) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-
   const myNickname = useSelector((state: RootState) => state.user.nickname);
-
-  const [text, onChangeText] = useState('');
   const [selectedId, setSelectedId] = useState(null);
 
   const [targetId, setTargetId] = useState('');
@@ -58,6 +55,16 @@ function FindFriend({route}) {
   const [receiveList, setReceiveList] = useState('');
   const [openFriend, setOpenFriend] = useState(false);
 
+  const goToOtherPage = searchResult => {
+    if (searchResult.nickName === myNickname) {
+      navigation.navigate('MyPage');
+    } else {
+      navigation.navigate('OtherPage', {
+        userId: searchResult.userId,
+      });
+    }
+  };
+
   // 친구요청 받은 리스트
   useEffect(() => {
     receiveListApi(
@@ -70,6 +77,7 @@ function FindFriend({route}) {
         console.log('receiveListApi - err', err.response);
       },
     );
+    findFriend(targetId);
   }, [isFocused]);
 
   let iconName = '';
@@ -77,20 +85,26 @@ function FindFriend({route}) {
   const relationIcon = () => {
     // 검색한 유저가 나인경우
     if (searchResult.nickName === myNickname) {
-      iconOrder = '나';
       return (
-        <FontAwesome
-          name="user"
-          size={30}
-          color="#3B28B1"
-          // style={{
-          //   position: 'absolute',
-          //   width: 40,
-          //   height: 40,
-          //   top: -10,
-          //   left: 20,
-          // }}
-        />
+        <Button
+          icon={
+            <FontAwesome
+              name="user"
+              size={20}
+              color="#FFFFFF"
+              // style={{
+              //   position: 'absolute',
+              //   width: 40,
+              //   height: 40,
+              //   top: -10,
+              //   left: 20,
+              // }}
+            />
+          }
+          buttonStyle={styles.buttonPurple}
+          title="  Me"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'GET') {
       // 내가 받음
@@ -100,16 +114,18 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청 수락"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'REQUEST') {
       // 내가 보낸(아직 받지않은)
       iconName = 'user-check';
-      iconOrder = '친구 수락 대기중';
+      iconOrder = '친구수락 대기중';
       return (
         <Button
           buttonStyle={styles.buttonSilver}
-          title="친구 수락 대기중"
+          title="친구수락 대기중"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'FRIEND') {
@@ -119,6 +135,7 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.buttonPurple}
           title="친구"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (
@@ -131,6 +148,7 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     }
@@ -323,7 +341,12 @@ function FindFriend({route}) {
                 setOpenFriend(true);
               }}>
               <Text
-                style={{color: 'black', backgroundColor: 'red', padding: 5}}>
+                style={{
+                  color: 'black',
+                  fontFamily: 'MICEGothic-Bold',
+                  backgroundColor: '#FFE6F7',
+                  padding: 5,
+                }}>
                 검색
               </Text>
             </TouchableOpacity>
@@ -339,7 +362,6 @@ function FindFriend({route}) {
                   flexDirection: 'row',
                   marginVertical: 0,
                   justifyContent: 'center',
-
                   // backgroundColor: 'green',
                 }}>
                 <TouchableOpacity
@@ -348,13 +370,10 @@ function FindFriend({route}) {
                     alignItems: 'center',
                     // backgroundColor: 'red',
                     marginVertical: 5,
-                    borderWidth: 0.5,
+                    borderWidth: 0.1,
+                    elevation: 2,
                   }}
-                  onPress={() =>
-                    navigation.navigate('OtherPage', {
-                      userId: searchResult.userId,
-                    })
-                  }>
+                  onPress={() => goToOtherPage(searchResult)}>
                   <View style={{marginTop: 10}}>
                     <ImageModal
                       source={{uri: searchResult.profileImg}}
@@ -369,19 +388,25 @@ function FindFriend({route}) {
                       overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
                     />
                   </View>
-                  <View style={{flexDirection: 'row'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginVertical: height * 0.0125,
+                    }}>
                     <Avatar.Image
                       // badge
                       size={22}
                       source={{uri: searchResult.profileImg}} // Todo
                     />
-                    <Text style={{color: 'black'}}>
+                    <Text
+                      style={{
+                        color: 'black',
+                        fontFamily: 'MICEGothic-Bold',
+                      }}>
                       {searchResult.nickName}
                     </Text>
                   </View>
-                  <Text style={{color: 'black'}}>
-                    {searchResult.email.split('@', 1)[0]}
-                  </Text>
+
                   <TouchableOpacity
                   // style={{
                   //   height: 40,
@@ -389,12 +414,7 @@ function FindFriend({route}) {
                   // }}
                   // onPress={() => addFriend(searchResult)}
                   >
-                    <View style={{flexDirection: 'row'}}>
-                      {relationIcon()}
-                      {/* <Text style={{color: 'black', fontSize: 15}}>
-                        {iconOrder}
-                      </Text> */}
-                    </View>
+                    <View style={{flexDirection: 'row'}}>{relationIcon()}</View>
                   </TouchableOpacity>
                 </TouchableOpacity>
               </View>
