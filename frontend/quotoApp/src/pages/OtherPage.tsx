@@ -6,12 +6,14 @@ import {
   TouchableOpacity,
   View,
   RefreshControl,
+  Pressable,
   SafeAreaView,
   StyleSheet,
   Dimensions,
   NativeModules,
 } from 'react-native';
 import {useSelector} from 'react-redux';
+import Modal from 'react-native-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ImageModal from 'react-native-image-modal';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -126,6 +128,7 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => addFriend()}></Button>
       );
     }
@@ -135,6 +138,7 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.buttonSilver}
           title="친구수락 대기중"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => {
             disconnect();
           }}></Button> // Todo 완료: 친구요청 취소
@@ -146,8 +150,9 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.buttonPurple}
           title="친구"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => {
-            disconnect();
+            setDisconnectModalVisible(true);
           }}></Button> // Todo: 친구삭제
       );
     }
@@ -157,6 +162,7 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청 수락"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => addFriend()}></Button> // Todo 완료: 친구수락
       );
     }
@@ -201,6 +207,9 @@ function OtherPage({route}) {
       },
     );
   };
+
+  // 친구삭제를 위한 모달 visible 상태값
+  const [disconnectModalVisivle, setDisconnectModalVisible] = useState(false);
 
   const updateIsFriend = () => {
     findFriendApi(
@@ -280,21 +289,19 @@ function OtherPage({route}) {
             </View>
           </View>
         </View>
-
         {/*
       비공개 && !친구 -> 비공개
       공개           -> 공개
       비공개 && 친구  -> 공개
  */}
-
         {!otherInfo.profileOpen && isFriend !== 'FRIEND' ? (
           <View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 addFriend();
-              }}>
-              {isFriendIcon()}
-            </TouchableOpacity>
+              }}> */}
+            {isFriendIcon()}
+            {/* </TouchableOpacity> */}
             <View
               style={{
                 flex: 1,
@@ -373,6 +380,42 @@ function OtherPage({route}) {
             </View>
           </View>
         )}
+        <Modal
+          ////////////////////////////////////////////////////////////////////////
+          isVisible={disconnectModalVisivle} // modal 나타나는 조건
+          animationIn="fadeIn" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+          animationOut="fadeOut" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+          animationOutTiming={10}
+          backdropOpacity={0.2}
+          onBackdropPress={() => setDisconnectModalVisible(false)}
+          onBackButtonPress={() => setDisconnectModalVisible(false)}>
+          <Pressable
+            style={styles.background}
+            onPress={() => setDisconnectModalVisible(false)}>
+            <View style={styles.whiteBox}>
+              <View style={styles.question}>
+                <Text style={styles.modalText}>친구를 끊으시겠어요?</Text>
+              </View>
+              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                <Pressable
+                  style={styles.actionButton}
+                  android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
+                  onPress={() => {
+                    disconnect();
+                    setDisconnectModalVisible(false);
+                  }}>
+                  <Text style={styles.modalText}>예</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.actionButton}
+                  android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
+                  onPress={() => setDisconnectModalVisible(false)}>
+                  <Text style={styles.modalText}>아니요</Text>
+                </Pressable>
+              </View>
+            </View>
+          </Pressable>
+        </Modal>
       </SafeAreaView>
     </ScrollView>
   );
@@ -425,6 +468,43 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: height * 0.0125,
     backgroundColor: '#592CB8',
+  },
+  background: {
+    backgroundColor: 'rgba(0,0,0,0)',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: width * 0.3,
+    height: width * 0.3,
+    borderRadius: 100,
+  },
+  whiteBox: {
+    width: width * 0.7,
+    backgroundColor: 'white',
+    borderRadius: 4,
+    elevation: 2,
+  },
+  question: {
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: height * 0.0125,
+  },
+  actionButton: {
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: height * 0.0125,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  modalText: {
+    fontSize: 16,
+    fontFamily: 'MICEGothic-Bold',
+    color: 'black',
   },
 });
 
