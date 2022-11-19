@@ -18,8 +18,10 @@ import {FlatList, TextInput} from 'react-native-gesture-handler';
 import {Avatar, List} from 'react-native-paper';
 import ImageModal from 'react-native-image-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import QhotoHeader from './../components/QhotoHeader';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {RootState} from '../store/reducer';
 
 import {
   findFriendApi,
@@ -27,11 +29,16 @@ import {
   addFriendApi,
   receiveListApi,
 } from '../api/friend';
+import {useSelector} from 'react-redux';
+import {Button} from '@rneui/base';
 
 const {width, height} = Dimensions.get('window');
 
 function FindFriend({route}) {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+
+  const myNickname = useSelector((state: RootState) => state.user.nickname);
 
   const [text, onChangeText] = useState('');
   const [selectedId, setSelectedId] = useState(null);
@@ -63,43 +70,71 @@ function FindFriend({route}) {
         console.log('receiveListApi - err', err.response);
       },
     );
-  }, []);
+  }, [isFocused]);
 
   let iconName = '';
   let iconOrder = '';
   const relationIcon = () => {
-    if (searchResult.isFriend === 'GET') {
+    // 검색한 유저가 나인경우
+    if (searchResult.nickName === myNickname) {
+      iconOrder = '나';
+      return (
+        <FontAwesome
+          name="user"
+          size={30}
+          color="#3B28B1"
+          // style={{
+          //   position: 'absolute',
+          //   width: 40,
+          //   height: 40,
+          //   top: -10,
+          //   left: 20,
+          // }}
+        />
+      );
+    } else if (searchResult.isFriend === 'GET') {
       // 내가 받음
       iconName = 'user-check';
       iconOrder = '친구 수락';
+      return (
+        <Button
+          buttonStyle={styles.button}
+          title="친구요청 수락"
+          onPress={() => addFriend(searchResult)}></Button>
+      );
     } else if (searchResult.isFriend === 'REQUEST') {
       // 내가 보낸(아직 받지않은)
       iconName = 'user-check';
       iconOrder = '친구 수락 대기중';
+      return (
+        <Button
+          buttonStyle={styles.buttonSilver}
+          title="친구 수락 대기중"
+          onPress={() => addFriend(searchResult)}></Button>
+      );
     } else if (searchResult.isFriend === 'FRIEND') {
       iconName = 'user-friends';
       iconOrder = '친구';
+      return (
+        <Button
+          buttonStyle={styles.buttonPurple}
+          title="친구"
+          onPress={() => addFriend(searchResult)}></Button>
+      );
     } else if (
       searchResult.isFriend === 'DISCONNECTED' ||
       searchResult.isFriend === null
     ) {
       iconName = 'user-plus';
       iconOrder = '친구 요청';
+      return (
+        <Button
+          buttonStyle={styles.button}
+          title="친구요청"
+          onPress={() => addFriend(searchResult)}></Button>
+      );
     }
-    return (
-      <FontAwesome5
-        name={iconName}
-        size={30}
-        color="#3B28B1"
-        // style={{
-        //   position: 'absolute',
-        //   width: 40,
-        //   height: 40,
-        //   top: -10,
-        //   left: 20,
-        // }}
-      />
-    );
+    return;
   };
 
   // 친구검색
@@ -122,16 +157,19 @@ function FindFriend({route}) {
 
   // 친구 요청 + 수락
   // Todo: back api 완성시 resUserId 붙여야함
-  const addFriend = (resUserId: any) => {
+  const addFriend = (searchResult: any) => {
+    if (searchResult.nickName === myNickname) {
+      return;
+    }
     if (iconOrder === '친구 수락 대기중') {
       return Alert.alert('알림', '친구 수락 대기중입니다.');
     }
     if (iconOrder === '친구') {
       return Alert.alert('알림', '이미 친구입니다.');
     }
-    console.log('resUserId', resUserId);
+    console.log('resUserId', searchResult.userId);
     addFriendApi(
-      resUserId,
+      searchResult.userId,
       (res: any) => {
         console.log('addFriendApi - res', res);
         // 친구 요청or수락 후 받은 친구목록 재요청
@@ -139,7 +177,7 @@ function FindFriend({route}) {
         // receiveListApi 를 또 받을 필요없이 그냥 프론트에서만 filter 를 통해 없애줌.
         setReceiveList(
           receiveList.filter(item => {
-            return item.userId !== resUserId;
+            return item.userId !== searchResult.userId;
           }),
         );
         // 친구 요청or수락 후 친구 리스트 재요청
@@ -165,16 +203,6 @@ function FindFriend({route}) {
       setTargetId(targetId.replace(targetId.slice(-1), ''));
     }
   }, []);
-
-  const DATA = [
-    {
-      id: '0',
-      profile: 'https://reactjs.org/logo-og.png',
-      badge: 'https://reactjs.org/logo-og.png',
-      nickname: '코린이1',
-      profileId: 'hyungjin1@naver.com',
-    },
-  ];
 
   const Item = ({
     item,
@@ -355,16 +383,17 @@ function FindFriend({route}) {
                     {searchResult.email.split('@', 1)[0]}
                   </Text>
                   <TouchableOpacity
-                    style={{
-                      height: 40,
-                      backgroundColor: 'yellow',
-                    }}
-                    onPress={() => addFriend(searchResult.userId)}>
+                  // style={{
+                  //   height: 40,
+                  //   backgroundColor: 'yellow',
+                  // }}
+                  // onPress={() => addFriend(searchResult)}
+                  >
                     <View style={{flexDirection: 'row'}}>
                       {relationIcon()}
-                      <Text style={{color: 'black', fontSize: 15}}>
+                      {/* <Text style={{color: 'black', fontSize: 15}}>
                         {iconOrder}
-                      </Text>
+                      </Text> */}
                     </View>
                   </TouchableOpacity>
                 </TouchableOpacity>
@@ -412,6 +441,30 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -10,
     right: -20,
+  },
+  button: {
+    width: width * 0.3,
+    alignSelf: 'center',
+    // marginBottom: height * 0.0125,
+  },
+  buttonUndefined: {
+    // width: width * 0.4,
+    alignSelf: 'center',
+    // marginBottom: height * 0.0125,
+    backgroundColor: 'white',
+  },
+
+  buttonSilver: {
+    // width: width * 0.3,
+    alignSelf: 'center',
+    // marginBottom: height * 0.0125,
+    backgroundColor: 'silver',
+  },
+  buttonPurple: {
+    width: width * 0.3,
+    alignSelf: 'center',
+    // marginBottom: height * 0.0125,
+    backgroundColor: '#592CB8',
   },
 });
 export default FindFriend;

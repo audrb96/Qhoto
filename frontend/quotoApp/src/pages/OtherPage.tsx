@@ -137,7 +137,7 @@ function OtherPage({route}) {
           title="친구수락 대기중"
           onPress={() => {
             disconnect();
-          }}></Button> // Todo: 친구요청 취소
+          }}></Button> // Todo 완료: 친구요청 취소
       );
     }
     // 이미 친구인
@@ -157,7 +157,7 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청 수락"
-          onPress={() => addFriend()}></Button> // Todo: 친구수락
+          onPress={() => addFriend()}></Button> // Todo 완료: 친구수락
       );
     }
     return;
