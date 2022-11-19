@@ -77,8 +77,8 @@ const ContactsPage: React.FC<props> = props => {
               <Card.Image
                 style={{
                   borderRadius: 100,
-                  width: width * 0.384,
-                  height: height * 0.198,
+                  width: '100%',
+                  aspectRatio: 1,
                   // width: 158,
                   // height: 158,
                   // padding: 0,

@@ -96,7 +96,6 @@ function MyQuest() {
     getQuestList(
       (res: any) => {
         const {daily, weekly, monthly} = res.data.questList;
-        console.log(daily);
         setDailyQuestList(daily);
         setWeeklyQuestList(weekly);
         setMonthlyQuestList(monthly);

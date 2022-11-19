@@ -11,6 +11,7 @@ import {
   NativeModules,
 } from 'react-native';
 import {useSelector} from 'react-redux';
+import {Avatar} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ImageModal from 'react-native-image-modal';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -66,7 +67,7 @@ function OtherPage({route}) {
 
   const userId = route.params.userId;
 
-  const [isFriend, setIsFriend] = useState(null);
+  const [isFriend, setIsFriend] = useState();
 
   useEffect(() => {
     getOtherInfoApi(
@@ -128,20 +129,7 @@ function OtherPage({route}) {
       iconName = 'user-plus';
       iconOrder = '친구 요청';
     }
-    return (
-      <FontAwesome5
-        name={iconName}
-        size={30}
-        color="#3B28B1"
-        // style={{
-        //   position: 'absolute',
-        //   width: 40,
-        //   height: 40,
-        //   top: -10,
-        //   left: 20,
-        // }}
-      />
-    );
+    return <FontAwesome5 name={iconName} size={21} color="white" />;
   };
 
   const addFriend = () => {
@@ -185,7 +173,9 @@ function OtherPage({route}) {
     />
   );
 
-  return otherInfo === undefined || otherLogs === undefined ? null : (
+  return otherInfo === undefined ||
+    otherLogs === undefined ||
+    isFriend === undefined ? null : (
     <ScrollView
       refreshControl={
         <RefreshControl
@@ -194,68 +184,59 @@ function OtherPage({route}) {
         />
       }>
       <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
-      <View // 프로필
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingTop: height * 0.015,
-          }}>
-          <View
-            style={(styles.profileContainer, {flex: 1, alignItems: 'center'})}>
-            <View style={styles.profileImageContainer}>
-              <ImageModal
-                source={{uri: otherInfo.image}}
-                resizeMode="cover"
-                modalImageResizeMode="contain"
-                style={{
-                  width: width * 0.3,
-                  height: width * 0.3,
-                  borderRadius: 100,
-                }}
-                swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
-                overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#424242',
-                fontFamily: 'MICEGothic-Bold',
-                marginVertical: 3,
-              }}>
-              {otherInfo.nickname}
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                color: '#424242',
-                fontFamily: 'MICEGothic-Bold',
-                marginVertical: 3,
-              }}>
-              {otherInfo.description}
-            </Text>
-          </View>
-        </View>
-      </View>
 
+      <View style={styles.profileContainer}>
+        <Avatar.Image
+          // badge
+          size={170}
+          source={{uri: otherInfo.image}} // Todo
+        />
+        <Text
+          style={{
+            fontSize: 24,
+            color: '#424242',
+            fontFamily: 'esamanru-Medium',
+            marginTop: 15,
+          }}>
+          {otherInfo.nickname}
+        </Text>
+        <Text
+          style={{
+            fontSize: 18,
+            color: '#666666',
+            fontFamily: 'esamanru-Medium',
+          }}>
+          {otherInfo.description}
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            addFriend();
+          }}
+          style={{
+            backgroundColor: '#3B28B1',
+            borderRadius: 10,
+            paddingVertical: 10,
+            paddingHorizontal: 15,
+          }}>
+          <Text
+            style={{
+              color: 'white',
+              fontFamily: 'esamanru-Medium',
+              fontSize: 21,
+            }}>
+            {isFriendIcon()}&nbsp;&nbsp;
+            {iconOrder}
+          </Text>
+        </TouchableOpacity>
+      </View>
       {/*
       비공개 && !친구 -> 비공개
       공개           -> 공개
       비공개 && 친구  -> 공개
  */}
 
-      {!otherInfo.profileOpen && isFriend !== 'FRIEND' ? (
+      {!otherInfo.profileOpen || isFriend !== 'FRIEND' ? (
         <View>
-          <TouchableOpacity
-            onPress={() => {
-              addFriend();
-            }}>
-            <View style={styles.ifFriendIcon}>
-              {isFriendIcon()}
-              <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
-            </View>
-          </TouchableOpacity>
           <View
             style={{
               flex: 1,
@@ -280,10 +261,6 @@ function OtherPage({route}) {
         <View>
           <View>
             <View>
-              <View style={styles.ifFriendIcon}>
-                {isFriendIcon()}
-                <Text style={{color: 'black', fontSize: 20}}>{iconOrder}</Text>
-              </View>
               <View
                 style={{
                   marginVertical: height * 0.0125,
@@ -358,13 +335,7 @@ const styles = StyleSheet.create({
     fontFamily: 'MICEGothic-Bold',
     marginBottom: 3,
   },
-  profileContainer: {marginTop: height * 0.015, alignItems: 'center'},
-
-  profileImageContainer: {
-    width: width * 0.3,
-    height: width * 0.3,
-    marginBottom: height * 0.015,
-  },
+  profileContainer: {marginVertical: 20, alignItems: 'center'},
 });
 
 export default OtherPage;

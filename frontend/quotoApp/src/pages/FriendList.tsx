@@ -43,12 +43,12 @@ function FriendList() {
   const navigation = useNavigation();
 
   const [openFriendList, setOpenFriendList] = useState(true);
-  const [openContactList, setOpenContactList] = useState(false);
+  const [openContactList, setOpenContactList] = useState(true);
   const [friendList, setFriendList] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [refreshing, setRefreshing] = useState(false);
-  const [myContacts, setMyContacts] = useState([]);
+  const [myContacts, setMyContacts] = useState();
   const [callbackState, setCallbackState] = useState(true);
 
   const onRefresh = useCallback(() => {
@@ -85,24 +85,26 @@ function FriendList() {
           //   }
           Contacts.getAll().then(async contacts => {
             let contactList = [];
-            await contacts.forEach(contact =>
-              contactList.push(
-                contact.phoneNumbers[0].number.replaceAll('-', '') +
-                  ':' +
-                  contact.displayName,
-              ),
-            );
+            contacts.forEach(contact => {
+              if (contact.phoneNumbers[0] !== undefined) {
+                contactList.push(
+                  contact.phoneNumbers[0].number.replaceAll('-', '') +
+                    ':' +
+                    contact.displayName,
+                );
+              }
+            });
 
             let contactData = JSON.stringify(contactList)
               .replace('[', '{')
               .replace(']', '}')
               .replaceAll(':', '":"');
 
-            await getContactsApi(
+            getContactsApi(
               contactData,
               async (res: any) => {
-                await console.log('getContactsApi - res', res.data);
-                await setMyContacts(res.data);
+                console.log('getContactsApi - res', res.data);
+                setMyContacts(res.data);
               },
               (err: any) => {
                 console.log('getContactsApi - err', err);
@@ -156,45 +158,25 @@ function FriendList() {
   }
 
   // 친구목록
-  const Item = ({
-    item,
-    // onPress, backgroundColor, textColor,
-    iconType,
-  }) => (
-    <TouchableOpacity
+  const Item = ({item}) => (
+    <Pressable
       style={{
-        backgroundColor: 'gray',
-        padding: 10,
-        // borderRadius: 10,
-        // marginVertical: 1,
+        padding: 15,
       }}
       onPress={() => navigation.navigate('OtherPage', {userId: item.userId})}>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 0.2}}>
-          <ImageModal
-            source={{uri: item.userImage}}
-            resizeMode="cover"
-            modalImageResizeMode="contain"
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 100,
-            }}
-            swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
-            overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
-          />
-        </View>
-        <View style={{flex: 0.8}}>
-          <View style={{flexDirection: 'row'}}>
-            <Avatar.Image size={15} source={{uri: item.badge}} />
-            <Text style={{color: 'black'}}>{item.nickname}</Text>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{color: 'black'}}>{item.profileId}</Text>
-          </View>
-        </View>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Avatar.Image size={50} source={{uri: item.userImage}} />
+        <Text
+          style={{
+            marginLeft: 20,
+            color: '#535353',
+            fontFamily: 'esamanru-Medium',
+            fontSize: 20,
+          }}>
+          {item.nickname}
+        </Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 
   //Icon
@@ -215,47 +197,54 @@ function FriendList() {
         rightIcon={rightIcon}
         missionVisible={false}
       />
-      <View>
-        <List.Accordion
-          title="추천친구"
-          expanded={openContactList}
-          onPress={() => setOpenContactList(!openContactList)}
-          titleStyle={{
-            fontFamily: 'MICEGothic-Bold',
-            marginVertical: 3,
-          }}>
-          <ContactsPage
-            myContacts={myContacts}
-            setMyContacts={setMyContacts}
-            setCallbackState={setCallbackState}
-            callbackState={callbackState}
-          />
-        </List.Accordion>
-      </View>
-      <View style={{flex: 1, marginBottom: 60}}>
-        <List.Accordion
-          title="친구목록" // Todo: 친구목록 개수
-          expanded={openFriendList}
-          onPress={() => setOpenFriendList(!openFriendList)}
-          style={{height: 60}}
-          titleStyle={{
-            fontFamily: 'MICEGothic-Bold',
-            marginVertical: 3,
-          }}>
-          <FlatList
-            data={friendList}
-            renderItem={renderFriendList}
-            keyExtractor={item => item.id}
-          />
-          {/* <View style={{marginBottom: 100}}>
+      {myContacts === undefined ? null : (
+        <>
+          <View>
+            <List.Accordion
+              title={`추천친구  ${myContacts.length}`}
+              expanded={openContactList}
+              onPress={() => setOpenContactList(!openContactList)}
+              style={{paddingHorizontal: 10}}
+              titleStyle={{
+                fontSize: 25,
+                fontFamily: 'esamanru-Medium',
+                marginVertical: 3,
+              }}>
+              <ContactsPage
+                myContacts={myContacts}
+                setMyContacts={setMyContacts}
+                setCallbackState={setCallbackState}
+                callbackState={callbackState}
+              />
+            </List.Accordion>
+          </View>
+          <View style={{flex: 1, marginBottom: 60}}>
+            <List.Accordion
+              title={`친구목록  ${friendList.length}`} // Todo: 친구목록 개수
+              expanded={openFriendList}
+              onPress={() => setOpenFriendList(!openFriendList)}
+              style={{paddingHorizontal: 10}}
+              titleStyle={{
+                fontSize: 25,
+                fontFamily: 'esamanru-Medium',
+                marginVertical: 3,
+              }}>
+              <FlatList
+                data={friendList}
+                renderItem={renderFriendList}
+                keyExtractor={item => item.id}
+              />
+              {/* <View style={{marginBottom: 100}}>
           <FlatList
             data={DATA}
             renderItem={renderItem2}
             keyExtractor={item => item.id}
           />
         </View> */}
-        </List.Accordion>
-      </View>
+            </List.Accordion>
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -275,7 +264,7 @@ const styles = StyleSheet.create({
   rightIcon: {
     position: 'absolute',
     top: -10,
-    right: -20,
+    right: 0,
   },
   item: {
     backgroundColor: '#f9c2ff',
