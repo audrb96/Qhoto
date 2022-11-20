@@ -50,7 +50,7 @@ const LevelBox: React.FC<Props> = props => {
         <View style={{flexDirection: 'row', marginRight: 0}}>
           <Image
             source={levelInfo[userGrade].badge}
-            style={{maxWidth: 100, maxHeight: 100}}
+            style={{maxWidth: 100, maxHeight: 100, marginLeft: 50}}
           />
         </View>
       </View>

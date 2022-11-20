@@ -91,7 +91,8 @@ const tabMenu = ['DAY', 'WEEK', 'MONTH'];
 const {width, height} = Dimensions.get('window');
 const columnNum = 3;
 
-function AllFeed({navigation}) {
+function AllFeed() {
+  const myNickname = useSelector((state: RootState) => state.user.nickname);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [allFeeds, setAllFeeds] = useState<Feed[]>();
@@ -100,7 +101,7 @@ function AllFeed({navigation}) {
   const [selectedFeed, setSelectedFeed] = useState<Feed>();
   const [questLists, setQuestLists] = useState<{[key: string]: Quest[]}>();
   const [isAccessable, setIsAccessable] = useState(false);
-
+  const navigation = useNavigation();
   const {userDailyState, userWeeklyState, userMonthlyState} = useSelector(
     (state: RootState) => state.user,
   );
@@ -109,6 +110,14 @@ function AllFeed({navigation}) {
     DAY: userDailyState,
     WEEK: userWeeklyState,
     MONTH: userMonthlyState,
+  };
+
+  const goToOtherPage = selectedFeed => {
+    if (selectedFeed.nickname === myNickname) {
+      navigation.navigate('MyPageStackScreen');
+    } else {
+      navigation.navigate('OtherPage', {userId: selectedFeed.userId});
+    }
   };
 
   useEffect(() => {
@@ -189,7 +198,9 @@ function AllFeed({navigation}) {
     );
   };
 
-  const handleCheckQuestClick = () => {};
+  const handleCheckQuestClick = () => {
+    navigation.navigate('MyQuest');
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -232,7 +243,7 @@ function AllFeed({navigation}) {
             </Text>
             <TouchableOpacity
               style={styles.noAccessButton}
-              onPress={handleCheckQuestClick}>
+              onPress={() => handleCheckQuestClick()}>
               <Text style={styles.noAccessButtonText}>
                 퀘스트 완료하러 가기
               </Text>
@@ -308,12 +319,7 @@ function AllFeed({navigation}) {
             <>
               <View style={styles.detailTopBar}>
                 <View style={styles.userInfo}>
-                  <Pressable
-                    onPress={() =>
-                      navigation.navigate('OtherPage', {
-                        userId: selectedFeed.userId,
-                      })
-                    }>
+                  <Pressable onPress={() => goToOtherPage(selectedFeed)}>
                     <Avatar.Image
                       size={50}
                       source={{uri: selectedFeed.userImage}}

@@ -130,7 +130,7 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 18}}
           onPress={() => addFriend()}></Button>
       );
     }
@@ -140,7 +140,7 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.buttonSilver}
           title="친구수락 대기중"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 18}}
           onPress={() => {
             disconnect();
           }}></Button> // Todo 완료: 친구요청 취소
@@ -152,7 +152,7 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.buttonPurple}
           title="친구"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 18}}
           onPress={() => {
             setDisconnectModalVisible(true);
           }}></Button> // Todo: 친구삭제
@@ -164,7 +164,7 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청 수락"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 18}}
           onPress={() => addFriend()}></Button> // Todo 완료: 친구수락
       );
     }
@@ -270,12 +270,12 @@ function OtherPage({route}) {
           }}>
           {otherInfo.description}
         </Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             addFriend();
           }}
           style={{
-            backgroundColor: '#3B28B1',
+            // backgroundColor: '#3B28B1',
             borderRadius: 10,
             paddingVertical: 10,
             paddingHorizontal: 15,
@@ -288,7 +288,7 @@ function OtherPage({route}) {
             }}>
             {isFriendIcon()}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {!otherInfo.profileOpen && isFriend !== 'FRIEND' ? (
@@ -439,12 +439,19 @@ const styles = StyleSheet.create({
     width: width * 0.4,
     alignSelf: 'center',
     marginBottom: height * 0.0125,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   buttonUndefined: {
     width: width * 0.4,
     alignSelf: 'center',
     marginBottom: height * 0.0125,
     backgroundColor: 'white',
+    // backgroundColor: '#3B28B1',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
 
   buttonSilver: {
@@ -452,12 +459,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: height * 0.0125,
     backgroundColor: 'silver',
+    // backgroundColor: '#3B28B1',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   buttonPurple: {
     width: width * 0.4,
     alignSelf: 'center',
     marginBottom: height * 0.0125,
-    backgroundColor: '#592CB8',
+    backgroundColor: '#3B28B1',
+    // backgroundColor: 'red',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   background: {
     backgroundColor: 'rgba(0,0,0,0)',

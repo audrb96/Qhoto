@@ -34,7 +34,7 @@ function AllFeedStackScreen() {
         component={OtherPage}
         options={{headerShown: false}}
       />
-      <AllFeedStack.Screen
+      {/* <AllFeedStack.Screen
         name="LevelInfo"
         component={LevelInfo}
         options={{headerShown: false}}
@@ -55,7 +55,7 @@ function AllFeedStackScreen() {
         name="MyPage"
         component={MyPage}
         options={{headerShown: false}}
-      />
+      /> */}
     </AllFeedStack.Navigator>
   );
 }

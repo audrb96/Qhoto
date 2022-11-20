@@ -57,7 +57,7 @@ function FindFriend({route}) {
 
   const goToOtherPage = searchResult => {
     if (searchResult.nickName === myNickname) {
-      navigation.navigate('MyPage');
+      navigation.navigate('MyPageStackScreen');
     } else {
       navigation.navigate('OtherPage', {
         userId: searchResult.userId,
@@ -101,9 +101,11 @@ function FindFriend({route}) {
               // }}
             />
           }
+          // color: 'white',
+
           buttonStyle={styles.buttonPurple}
           title="  Me"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 20}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'GET') {
@@ -114,7 +116,7 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청 수락"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 20}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'REQUEST') {
@@ -125,7 +127,7 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.buttonSilver}
           title="친구수락 대기중"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 20}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'FRIEND') {
@@ -135,7 +137,7 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.buttonPurple}
           title="친구"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 20}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (
@@ -148,7 +150,7 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청"
-          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 20}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     }
@@ -168,7 +170,7 @@ function FindFriend({route}) {
         console.log('findFriendApi - err', err.response);
         console.log('findFriendApi - err', err.response.data.code);
         if (err.response.data.code === 'U005') {
-          Alert.alert('알림', '해당 닉네임을 가진 유저가 없어');
+          Alert.alert('알림', '해당 닉네임을 가진 유저가 없습니다.');
         }
       },
     );
@@ -223,6 +225,7 @@ function FindFriend({route}) {
     }
   }, []);
 
+  // 친구요청리스트
   const Item = ({
     item,
     // onPress, backgroundColor, textColor,
@@ -250,8 +253,12 @@ function FindFriend({route}) {
           {iconType ? (
             <TouchableOpacity
               onPress={() => addFriend(item.userId)}
-              style={{backgroundColor: '#3B28B1', borderRadius: 10}}>
-              <Text style={{color: 'white'}}>
+              style={{
+                backgroundColor: '#3B28B1',
+                borderRadius: 10,
+                padding: 10,
+              }}>
+              <Text style={{color: 'white', fontFamily: 'esamanru-Medium'}}>
                 <FontAwesome5 name="user-plus" color="white" />
                 요청 수락
               </Text>
@@ -366,11 +373,7 @@ function FindFriend({route}) {
                 }}>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() =>
-                    navigation.navigate('OtherPage', {
-                      userId: searchResult.userId,
-                    })
-                  }
+                  onPress={() => goToOtherPage(searchResult)}
                   style={{alignItems: 'center'}}>
                   <Avatar.Image
                     // badge
@@ -390,23 +393,13 @@ function FindFriend({route}) {
                 <TouchableOpacity
                   onPress={() => addFriend(searchResult.userId)}
                   style={{
-                    backgroundColor: '#3B28B1',
                     justifyContent: 'center',
                     alignItems: 'center',
                     paddingVertical: 10,
                     paddingHorizontal: 16,
                     borderRadius: 5,
                   }}>
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontSize: 20,
-                      fontFamily: 'esamanru-Medium',
-                    }}>
-                    {relationIcon()}
-                    &nbsp;&nbsp;
-                    {iconOrder}
-                  </Text>
+                  {relationIcon()}
                 </TouchableOpacity>
               </View>
             </View>
@@ -458,15 +451,21 @@ const styles = StyleSheet.create({
     right: -20,
   },
   button: {
-    width: width * 0.3,
+    // width: width * 0.3,
     alignSelf: 'center',
     // marginBottom: height * 0.0125,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   buttonUndefined: {
     // width: width * 0.4,
     alignSelf: 'center',
     // marginBottom: height * 0.0125,
     backgroundColor: 'white',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
 
   buttonSilver: {
@@ -474,12 +473,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     // marginBottom: height * 0.0125,
     backgroundColor: 'silver',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   buttonPurple: {
     width: width * 0.3,
     alignSelf: 'center',
     // marginBottom: height * 0.0125,
     backgroundColor: '#592CB8',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
 });
 export default FindFriend;
