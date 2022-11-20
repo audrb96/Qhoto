@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -75,6 +76,17 @@ public class QuestController {
     @GetMapping("/point")
     public ResponseEntity<QuestLevelRes> readQuestLevel(@AuthenticationPrincipal User user) {
         Long userId = user.getId();
+        return new ResponseEntity<>(questService.getQuestLevel(userId), HttpStatus.OK);
+    }
+
+    /**
+     * 친구의 퀘스트 포인트 정보를 확인
+     * 추후 리팩토링 가능하다면 리팩토링 하면 좋을 듯 하다.
+     * @param userId
+     * @return {@link QuestLevelRes}
+     */
+    @GetMapping("/point/{userId}")
+    public ResponseEntity<QuestLevelRes> readFriendQuestLevel(@PathVariable Long userId) {
         return new ResponseEntity<>(questService.getQuestLevel(userId), HttpStatus.OK);
     }
 }
