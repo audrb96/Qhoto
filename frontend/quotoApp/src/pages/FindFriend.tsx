@@ -104,7 +104,8 @@ function FindFriend({route}) {
           buttonStyle={styles.buttonPurple}
           title="  Me"
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
-          onPress={() => addFriend(searchResult)}></Button>
+          onPress={() => addFriend(searchResult)}
+        />
       );
     } else if (searchResult.isFriend === 'GET') {
       // 내가 받음
@@ -115,7 +116,8 @@ function FindFriend({route}) {
           buttonStyle={styles.button}
           title="친구요청 수락"
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
-          onPress={() => addFriend(searchResult)}></Button>
+          onPress={() => addFriend(searchResult)}
+        />
       );
     } else if (searchResult.isFriend === 'REQUEST') {
       // 내가 보낸(아직 받지않은)
@@ -126,7 +128,8 @@ function FindFriend({route}) {
           buttonStyle={styles.buttonSilver}
           title="친구수락 대기중"
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
-          onPress={() => addFriend(searchResult)}></Button>
+          onPress={() => addFriend(searchResult)}
+        />
       );
     } else if (searchResult.isFriend === 'FRIEND') {
       iconName = 'user-friends';
@@ -136,7 +139,8 @@ function FindFriend({route}) {
           buttonStyle={styles.buttonPurple}
           title="친구"
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
-          onPress={() => addFriend(searchResult)}></Button>
+          onPress={() => addFriend(searchResult)}
+        />
       );
     } else if (
       searchResult.isFriend === 'DISCONNECTED' ||
@@ -149,7 +153,8 @@ function FindFriend({route}) {
           buttonStyle={styles.button}
           title="친구요청"
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
-          onPress={() => addFriend(searchResult)}></Button>
+          onPress={() => addFriend(searchResult)}
+        />
       );
     }
     // return <FontAwesome5 name={iconName} size={20} color="white" />;

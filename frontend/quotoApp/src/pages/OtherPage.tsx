@@ -50,7 +50,8 @@ function OtherPage({route}) {
   };
 
   const goToLevel = () => {
-    navigation.navigate('QhotoLevel');
+    // 여기에 userId 넘겨주면 되긴 함. userId넘겨준 후, QhotoLevelPage에서 요청 보낼때 userId 같이 보내는 걸로.
+    navigation.navigate('QhotoLevel', {friendId: userId, otherInfo: otherInfo});
   };
   const goToQuestLog = () => {
     navigation.navigate('QhotoLog', {logs: otherLogs});
@@ -121,7 +122,8 @@ function OtherPage({route}) {
         <Button
           buttonStyle={styles.buttonUndefined}
           title="     "
-          onPress={() => {}}></Button>
+          onPress={() => {}}
+        />
       );
     }
     // 아무 관계없는 or 친구관계가 삭제된
@@ -131,7 +133,8 @@ function OtherPage({route}) {
           buttonStyle={styles.button}
           title="친구요청"
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
-          onPress={() => addFriend()}></Button>
+          onPress={() => addFriend()}
+        />
       );
     }
     // 내가 보낸(아직 받지않은)
@@ -143,7 +146,8 @@ function OtherPage({route}) {
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => {
             disconnect();
-          }}></Button> // Todo 완료: 친구요청 취소
+          }}
+        /> // Todo 완료: 친구요청 취소
       );
     }
     // 이미 친구인
@@ -155,7 +159,8 @@ function OtherPage({route}) {
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
           onPress={() => {
             setDisconnectModalVisible(true);
-          }}></Button> // Todo: 친구삭제
+          }}
+        /> // Todo: 친구삭제
       );
     }
     // 친구 요청을 받은
@@ -165,7 +170,8 @@ function OtherPage({route}) {
           buttonStyle={styles.button}
           title="친구요청 수락"
           titleStyle={{fontFamily: 'MICEGothic-Bold'}}
-          onPress={() => addFriend()}></Button> // Todo 완료: 친구수락
+          onPress={() => addFriend()}
+        /> // Todo 완료: 친구수락
       );
     }
     return;
@@ -326,6 +332,7 @@ function OtherPage({route}) {
                 }}>
                 <View>
                   <TouchableOpacity>
+                    {/* onPress={goToLevel} 삭제 해놨지만 추가 할 수도? 추가 하게 된다면 위에 goToLevel참조*/}
                     <Text onPress={goToLevel} style={styles.subjectText}>
                       qhoto 레벨 &nbsp;
                       <FontAwesome5
