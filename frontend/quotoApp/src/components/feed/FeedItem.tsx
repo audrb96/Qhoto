@@ -31,6 +31,7 @@ import {RootState} from '../../store/reducer';
 interface Props {
   feed: Feed;
   handleCommentClick: Function;
+  isAccessable: boolean;
 }
 
 interface Feed {
@@ -78,6 +79,11 @@ const levelInfo: {
   };
 } = info.levelInfo;
 
+const timeToString = (time: string) => {
+  let strArr = time.split('-');
+  return `${strArr[0]}년 ${strArr[1]}월 ${strArr[2]}일`;
+};
+
 const FeedItem: React.FC<Props> = props => {
   const {
     feedId,
@@ -97,7 +103,7 @@ const FeedItem: React.FC<Props> = props => {
     feedType,
   } = props.feed;
 
-  const {handleCommentClick} = props;
+  const {handleCommentClick, isAccessable} = props;
 
   const {typeName, iconName, questColorCode} = questTypes[questType];
   const {colorName, gradeColorCode} = levelInfo[expGrade];
@@ -105,7 +111,6 @@ const FeedItem: React.FC<Props> = props => {
   const [isLike, setIsLike] = useState(likeStatus === 'LIKE' ? true : false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
-  const isAccessable = true;
   const myNickname = useSelector((state: RootState) => state.user.nickname);
   const navigation = useNavigation();
 
@@ -140,6 +145,8 @@ const FeedItem: React.FC<Props> = props => {
       );
     }
   };
+
+  const handleCheckQuestClick = () => {};
 
   // const moveProfile = () => {
   //   navigate('OtherPage');
@@ -220,7 +227,9 @@ const FeedItem: React.FC<Props> = props => {
                   <Text style={styles.noAccessText}>
                     다른 친구들의 피드를 확인하세요
                   </Text>
-                  <TouchableOpacity style={styles.noAccessButton}>
+                  <TouchableOpacity
+                    style={styles.noAccessButton}
+                    onPress={handleCheckQuestClick}>
                     <Text style={styles.noAccessButtonText}>
                       퀘스트 완료하러 가기
                     </Text>
@@ -230,24 +239,43 @@ const FeedItem: React.FC<Props> = props => {
             </ImageBackground>
           ) : (
             <View>
-              <Video
-                source={{
-                  uri: feedImage,
-                }}
-                style={styles.video}
-                resizeMode="stretch"
-                repeat={true}
-                paused={!isAccessable}
-              />
-              <View
-                style={{
-                  width: width,
-                  height: width,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text>Hello</Text>
-              </View>
+              {isAccessable ? (
+                <Video
+                  source={{
+                    uri: feedImage,
+                  }}
+                  style={styles.video}
+                  resizeMode="stretch"
+                  repeat={true}
+                  paused={!isAccessable}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: width,
+                    height: width,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Icon
+                    name="eye-slash"
+                    size={50}
+                    color="#3B28B1"
+                    style={{marginBottom: 10}}
+                  />
+                  <Text style={styles.noAccessText}>퀘스트를 완료하고</Text>
+                  <Text style={styles.noAccessText}>
+                    다른 친구들의 피드를 확인하세요
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.noAccessButton}
+                    onPress={handleCheckQuestClick}>
+                    <Text style={styles.noAccessButtonText}>
+                      퀘스트 완료하러 가기
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           )}
         </Pressable>
@@ -269,7 +297,9 @@ const FeedItem: React.FC<Props> = props => {
         </View>
 
         <View>
-          <Text style={styles.feedTimeText}>{feedTime}</Text>
+          <Text style={styles.feedTimeText}>
+            {timeToString(feedTime.split(' ')[0]) + feedTime.slice(10)}
+          </Text>
         </View>
       </View>
       <View style={styles.commentBar}>
@@ -328,7 +358,8 @@ const styles = StyleSheet.create({
   },
   feedTimeText: {
     color: '#A7A7A7',
-    fontSize: 18,
+    fontFamily: 'esamanru-Medium',
+    fontSize: 15,
   },
   commentBar: {},
 });

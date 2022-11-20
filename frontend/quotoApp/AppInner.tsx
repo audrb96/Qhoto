@@ -191,6 +191,7 @@ function AppInner() {
                 options={{
                   title: '친구 목록',
                   headerShown: false,
+                  unmountOnBlur: true,
                 }}
               />
               <Tab.Screen

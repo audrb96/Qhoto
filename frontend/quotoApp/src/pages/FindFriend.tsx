@@ -152,6 +152,7 @@ function FindFriend({route}) {
           onPress={() => addFriend(searchResult)}></Button>
       );
     }
+    // return <FontAwesome5 name={iconName} size={20} color="white" />;
     return;
   };
 
@@ -229,44 +230,33 @@ function FindFriend({route}) {
   }) => (
     <TouchableOpacity
       style={{
-        flex: 1,
-        backgroundColor: 'gray',
-        borderRadius: 10,
-        marginVertical: 1,
+        padding: 15,
       }}
       onPress={() => navigation.navigate('OtherPage', {userId: item.userId})}>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 0.1}}>
-          <ImageModal
-            source={{uri: item.userImage}}
-            resizeMode="cover"
-            modalImageResizeMode="contain"
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Avatar.Image size={50} source={{uri: item.userImage}} />
+          <Text
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 100,
-            }}
-            swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
-            overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
-          />
+              marginLeft: 20,
+              color: '#535353',
+              fontFamily: 'esamanru-Medium',
+              fontSize: 20,
+            }}>
+            {item.nickname}
+          </Text>
         </View>
-        <View style={{flex: 0.75}}>
-          <View style={{flexDirection: 'row'}}>
-            <Avatar.Image size={15} source={{uri: item.badge}} />
-            <Text style={{color: 'black'}}>{item.nickname}</Text>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{color: 'black'}}>{item.profileId}</Text>
-          </View>
-        </View>
-        <View style={{flex: 0.15}}>
+        <View>
           {iconType ? (
-            <TouchableOpacity onPress={() => addFriend(item.userId)}>
-              <Text>{item.userId}번유저 수락</Text>
+            <TouchableOpacity
+              onPress={() => addFriend(item.userId)}
+              style={{backgroundColor: '#3B28B1', borderRadius: 10}}>
+              <Text style={{color: 'white'}}>
+                <FontAwesome5 name="user-plus" color="white" />
+                요청 수락
+              </Text>
             </TouchableOpacity>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </View>
       </View>
     </TouchableOpacity>
@@ -295,7 +285,7 @@ function FindFriend({route}) {
   const leftIcon = (
     <FontAwesome5
       name="angle-left"
-      size={30}
+      size={35}
       color="#3B28B1"
       onPress={() => navigation.goBack()}
       style={styles.leftIcon}
@@ -319,16 +309,17 @@ function FindFriend({route}) {
           expanded={openSearchFriend}
           onPress={() => setOpenSearchFriend(!openSearchFriend)}
           titleStyle={{
-            fontFamily: 'MICEGothic-Bold',
+            fontSize: 25,
+            fontFamily: 'esamanru-Medium',
             marginVertical: 3,
           }}>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', padding: 10}}>
             <TextInput
               style={styles.textInput}
               onChangeText={onChangeTargetId}
               // autoFocus={true}
               placeholder="닉네임을 입력해주세요"
-              placeholderTextColor="#666666"
+              placeholderTextColor="#6A6A6A"
               value={targetId}
               ref={emailRef}
               returnKeyType="send"
@@ -339,83 +330,83 @@ function FindFriend({route}) {
                 console.log('targetId', targetId);
                 findFriend(targetId);
                 setOpenFriend(true);
+              }}
+              style={{
+                backgroundColor: '#3B28B1',
+                borderRadius: 5,
+                paddingHorizontal: 15,
+                justifyContent: 'center',
               }}>
               <Text
                 style={{
-                  color: 'black',
-                  fontFamily: 'MICEGothic-Bold',
-                  backgroundColor: '#FFE6F7',
-                  padding: 5,
+                  color: 'white',
+                  fontFamily: 'esamanru-Medium',
+                  fontSize: 18,
                 }}>
                 검색
               </Text>
             </TouchableOpacity>
           </View>
 
-          {searchResult.nickName === '' ? (
-            <View />
-          ) : (
-            <View // 프로필
-            >
+          {searchResult.nickName === '' ? null : (
+            <View
+              style={{
+                flexDirection: 'row',
+                marginVertical: 15,
+                justifyContent: 'center',
+              }}>
               <View
                 style={{
-                  flexDirection: 'row',
-                  marginVertical: 0,
-                  justifyContent: 'center',
-                  // backgroundColor: 'green',
+                  alignItems: 'center',
+                  elevation: 10,
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                  paddingVertical: 20,
+                  paddingHorizontal: 40,
                 }}>
                 <TouchableOpacity
-                  style={{
-                    flex: 0.4,
-                    alignItems: 'center',
-                    // backgroundColor: 'red',
-                    marginVertical: 5,
-                    borderWidth: 0.1,
-                    elevation: 2,
-                  }}
-                  onPress={() => goToOtherPage(searchResult)}>
-                  <View style={{marginTop: 10}}>
-                    <ImageModal
-                      source={{uri: searchResult.profileImg}}
-                      resizeMode="cover"
-                      modalImageResizeMode="contain"
-                      style={{
-                        width: 100,
-                        height: 100,
-                        borderRadius: 100,
-                      }}
-                      swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
-                      overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
-                    />
-                  </View>
-                  <View
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    navigation.navigate('OtherPage', {
+                      userId: searchResult.userId,
+                    })
+                  }
+                  style={{alignItems: 'center'}}>
+                  <Avatar.Image
+                    // badge
+                    size={110}
+                    source={{uri: searchResult.profileImg}} // Todo
+                  />
+                  <Text
                     style={{
-                      flexDirection: 'row',
-                      marginVertical: height * 0.0125,
+                      color: 'black',
+                      fontFamily: 'esamanru-Medium',
+                      fontSize: 20,
+                      marginVertical: 12,
                     }}>
-                    <Avatar.Image
-                      // badge
-                      size={22}
-                      source={{uri: searchResult.profileImg}} // Todo
-                    />
-                    <Text
-                      style={{
-                        color: 'black',
-                        fontFamily: 'MICEGothic-Bold',
-                      }}>
-                      {searchResult.nickName}
-                    </Text>
-                  </View>
-
-                  <TouchableOpacity
-                  // style={{
-                  //   height: 40,
-                  //   backgroundColor: 'yellow',
-                  // }}
-                  // onPress={() => addFriend(searchResult)}
-                  >
-                    <View style={{flexDirection: 'row'}}>{relationIcon()}</View>
-                  </TouchableOpacity>
+                    {searchResult.nickName}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => addFriend(searchResult.userId)}
+                  style={{
+                    backgroundColor: '#3B28B1',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingVertical: 10,
+                    paddingHorizontal: 16,
+                    borderRadius: 5,
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: 20,
+                      fontFamily: 'esamanru-Medium',
+                    }}>
+                    {relationIcon()}
+                    &nbsp;&nbsp;
+                    {iconOrder}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -434,7 +425,8 @@ function FindFriend({route}) {
           // style={{flex: 1}}
           onPress={() => setOpenReceiveList(!openReceiveList)}
           titleStyle={{
-            fontFamily: 'MICEGothic-Bold',
+            fontSize: 25,
+            fontFamily: 'esamanru-Medium',
             marginVertical: 3,
           }}>
           <FlatList
@@ -451,11 +443,14 @@ function FindFriend({route}) {
 
 const styles = StyleSheet.create({
   textInput: {
-    color: 'black',
-    padding: 5,
-    width: width * 0.9,
+    color: '#353535',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    flexGrow: 1,
+    fontSize: 18,
+    fontFamily: 'esamanru-Medium',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    fontFamily: 'MICEGothic-Bold',
+    borderColor: '#3B28B1',
   },
   leftIcon: {
     position: 'absolute',

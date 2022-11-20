@@ -21,6 +21,7 @@ import info from '../../components/info';
 import {getFriendsFeeds, setFeedMission} from '../../api/feed';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const tabMenu = ['DAY', 'WEEK', 'MONTH'];
@@ -75,6 +76,10 @@ function FriendsFeed() {
   const [questLists, setQuestLists] = useState<{[key: string]: Quest[]}>();
   const [callbackState, setCallbackState] = useState(true);
   const [refresh, setRefresh] = useState(false);
+
+  const {userDailyState, userWeeklyState, userMonthlyState} = useSelector(
+    (state: RootState) => state.user,
+  );
 
   const navigation = useNavigation();
   const pullDownScreen = () => {
@@ -137,9 +142,7 @@ function FriendsFeed() {
     }
   }, [selectedQuests]);
 
-  const handleMediaClick = () => {
-    setModalVisible(true);
-  };
+  const handleCheckQuestClick = () => {};
 
   const handleCommentClick = (feedId: number) => {
     navigation.navigate('CommentPage', {feedId});
@@ -174,16 +177,23 @@ function FriendsFeed() {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <FontAwesome name="times-circle" size={110} color="#3B28B1" />
-            <Text
-              style={{
-                color: '#3B28B1',
-                fontFamily: 'esamanru-Medium',
-                fontSize: 22,
-                marginTop: 20,
-              }}>
-              완료한 퀘스트가 없습니다
+            <Icon
+              name="eye-slash"
+              size={50}
+              color="#3B28B1"
+              style={{marginBottom: 10}}
+            />
+            <Text style={styles.noAccessText}>퀘스트를 완료하고</Text>
+            <Text style={styles.noAccessText}>
+              다른 친구들의 피드를 확인하세요
             </Text>
+            <TouchableOpacity
+              style={styles.noAccessButton}
+              onPress={handleCheckQuestClick}>
+              <Text style={styles.noAccessButtonText}>
+                퀘스트 완료하러 가기
+              </Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <ScrollView
@@ -198,6 +208,13 @@ function FriendsFeed() {
                 key={index}
                 feed={feed}
                 handleCommentClick={() => handleCommentClick(feed.feedId)}
+                isAccessable={
+                  selectedTab === 'DAY'
+                    ? userDailyState
+                    : selectedTab === 'WEEK'
+                    ? userWeeklyState
+                    : userMonthlyState
+                }
               />
             ))}
           </ScrollView>
@@ -300,6 +317,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     fontFamily: 'Comfortaa-Bold',
     textAlign: 'center',
+  },
+  noAccessText: {
+    color: '#3B28B1',
+    fontSize: 22,
+    fontFamily: 'esamanru-Medium',
+    marginBottom: 9,
+  },
+  noAccessButton: {
+    padding: 16,
+    backgroundColor: '#3B28B1',
+    elevation: 3,
+    borderRadius: 15,
+  },
+  noAccessButtonText: {
+    color: 'white',
+    fontFamily: 'esamanru-Medium',
+    fontSize: 16,
   },
   filterButton: {
     position: 'absolute',

@@ -13,6 +13,7 @@ import {
   NativeModules,
 } from 'react-native';
 import {useSelector} from 'react-redux';
+import {Avatar} from 'react-native-paper';
 import Modal from 'react-native-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ImageModal from 'react-native-image-modal';
@@ -67,7 +68,8 @@ function OtherPage({route}) {
   const [otherLogs, setOtherLogs] = useState<OtherLog[]>();
 
   const userId = route.params.userId;
-  const [isFriend, setIsFriend] = useState(undefined);
+
+  const [isFriend, setIsFriend] = useState();
 
   useEffect(() => {
     getOtherInfoApi(
@@ -233,7 +235,9 @@ function OtherPage({route}) {
     />
   );
 
-  return otherInfo === undefined || otherLogs === undefined ? null : (
+  return otherInfo === undefined ||
+    otherLogs === undefined ||
+    isFriend === undefined ? null : (
     <ScrollView
       refreshControl={
         <RefreshControl
@@ -241,128 +245,89 @@ function OtherPage({route}) {
           onRefresh={() => pullDownScreen()}
         />
       }>
-      <SafeAreaView>
-        <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
-        <View // 프로필
-        >
+      <QhotoHeader leftIcon={leftIcon} rightIcon={false} />
+
+      <View style={styles.profileContainer}>
+        <Avatar.Image
+          // badge
+          size={170}
+          source={{uri: otherInfo.image}} // Todo
+        />
+        <Text
+          style={{
+            fontSize: 24,
+            color: '#424242',
+            fontFamily: 'esamanru-Medium',
+            marginTop: 15,
+          }}>
+          {otherInfo.nickname}
+        </Text>
+        <Text
+          style={{
+            fontSize: 18,
+            color: '#666666',
+            fontFamily: 'esamanru-Medium',
+          }}>
+          {otherInfo.description}
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            addFriend();
+          }}
+          style={{
+            backgroundColor: '#3B28B1',
+            borderRadius: 10,
+            paddingVertical: 10,
+            paddingHorizontal: 15,
+          }}>
+          <Text
+            style={{
+              color: 'white',
+              fontFamily: 'esamanru-Medium',
+              fontSize: 21,
+            }}>
+            {isFriendIcon()}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {!otherInfo.profileOpen && isFriend !== 'FRIEND' ? (
+        <View>
+          {isFriendIcon()}
           <View
             style={{
-              flexDirection: 'row',
-              paddingTop: height * 0.015,
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: height / 10,
+              // backgroundColor: 'red',
             }}>
-            <View
-              style={
-                (styles.profileContainer, {flex: 1, alignItems: 'center'})
-              }>
-              <View style={styles.profileImageContainer}>
-                <ImageModal
-                  source={{uri: otherInfo.image}}
-                  resizeMode="cover"
-                  modalImageResizeMode="contain"
-                  style={{
-                    width: width * 0.3,
-                    height: width * 0.3,
-                    borderRadius: 100,
-                  }}
-                  swipeToDismiss={true} // 스와이프하여 창을 닫을지 여부를 결정합니다.(default: true)
-                  overlayBackgroundColor="#000000" // 전체 사이즈 모달의 배경색을 지정합니다.(default: #000000)
-                />
-              </View>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: '#424242',
-                  fontFamily: 'MICEGothic-Bold',
-                  marginVertical: 3,
-                }}>
-                {otherInfo.nickname}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: '#424242',
-                  fontFamily: 'MICEGothic-Bold',
-                  marginVertical: 3,
-                }}>
-                {otherInfo.description}
-              </Text>
-            </View>
+            <Fontisto name="locked" size={110} color="#3B28B1" />
+            <Text
+              style={{
+                color: '#3B28B1',
+                fontFamily: 'esamanru-Medium',
+                fontSize: 22,
+                marginTop: height * 0.025,
+              }}>
+              비공개 계정입니다
+            </Text>
           </View>
         </View>
-        {/*
-      비공개 && !친구 -> 비공개
-      공개           -> 공개
-      비공개 && 친구  -> 공개
- */}
-        {!otherInfo.profileOpen && isFriend !== 'FRIEND' ? (
-          <View>
-            {/* <TouchableOpacity
-              onPress={() => {
-                addFriend();
-              }}> */}
-            {isFriendIcon()}
-            {/* </TouchableOpacity> */}
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: height / 10,
-                // backgroundColor: 'red',
-              }}>
-              <Fontisto name="locked" size={110} color="#3B28B1" />
-              <Text
-                style={{
-                  color: '#3B28B1',
-                  fontFamily: 'esamanru-Medium',
-                  fontSize: 22,
-                  marginTop: height * 0.025,
-                }}>
-                비공개 계정입니다
-              </Text>
-            </View>
-          </View>
-        ) : (
+      ) : (
+        <View>
           <View>
             <View>
-              <View>
-                {isFriendIcon()}
-                <View
-                  style={{
-                    marginVertical: height * 0.0125,
-                    paddingHorizontal: width * 0.073,
-                  }}>
-                  <View>
-                    <TouchableOpacity>
-                      <Text onPress={goToLevel} style={styles.subjectText}>
-                        qhoto 레벨 &nbsp;
-                        <FontAwesome5
-                          name="angle-right"
-                          size={20}
-                          color={'#3B28B1'}
-                        />
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      paddingVertical: height * 0.025,
-                    }}>
-                    <LevelBox
-                      userGrade={otherInfo.expGrade}
-                      userPoint={otherInfo.totalExp}
-                    />
-                  </View>
-                </View>
-                <View
-                  style={{
-                    marginVertical: height * 0.0125,
-                    paddingHorizontal: width * 0.073,
-                  }}>
+              {isFriendIcon()}
+              <View
+                style={{
+                  marginVertical: height * 0.0125,
+                  paddingHorizontal: width * 0.073,
+                }}>
+                <View>
                   <TouchableOpacity>
-                    <Text onPress={goToQuestLog} style={styles.subjectText}>
-                      qhoto 로그 &nbsp;
+                    <Text onPress={goToLevel} style={styles.subjectText}>
+                      qhoto 레벨 &nbsp;
                       <FontAwesome5
                         name="angle-right"
                         size={20}
@@ -370,53 +335,79 @@ function OtherPage({route}) {
                       />
                     </Text>
                   </TouchableOpacity>
-                  <View>
-                    {otherLogs.map((log, index) => (
-                      <LogItem key={index} log={log} />
-                    ))}
-                  </View>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    paddingVertical: height * 0.025,
+                  }}>
+                  <LevelBox
+                    userGrade={otherInfo.expGrade}
+                    userPoint={otherInfo.totalExp}
+                  />
+                </View>
+              </View>
+              <View
+                style={{
+                  marginVertical: height * 0.0125,
+                  paddingHorizontal: width * 0.073,
+                }}>
+                <TouchableOpacity>
+                  <Text onPress={goToQuestLog} style={styles.subjectText}>
+                    qhoto 로그 &nbsp;
+                    <FontAwesome5
+                      name="angle-right"
+                      size={20}
+                      color={'#3B28B1'}
+                    />
+                  </Text>
+                </TouchableOpacity>
+                <View>
+                  {otherLogs.map((log, index) => (
+                    <LogItem key={index} log={log} />
+                  ))}
                 </View>
               </View>
             </View>
           </View>
-        )}
-        <Modal
-          ////////////////////////////////////////////////////////////////////////
-          isVisible={disconnectModalVisivle} // modal 나타나는 조건
-          animationIn="fadeIn" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
-          animationOut="fadeOut" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
-          animationOutTiming={10}
-          backdropOpacity={0.2}
-          onBackdropPress={() => setDisconnectModalVisible(false)}
-          onBackButtonPress={() => setDisconnectModalVisible(false)}>
-          <Pressable
-            style={styles.background}
-            onPress={() => setDisconnectModalVisible(false)}>
-            <View style={styles.whiteBox}>
-              <View style={styles.question}>
-                <Text style={styles.modalText}>친구를 끊으시겠어요?</Text>
-              </View>
-              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <Pressable
-                  style={styles.actionButton}
-                  android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
-                  onPress={() => {
-                    disconnect();
-                    setDisconnectModalVisible(false);
-                  }}>
-                  <Text style={styles.modalText}>예</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.actionButton}
-                  android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
-                  onPress={() => setDisconnectModalVisible(false)}>
-                  <Text style={styles.modalText}>아니요</Text>
-                </Pressable>
-              </View>
+        </View>
+      )}
+      <Modal
+        ////////////////////////////////////////////////////////////////////////
+        isVisible={disconnectModalVisivle} // modal 나타나는 조건
+        animationIn="fadeIn" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+        animationOut="fadeOut" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+        animationOutTiming={10}
+        backdropOpacity={0.2}
+        onBackdropPress={() => setDisconnectModalVisible(false)}
+        onBackButtonPress={() => setDisconnectModalVisible(false)}>
+        <Pressable
+          style={styles.background}
+          onPress={() => setDisconnectModalVisible(false)}>
+          <View style={styles.whiteBox}>
+            <View style={styles.question}>
+              <Text style={styles.modalText}>친구를 끊으시겠어요?</Text>
             </View>
-          </Pressable>
-        </Modal>
-      </SafeAreaView>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Pressable
+                style={styles.actionButton}
+                android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
+                onPress={() => {
+                  disconnect();
+                  setDisconnectModalVisible(false);
+                }}>
+                <Text style={styles.modalText}>예</Text>
+              </Pressable>
+              <Pressable
+                style={styles.actionButton}
+                android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
+                onPress={() => setDisconnectModalVisible(false)}>
+                <Text style={styles.modalText}>아니요</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Pressable>
+      </Modal>
     </ScrollView>
   );
 }
@@ -438,8 +429,7 @@ const styles = StyleSheet.create({
     fontFamily: 'MICEGothic-Bold',
     marginBottom: 3,
   },
-  profileContainer: {marginTop: height * 0.015, alignItems: 'center'},
-
+  profileContainer: {marginVertical: 20, alignItems: 'center'},
   profileImageContainer: {
     width: width * 0.3,
     height: width * 0.3,
