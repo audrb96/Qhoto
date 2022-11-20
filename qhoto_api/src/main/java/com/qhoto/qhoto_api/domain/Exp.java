@@ -4,6 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -12,15 +15,24 @@ import javax.persistence.*;
 public class Exp {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "exp_id")
     private Long id;
 
-    @Column(nullable = false)
-    private Integer expPoint;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id",nullable = false)
+    private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @Column(name = "exp_point", nullable = false)
+    private Integer point;
+
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "type_code", nullable = false)
     private QuestType questType;
 
+
+    public void addPoint(int questPoint){
+        this.point+=questPoint;
+    }
 }

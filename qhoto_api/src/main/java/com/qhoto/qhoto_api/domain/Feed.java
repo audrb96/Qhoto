@@ -1,11 +1,18 @@
 package com.qhoto.qhoto_api.domain;
 
+import com.qhoto.qhoto_api.domain.type.FeedType;
 import com.qhoto.qhoto_api.domain.type.QuestDuration;
-import com.qhoto.qhoto_api.domain.type.feedStatus;
+import com.qhoto.qhoto_api.domain.type.FeedStatus;
+import com.qhoto.qhoto_api.domain.type.converter.FeedStatusConverter;
+import com.qhoto.qhoto_api.domain.type.converter.FeedTypeConverter;
+import com.qhoto.qhoto_api.domain.type.converter.QuestDurationConverter;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
 
 @Entity
 @AllArgsConstructor
@@ -15,26 +22,42 @@ import java.time.LocalDateTime;
 public class Feed {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "feed_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "quest_id", nullable = false)
     private Quest quest;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name="active_daily_id")
+    private ActiveDaily activeDaily;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name="active_weekly_id")
+    private ActiveWeekly activeWeekly;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name="active_monthly_id")
+    private ActiveMonthly activeMonthly;
 
     @Column(name = "feed_image", nullable = false)
     private String image;
 
-    @Column(nullable = false)
-    private LocalDateTime FeedTime;
+    @Column(name = "feed_time",nullable = false)
+    private LocalDateTime time;
 
-    @Enumerated(EnumType.STRING)
-    private feedStatus feedStatus;
+    @Convert(converter = FeedStatusConverter.class)
+    @Column(name = "feed_status", nullable = false)
+    private FeedStatus status;
+
+    @Column(name = "quest_name", nullable = false)
+    private String questName;
 
     @Column(nullable = false)
     private String location;
@@ -43,11 +66,22 @@ public class Feed {
     private String typeCode;
 
     @Column(nullable = false)
-    private Integer questScore;
+    private String typeName;
 
-    @Column(nullable = false)
-    private Integer questDifficulty;
+    @Column(name = "quest_score",nullable = false)
+    private Integer score;
 
-    @Column(nullable = false)
-    private QuestDuration questDuration;
+    @Column(name = "quest_dfficulty",nullable = false)
+    private Integer difficulty;
+
+    @Convert(converter = QuestDurationConverter.class)
+    @Column(name = "quest_duration",nullable = false)
+    private QuestDuration duration;
+
+    @Convert(converter = FeedTypeConverter.class)
+    @Column(name = "feed_type", nullable = false)
+    private FeedType feedType;
+
+
+
 }

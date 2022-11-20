@@ -1,11 +1,13 @@
 package com.qhoto.qhoto_api.domain.type;
 
-public enum QuestDuration {
-    D("일간"), W("주간"), M("월간");
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    private String value;
+@Getter
+@RequiredArgsConstructor
+public enum QuestDuration implements LegacyCommonType {
+    DAY("일간","D"), WEEK("주간","W"), MONTH("월간","M");
 
-    QuestDuration(String value) {
-        this.value = value;
-    }
+    private final String desc;
+    private final String legacyCode;
 }

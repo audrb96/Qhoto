@@ -1,11 +1,13 @@
 package com.qhoto.qhoto_api.domain.type;
 
-public enum RequestStatus {
-    R("요청 상태"), F("친구 상태"), D("단절 상태");
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    private String value;
+@Getter
+@RequiredArgsConstructor
+public enum RequestStatus implements LegacyCommonType{
+    REQUEST("요청 보낸 상태","R"), FRIEND("친구 상태","F"), DISCONNECTED("단절 상태","D"), GET("요청 받은 상태","G");
 
-    RequestStatus(String value) {
-        this.value = value;
-    }
+    private final String desc;
+    private final String legacyCode;
 }
