@@ -414,6 +414,7 @@ function QhotoLevel({navigation, route}) {
                           setValue(value);
                           setChart(value);
                         }}
+                        buttonSize={4}
                         formHorizontal={true}
                         labelHorizontal={false}
                         buttonColor={'#dfc0ed'}

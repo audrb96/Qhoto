@@ -36,7 +36,11 @@ const LevelBox: React.FC<Props> = props => {
 
   return (
     <View style={[styles.levelBox, {backgroundColor: gradeColorCode}]}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
         <View>
           <Text
             style={{
@@ -56,17 +60,15 @@ const LevelBox: React.FC<Props> = props => {
             {userPoint}
           </Text>
         </View>
-        <View style={{flexDirection: 'row', marginRight: 0}}>
-          {/* <View> */}
-          <Image
-            source={levelInfo[userGrade].badge_ws}
-            style={{
-              maxWidth: 100,
-              maxHeight: 100,
-            }}
-          />
-          {/* </View> */}
-        </View>
+        <Image
+          source={levelInfo[userGrade].badge_ws}
+          style={{
+            marginTop: -15,
+            marginRight: -10,
+            maxWidth: 100,
+            maxHeight: 100,
+          }}
+        />
       </View>
       <Text
         style={{
