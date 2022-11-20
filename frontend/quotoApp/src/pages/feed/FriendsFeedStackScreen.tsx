@@ -30,6 +30,7 @@ function FriendsFeedStackScreen() {
         component={CommentPage}
         options={{
           title: '댓글',
+          headerTitleStyle: {fontFamily: 'esamanru-Medium'},
         }}
       />
       <FriendsFeedStack.Screen
@@ -56,11 +57,11 @@ function FriendsFeedStackScreen() {
           header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
         }}
       />
-      <FriendsFeedStack.Screen
+      {/* <FriendsFeedStack.Screen
         name="MyPage"
         component={MyPage}
         options={{headerShown: false}}
-      />
+      /> */}
     </FriendsFeedStack.Navigator>
   );
 }
