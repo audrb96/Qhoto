@@ -324,7 +324,10 @@ function QhotoLevel({navigation, route}) {
                 }}>
                 <View style={[styles.pentagonBox]}>
                   <Text
-                    style={[styles.subjectText, {flex: 1, textAlign: 'left'}]}>
+                    style={[
+                      styles.subjectText,
+                      {flex: 1, textAlign: 'left', marginTop: 10},
+                    ]}>
                     나의 퀘스트 성향
                   </Text>
                   <View style={styles.pentagonInner}>
@@ -395,7 +398,10 @@ function QhotoLevel({navigation, route}) {
                 }}>
                 <View style={[styles.graphBox]}>
                   <Text
-                    style={[styles.subjectText, {flex: 1, textAlign: 'left'}]}>
+                    style={[
+                      styles.subjectText,
+                      {flex: 1, textAlign: 'left', marginTop: 10},
+                    ]}>
                     완료한 퀘스트 그래프
                   </Text>
                   <View style={[styles.innerBox, {alignItems: 'center'}]}>
@@ -495,7 +501,7 @@ const styles = StyleSheet.create({
   },
   pentagonBox: {
     width: 310,
-    height: 390,
+    height: 410,
     backgroundColor: '#f5e0ff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -512,7 +518,7 @@ const styles = StyleSheet.create({
   },
   graphBox: {
     width: 310,
-    height: 450,
+    height: 470,
     backgroundColor: '#f5e0ff',
     alignItems: 'center',
     justifyContent: 'center',
