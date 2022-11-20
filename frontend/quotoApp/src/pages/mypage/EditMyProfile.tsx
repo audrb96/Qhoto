@@ -17,7 +17,11 @@ import {duplicateTestApi, editMyProfileApi} from '../../api/mypage';
 import {ScrollView} from 'react-native-gesture-handler';
 import {BackgroundImage} from '@rneui/base';
 
+import {useAppDispatch} from '../../store';
+import userSlice from '../../slices/user';
+
 function EditMyProfile({navigation, route}) {
+  const dispatch = useAppDispatch();
   const [editable, setEditable] = useState(false);
 
   useEffect(() => {
@@ -127,6 +131,22 @@ function EditMyProfile({navigation, route}) {
   const handleLogoutClick = async () => {
     await AsyncStorage.removeItem('accessToken');
     await AsyncStorage.removeItem('refreshToken');
+    dispatch(
+      userSlice.actions.setUser({
+        nickname: '',
+        email: '',
+        joinDate: '',
+        phone: '',
+        profileOpen: true,
+        description: '',
+        userImage: '',
+        contactAgreeDate: '',
+        expGrade: '',
+        totalExp: 0,
+        name: '',
+        userPoint: '',
+      }),
+    );
   };
 
   const rightIcon = editable ? (

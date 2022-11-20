@@ -171,7 +171,7 @@ function FriendList() {
             marginLeft: 20,
             color: '#535353',
             fontFamily: 'esamanru-Medium',
-            fontSize: 20,
+            fontSize: 16,
           }}>
           {item.nickname}
         </Text>
@@ -206,7 +206,7 @@ function FriendList() {
               onPress={() => setOpenContactList(!openContactList)}
               style={{paddingHorizontal: 10}}
               titleStyle={{
-                fontSize: 25,
+                fontSize: 20,
                 fontFamily: 'esamanru-Medium',
                 marginVertical: 3,
               }}>
@@ -225,7 +225,7 @@ function FriendList() {
               onPress={() => setOpenFriendList(!openFriendList)}
               style={{paddingHorizontal: 10}}
               titleStyle={{
-                fontSize: 25,
+                fontSize: 20,
                 fontFamily: 'esamanru-Medium',
                 marginVertical: 3,
               }}>

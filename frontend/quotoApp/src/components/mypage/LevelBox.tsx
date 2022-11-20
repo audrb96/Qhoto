@@ -1,5 +1,13 @@
 import React from 'react';
-import {StyleSheet, View, Text, Dimensions, Image} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Dimensions,
+  Image,
+  Platform,
+} from 'react-native';
+import {Shadow} from 'react-native-shadow-2';
 import info from '../info';
 
 interface Props {
@@ -15,6 +23,7 @@ const levelInfo: {
     minPoint: number;
     maxPoint: number;
     badge: any;
+    badge_ws: any;
   };
 } = info.levelInfo;
 
@@ -48,10 +57,15 @@ const LevelBox: React.FC<Props> = props => {
           </Text>
         </View>
         <View style={{flexDirection: 'row', marginRight: 0}}>
+          {/* <View> */}
           <Image
-            source={levelInfo[userGrade].badge}
-            style={{maxWidth: 100, maxHeight: 100}}
+            source={levelInfo[userGrade].badge_ws}
+            style={{
+              maxWidth: 100,
+              maxHeight: 100,
+            }}
           />
+          {/* </View> */}
         </View>
       </View>
       <Text
@@ -105,8 +119,21 @@ const styles = StyleSheet.create({
     color: 'black',
     elevation: 10,
   },
+  elevationLow: {
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+      },
+      android: {elevation: 10},
+    }),
+  },
   makeShadow: {
-    elevation: 50,
+    shadowColor: '#202020',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 5,
   },
 });
 

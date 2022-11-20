@@ -116,7 +116,7 @@ const FeedItem: React.FC<Props> = props => {
 
   const goToOtherPage = () => {
     if (nickname === myNickname) {
-      navigation.navigate('MyPage');
+      navigation.navigate('MyPageStackScreen');
     } else {
       navigation.navigate('OtherPage', {userId: userId});
     }
@@ -146,7 +146,9 @@ const FeedItem: React.FC<Props> = props => {
     }
   };
 
-  const handleCheckQuestClick = () => {};
+  const handleCheckQuestClick = () => {
+    navigation.navigate('MyQuest');
+  };
 
   // const moveProfile = () => {
   //   navigate('OtherPage');
@@ -237,7 +239,7 @@ const FeedItem: React.FC<Props> = props => {
                   </Text>
                   <TouchableOpacity
                     style={styles.noAccessButton}
-                    onPress={handleCheckQuestClick}>
+                    onPress={() => handleCheckQuestClick()}>
                     <Text style={styles.noAccessButtonText}>
                       퀘스트 완료하러 가기
                     </Text>
@@ -277,7 +279,7 @@ const FeedItem: React.FC<Props> = props => {
                   </Text>
                   <TouchableOpacity
                     style={styles.noAccessButton}
-                    onPress={handleCheckQuestClick}>
+                    onPress={() => handleCheckQuestClick()}>
                     <Text style={styles.noAccessButtonText}>
                       퀘스트 완료하러 가기
                     </Text>

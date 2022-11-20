@@ -14,6 +14,13 @@ import {
   BLUE_BADGE,
   NAVY_BADGE,
   PURPLE_BADGE,
+  RED_BADGE_WS,
+  ORANGE_BADGE_WS,
+  YELLOW_BADGE_WS,
+  GREEN_BADGE_WS,
+  BLUE_BADGE_WS,
+  NAVY_BADGE_WS,
+  PURPLE_BADGE_WS,
 } from '../image';
 
 export default {
@@ -57,6 +64,7 @@ export default {
       minPoint: 0,
       maxPoint: 50,
       badge: RED_BADGE,
+      badge_ws: RED_BADGE_WS,
     },
     orange: {
       gradeColorCode: '#FEAD0F',
@@ -65,6 +73,7 @@ export default {
       minPoint: 50,
       maxPoint: 200,
       badge: ORANGE_BADGE,
+      badge_ws: ORANGE_BADGE_WS,
     },
     yellow: {
       gradeColorCode: '#F6E226',
@@ -73,6 +82,7 @@ export default {
       minPoint: 200,
       maxPoint: 500,
       badge: YELLOW_BADGE,
+      badge_ws: YELLOW_BADGE_WS,
     },
     green: {
       gradeColorCode: '#72D200',
@@ -81,6 +91,7 @@ export default {
       minPoint: 500,
       maxPoint: 1000,
       badge: GREEN_BADGE,
+      badge_ws: GREEN_BADGE_WS,
     },
     blue: {
       gradeColorCode: '#30C1FF',
@@ -89,6 +100,7 @@ export default {
       minPoint: 1000,
       maxPoint: 2500,
       badge: BLUE_BADGE,
+      badge_ws: BLUE_BADGE_WS,
     },
     navy: {
       gradeColorCode: '#3CA1FF',
@@ -97,6 +109,7 @@ export default {
       minPoint: 2500,
       maxPoint: 5000,
       badge: NAVY_BADGE,
+      badge_ws: NAVY_BADGE_WS,
     },
     purple: {
       gradeColorCode: '#8343E8',
@@ -105,6 +118,7 @@ export default {
       minPoint: 5000,
       maxPoint: 10000,
       badge: PURPLE_BADGE,
+      badge_ws: PURPLE_BADGE_WS,
     },
   },
 };
