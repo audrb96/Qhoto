@@ -6,22 +6,26 @@ import {
   TouchableOpacity,
   View,
   RefreshControl,
+  Pressable,
+  SafeAreaView,
   StyleSheet,
   Dimensions,
   NativeModules,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {Avatar} from 'react-native-paper';
+import Modal from 'react-native-modal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ImageModal from 'react-native-image-modal';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {getOtherInfoApi, getOtherLogApi} from '../api/other';
-import {addFriendApi, findFriendApi} from '../api/friend';
+import {addFriendApi, disconnectFriendApi, findFriendApi} from '../api/friend';
 import QhotoHeader from '../components/QhotoHeader';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import LevelBox from './../components/mypage/LevelBox';
 import LogItem from './../components/mypage/LogItem';
 import {ScrollView} from 'react-native-gesture-handler';
+import {Button} from '@rneui/base';
 interface OtherLog {
   feedId: number;
   feedImage: string;
@@ -44,7 +48,6 @@ function OtherPage({route}) {
     }, 10);
     setCallbackState(!callbackState);
   };
-  const dispatch = useAppDispatch();
 
   const goToLevel = () => {
     navigation.navigate('QhotoLevel');
@@ -62,7 +65,6 @@ function OtherPage({route}) {
     profileOpen: '',
     expGrade: '',
   });
-
   const [otherLogs, setOtherLogs] = useState<OtherLog[]>();
 
   const userId = route.params.userId;
@@ -72,9 +74,9 @@ function OtherPage({route}) {
   useEffect(() => {
     getOtherInfoApi(
       userId,
-      async (res: any) => {
-        console.log('getOtherInfoApi - res', res);
-        await setOtherInfo({
+      (res: any) => {
+        console.log('getOtherInfoApi - res', res.data);
+        setOtherInfo({
           email: res.data.email,
           image: res.data.image,
           description: res.data.description,
@@ -83,10 +85,10 @@ function OtherPage({route}) {
           profileOpen: res.data.profileOpen,
           expGrade: res.data.expGrade,
         });
-        await findFriendApi(
+        findFriendApi(
           res.data.nickname,
           (res: any) => {
-            console.log('findFriendApi - res', res);
+            console.log('findFriendApi - res', res.data);
             setIsFriend(res.data.isFriend);
           },
           (err: any) => console.log('findFriendApi - err', err),
@@ -109,56 +111,116 @@ function OtherPage({route}) {
     );
   }, [isFriend, callbackState]);
 
-  let iconName = '';
-  let iconOrder = '';
+  // let iconName = '';
+  // let iconOrder = '';
   const isFriendIcon = () => {
-    if (isFriend === 'GET') {
-      iconName = 'user-check';
-      iconOrder = '친구 수락';
-    } else if (isFriend === 'REQUEST') {
-      // 내가 보낸(아직 받지않은)
-      iconName = 'user-check';
-      iconOrder = '친구 수락 대기중';
-    } else if (isFriend === 'FRIEND') {
-      iconName = 'user-friends';
-      iconOrder = '친구';
-    } else if (isFriend === 'DISCONNECTED') {
-      iconName = 'user-plus';
-      iconOrder = '친구 요청';
-    } else if (isFriend === null) {
-      iconName = 'user-plus';
-      iconOrder = '친구 요청';
+    // let buttonTitle = '';
+    // isFriend 로딩 전 초기값
+    if (isFriend === undefined) {
+      return (
+        <Button
+          buttonStyle={styles.buttonUndefined}
+          title="     "
+          onPress={() => {}}></Button>
+      );
     }
-    return <FontAwesome5 name={iconName} size={21} color="white" />;
+    // 아무 관계없는 or 친구관계가 삭제된
+    else if (isFriend === null || isFriend === 'DISCONNECTED') {
+      return (
+        <Button
+          buttonStyle={styles.button}
+          title="친구요청"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          onPress={() => addFriend()}></Button>
+      );
+    }
+    // 내가 보낸(아직 받지않은)
+    else if (isFriend === 'REQUEST') {
+      return (
+        <Button
+          buttonStyle={styles.buttonSilver}
+          title="친구수락 대기중"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          onPress={() => {
+            disconnect();
+          }}></Button> // Todo 완료: 친구요청 취소
+      );
+    }
+    // 이미 친구인
+    else if (isFriend === 'FRIEND') {
+      return (
+        <Button
+          buttonStyle={styles.buttonPurple}
+          title="친구"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          onPress={() => {
+            setDisconnectModalVisible(true);
+          }}></Button> // Todo: 친구삭제
+      );
+    }
+    // 친구 요청을 받은
+    else if (isFriend === 'GET') {
+      return (
+        <Button
+          buttonStyle={styles.button}
+          title="친구요청 수락"
+          titleStyle={{fontFamily: 'MICEGothic-Bold'}}
+          onPress={() => addFriend()}></Button> // Todo 완료: 친구수락
+      );
+    }
+    return;
   };
 
   const addFriend = () => {
-    if (iconOrder === '친구 수락 대기중') {
-      return Alert.alert('알림', '친구 수락 대기중입니다.');
-    }
-    if (iconOrder === '친구') {
-      return Alert.alert('알림', '이미 친구입니다.');
-    }
+    // if (iconOrder === '친구 수락 대기중') {
+    //   return Alert.alert('알림', '친구 수락 대기중입니다.');
+    // }
+    // if (iconOrder === '친구') {
+    //   return Alert.alert('알림', '이미 친구입니다.');
+    // }
     console.log('resUserId', userId);
     addFriendApi(
       {resUserId: userId},
-      async (res: any) => {
-        console.log('addFriendApi - res', res);
+      (res: any) => {
+        console.log('addFriendApi - res', res.data);
 
         // 친구요청 or 수락 후 isFriend 를 업데이트
-        await findFriendApi(
-          otherInfo.nickname,
-          (res: any) => {
-            console.log('findFriendApi - res', res);
-            setIsFriend(res.data.isFriend);
-          },
-          (err: any) => console.log('findFriendApi - err', err),
-        );
+        updateIsFriend();
       },
       (err: any) => {
         console.log('addFriendApi - err', err);
         console.log('addFriendApi - err', err.response);
       },
+    );
+  };
+
+  const disconnect = async () => {
+    console.log('resUserId', userId);
+    disconnectFriendApi(
+      userId,
+      (res: any) => {
+        console.log('disconnectFriendApi - res', res);
+        // 친구단절 혹은 수락요청취소 후 isFriend 를 업데이트
+        updateIsFriend();
+      },
+      (err: any) => {
+        console.log('disconnectFriendApi - err', err);
+        console.log('disconnectFriendApi - err', err.response);
+      },
+    );
+  };
+
+  // 친구삭제를 위한 모달 visible 상태값
+  const [disconnectModalVisivle, setDisconnectModalVisible] = useState(false);
+
+  const updateIsFriend = () => {
+    findFriendApi(
+      otherInfo.nickname,
+      (res: any) => {
+        console.log('findFriendApi - res', res.data);
+        setIsFriend(res.data.isFriend);
+      },
+      (err: any) => console.log('findFriendApi - err', err),
     );
   };
 
@@ -224,19 +286,14 @@ function OtherPage({route}) {
               fontFamily: 'esamanru-Medium',
               fontSize: 21,
             }}>
-            {isFriendIcon()}&nbsp;&nbsp;
-            {iconOrder}
+            {isFriendIcon()}
           </Text>
         </TouchableOpacity>
       </View>
-      {/*
-      비공개 && !친구 -> 비공개
-      공개           -> 공개
-      비공개 && 친구  -> 공개
- */}
 
-      {!otherInfo.profileOpen || isFriend !== 'FRIEND' ? (
+      {!otherInfo.profileOpen && isFriend !== 'FRIEND' ? (
         <View>
+          {isFriendIcon()}
           <View
             style={{
               flex: 1,
@@ -261,6 +318,7 @@ function OtherPage({route}) {
         <View>
           <View>
             <View>
+              {isFriendIcon()}
               <View
                 style={{
                   marginVertical: height * 0.0125,
@@ -314,6 +372,42 @@ function OtherPage({route}) {
           </View>
         </View>
       )}
+      <Modal
+        ////////////////////////////////////////////////////////////////////////
+        isVisible={disconnectModalVisivle} // modal 나타나는 조건
+        animationIn="fadeIn" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+        animationOut="fadeOut" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
+        animationOutTiming={10}
+        backdropOpacity={0.2}
+        onBackdropPress={() => setDisconnectModalVisible(false)}
+        onBackButtonPress={() => setDisconnectModalVisible(false)}>
+        <Pressable
+          style={styles.background}
+          onPress={() => setDisconnectModalVisible(false)}>
+          <View style={styles.whiteBox}>
+            <View style={styles.question}>
+              <Text style={styles.modalText}>친구를 끊으시겠어요?</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Pressable
+                style={styles.actionButton}
+                android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
+                onPress={() => {
+                  disconnect();
+                  setDisconnectModalVisible(false);
+                }}>
+                <Text style={styles.modalText}>예</Text>
+              </Pressable>
+              <Pressable
+                style={styles.actionButton}
+                android_ripple={{color: '#eee'}} // press 시, 물결효과(TouchableOpacity 에선 안됨)
+                onPress={() => setDisconnectModalVisible(false)}>
+                <Text style={styles.modalText}>아니요</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Pressable>
+      </Modal>
     </ScrollView>
   );
 }
@@ -336,6 +430,72 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   profileContainer: {marginVertical: 20, alignItems: 'center'},
+  profileImageContainer: {
+    width: width * 0.3,
+    height: width * 0.3,
+    marginBottom: height * 0.015,
+  },
+  button: {
+    width: width * 0.4,
+    alignSelf: 'center',
+    marginBottom: height * 0.0125,
+  },
+  buttonUndefined: {
+    width: width * 0.4,
+    alignSelf: 'center',
+    marginBottom: height * 0.0125,
+    backgroundColor: 'white',
+  },
+
+  buttonSilver: {
+    width: width * 0.4,
+    alignSelf: 'center',
+    marginBottom: height * 0.0125,
+    backgroundColor: 'silver',
+  },
+  buttonPurple: {
+    width: width * 0.4,
+    alignSelf: 'center',
+    marginBottom: height * 0.0125,
+    backgroundColor: '#592CB8',
+  },
+  background: {
+    backgroundColor: 'rgba(0,0,0,0)',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: width * 0.3,
+    height: width * 0.3,
+    borderRadius: 100,
+  },
+  whiteBox: {
+    width: width * 0.7,
+    backgroundColor: 'white',
+    borderRadius: 4,
+    elevation: 2,
+  },
+  question: {
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: height * 0.0125,
+  },
+  actionButton: {
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: height * 0.0125,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  modalText: {
+    fontSize: 16,
+    fontFamily: 'MICEGothic-Bold',
+    color: 'black',
+  },
 });
 
 export default OtherPage;

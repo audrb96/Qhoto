@@ -8,6 +8,8 @@ import {
   Pressable,
   ImageBackground,
   TouchableOpacity,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
 import Video from 'react-native-video';
@@ -20,7 +22,11 @@ import {setFeedLike, setFeedDislike} from '../../api/feed';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+import Tooltip from 'react-native-walkthrough-tooltip';
+
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../store/reducer';
 
 interface Props {
   feed: Feed;
@@ -103,6 +109,18 @@ const FeedItem: React.FC<Props> = props => {
   const {colorName, gradeColorCode} = levelInfo[expGrade];
 
   const [isLike, setIsLike] = useState(likeStatus === 'LIKE' ? true : false);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+
+  const myNickname = useSelector((state: RootState) => state.user.nickname);
+  const navigation = useNavigation();
+
+  const goToOtherPage = () => {
+    if (nickname === myNickname) {
+      navigation.navigate('MyPage');
+    } else {
+      navigation.navigate('OtherPage', {userId: userId});
+    }
+  };
 
   const handleLikeClick = () => {
     if (isLike) {
@@ -128,8 +146,6 @@ const FeedItem: React.FC<Props> = props => {
     }
   };
 
-  const navigation = useNavigation();
-
   const handleCheckQuestClick = () => {};
 
   // const moveProfile = () => {
@@ -140,8 +156,7 @@ const FeedItem: React.FC<Props> = props => {
     <View style={styles.feedContainer}>
       <View style={styles.profileBar}>
         <View style={styles.userInfo}>
-          <Pressable
-            onPress={() => navigation.navigate('OtherPage', {userId: userId})}>
+          <Pressable onPress={() => goToOtherPage()}>
             <Avatar.Image size={50} source={{uri: userImage}} />
           </Pressable>
           <View style={{justifyContent: 'center', paddingHorizontal: 12}}>
@@ -151,11 +166,37 @@ const FeedItem: React.FC<Props> = props => {
             <Text style={styles.userNameText}>{nickname}</Text>
           </View>
         </View>
-        <Icon
-          name={iconName}
-          color={questColorCode}
-          style={{fontSize: 32, marginRight: 10}}
-        />
+
+        <Tooltip
+          tooltipStyle={{marginTop: -5}}
+          contentStyle={{backgroundColor: questColorCode}}
+          arrowSize={{width: 10, height: 5}}
+          isVisible={tooltipVisible}
+          content={
+            <View>
+              <Text style={{color: 'white', textAlign: 'center'}}>
+                {questName}
+              </Text>
+            </View>
+          }
+          onClose={() => setTooltipVisible(false)}
+          placement="bottom"
+          backgroundColor="rgba(0,0,0,0)">
+          <TouchableOpacity
+            style={{width: 40, height: 40, marginRight: 5}}
+            onPress={() => {
+              setTooltipVisible(true);
+              // setTimeout(() => {
+              //   setTooltipVisible(false), console.log('2초 후에 실행됨');
+              // }, 2000);
+            }}>
+            <Icon
+              name={iconName}
+              color={questColorCode}
+              style={{fontSize: 32}}
+            />
+          </TouchableOpacity>
+        </Tooltip>
       </View>
       <View style={styles.mediaContainer}>
         <Pressable>

@@ -14,6 +14,7 @@ const levelInfo: {
     nextColor: string;
     minPoint: number;
     maxPoint: number;
+    badge: any;
   };
 } = info.levelInfo;
 
@@ -46,6 +47,12 @@ const LevelBox: React.FC<Props> = props => {
             {userPoint}
           </Text>
         </View>
+        <View style={{flexDirection: 'row', marginRight: 0}}>
+          <Image
+            source={levelInfo[userGrade].badge}
+            style={{maxWidth: 100, maxHeight: 100}}
+          />
+        </View>
       </View>
       <Text
         style={{
@@ -53,7 +60,7 @@ const LevelBox: React.FC<Props> = props => {
           fontFamily: 'MICEGothic-Bold',
           marginVertical: 3,
         }}>
-        총퀘스트점수
+        총 퀘스트 점수
       </Text>
       <View style={{marginVertical: 3}}>
         <View
@@ -93,10 +100,13 @@ const styles = StyleSheet.create({
     width: (width * 4) / 5,
     borderRadius: 10,
     paddingVertical: 20,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     justifyContent: 'center',
     color: 'black',
     elevation: 10,
+  },
+  makeShadow: {
+    elevation: 50,
   },
 });
 

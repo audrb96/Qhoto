@@ -6,6 +6,10 @@ import SelectedFeed from './SelectedFeed';
 import QhotoHeader from '../../components/QhotoHeader';
 import OtherPage from './../OtherPage';
 import CommentPage from './CommentPage';
+import QhotoLog from '../mypage/QhotoLog';
+import QhotoLevel from '../mypage/QhotoLevel';
+import LevelInfo from '../../components/mypage/LevelInfo';
+import MyPage from '../mypage/MyPage';
 
 const AllFeedStack = createStackNavigator();
 function AllFeedStackScreen() {
@@ -28,6 +32,28 @@ function AllFeedStackScreen() {
       <AllFeedStack.Screen
         name="OtherPage"
         component={OtherPage}
+        options={{headerShown: false}}
+      />
+      <AllFeedStack.Screen
+        name="LevelInfo"
+        component={LevelInfo}
+        options={{headerShown: false}}
+      />
+      <AllFeedStack.Screen
+        name="QhotoLevel"
+        component={QhotoLevel}
+        options={{headerShown: false}}
+      />
+      <AllFeedStack.Screen
+        name="QhotoLog"
+        component={QhotoLog}
+        options={{
+          header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
+        }}
+      />
+      <AllFeedStack.Screen
+        name="MyPage"
+        component={MyPage}
         options={{headerShown: false}}
       />
     </AllFeedStack.Navigator>

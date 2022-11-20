@@ -6,6 +6,16 @@ import {
   STAMP_COLOR,
 } from '../image';
 
+import {
+  RED_BADGE,
+  ORANGE_BADGE,
+  YELLOW_BADGE,
+  GREEN_BADGE,
+  BLUE_BADGE,
+  NAVY_BADGE,
+  PURPLE_BADGE,
+} from '../image';
+
 export default {
   questTypes: {
     H: {
@@ -46,6 +56,7 @@ export default {
       nextColor: '오렌지',
       minPoint: 0,
       maxPoint: 50,
+      badge: RED_BADGE,
     },
     orange: {
       gradeColorCode: '#FEAD0F',
@@ -53,6 +64,7 @@ export default {
       nextColor: '옐로우',
       minPoint: 50,
       maxPoint: 200,
+      badge: ORANGE_BADGE,
     },
     yellow: {
       gradeColorCode: '#F6E226',
@@ -60,6 +72,7 @@ export default {
       nextColor: '그린',
       minPoint: 200,
       maxPoint: 500,
+      badge: YELLOW_BADGE,
     },
     green: {
       gradeColorCode: '#72D200',
@@ -67,6 +80,7 @@ export default {
       nextColor: '블루',
       minPoint: 500,
       maxPoint: 1000,
+      badge: GREEN_BADGE,
     },
     blue: {
       gradeColorCode: '#30C1FF',
@@ -74,6 +88,7 @@ export default {
       nextColor: '네이비',
       minPoint: 1000,
       maxPoint: 2500,
+      badge: BLUE_BADGE,
     },
     navy: {
       gradeColorCode: '#3CA1FF',
@@ -81,6 +96,7 @@ export default {
       nextColor: '퍼플',
       minPoint: 2500,
       maxPoint: 5000,
+      badge: NAVY_BADGE,
     },
     purple: {
       gradeColorCode: '#8343E8',
@@ -88,6 +104,7 @@ export default {
       nextColor: '코토',
       minPoint: 5000,
       maxPoint: 10000,
+      badge: PURPLE_BADGE,
     },
   },
 };

@@ -4,6 +4,10 @@ import QhotoHeader from '../../components/QhotoHeader';
 import FriendsFeed from './FriendsFeed';
 import CommentPage from './CommentPage';
 import OtherPage from './../OtherPage';
+import LevelInfo from '../../components/mypage/LevelInfo';
+import QhotoLevel from '../mypage/QhotoLevel';
+import QhotoLog from '../mypage/QhotoLog';
+import MyPage from '../mypage/MyPage';
 
 const TransitionScreenOptions = {
   ...TransitionPresets.SlideFromRightIOS,
@@ -34,6 +38,28 @@ function FriendsFeedStackScreen() {
         options={{
           headerShown: false,
         }}
+      />
+      <FriendsFeedStack.Screen
+        name="LevelInfo"
+        component={LevelInfo}
+        options={{headerShown: false}}
+      />
+      <FriendsFeedStack.Screen
+        name="QhotoLevel"
+        component={QhotoLevel}
+        options={{headerShown: false}}
+      />
+      <FriendsFeedStack.Screen
+        name="QhotoLog"
+        component={QhotoLog}
+        options={{
+          header: () => <QhotoHeader leftIcon={false} rightIcon={false} />,
+        }}
+      />
+      <FriendsFeedStack.Screen
+        name="MyPage"
+        component={MyPage}
+        options={{headerShown: false}}
       />
     </FriendsFeedStack.Navigator>
   );

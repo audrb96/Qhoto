@@ -107,7 +107,7 @@ function FriendList() {
                 setMyContacts(res.data);
               },
               (err: any) => {
-                console.log('getContactsApi - err', err);
+                console.log('getContactsApi - err', err.response);
               },
             );
           });
@@ -121,7 +121,7 @@ function FriendList() {
     // 친구목록
     friendListApi(
       (res: any) => {
-        console.log('friendListApi - res', res);
+        console.log('friendListApi - res', res.data);
         setFriendList(res.data);
       },
       (err: any) => {

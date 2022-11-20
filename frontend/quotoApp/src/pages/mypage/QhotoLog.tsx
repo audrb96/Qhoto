@@ -1094,8 +1094,8 @@ function QhotoLog({route}) {
                 </TouchableOpacity>
               </View>
               <ScrollView style={{paddingHorizontal: 20}}>
-                {selectedFeeds.map(item => (
-                  <>
+                {selectedFeeds.map((item, index) => (
+                  <View key={index}>
                     <View
                       style={{
                         flexDirection: 'row',
@@ -1148,7 +1148,7 @@ function QhotoLog({route}) {
                         {item.questName.split('<br>').map(item => `${item} `)}
                       </Text>
                     </View>
-                    {item.feedType === 'I' ? (
+                    {item.feedType === 'IMAGE' ? (
                       <Image
                         source={{uri: item.feedImage}}
                         style={{
@@ -1230,7 +1230,7 @@ function QhotoLog({route}) {
                         </Text>
                       ))}
                     </View>
-                  </>
+                  </View>
                 ))}
               </ScrollView>
             </>
@@ -1252,7 +1252,7 @@ const styles = StyleSheet.create({
   subject: {
     color: '#3B28B1',
     fontSize: 20,
-    fontFamily: 'esamanru-Bold',
+    fontFamily: 'esamanru-Medium',
   },
   gradeText: {fontFamily: 'esamanru-Bold', fontSize: 14},
   userNameText: {
