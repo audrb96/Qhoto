@@ -20,7 +20,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
-import {getQuestPoints} from '../../api/quest';
+import {getQuestPoints, getFriendQuestPoints} from '../../api/quest';
 import QhotoHeader from '../../components/QhotoHeader';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {RootState} from '../../store/reducer';
@@ -35,10 +35,11 @@ import RadioForm, {
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
 
-function QhotoLevel({navigation}) {
+function QhotoLevel({navigation, route}) {
   const goToLevelInfo = () => {
     navigation.navigate('LevelInfo');
   };
+
   const userInfo = useSelector((state: RootState) => state.user);
   const [value, setValue] = useState(value);
   const [chart, setChart] = useState(0);
@@ -68,62 +69,159 @@ function QhotoLevel({navigation}) {
     {색깔: 0, 일상: 0, 환경: 0, 건강: 0, 이색: 0},
     {색깔: 0, 일상: 0, 환경: 0, 건강: 0, 이색: 0},
   ];
+
   const [data, setData] = useState([d, w, m]);
   const [pentagon, setPentagon] = useState(characterData);
+  const [maxValue, setMaxValue] = useState(10);
+  const [friendInfo, setFriendInfo] = useState({
+    description: '코토짱',
+    email: 'ssafy@ssafy.com',
+    expGrade: 'red',
+    image:
+      'https://k.kakaocdn.net/dn/bCECfe/btrN5FBhmze/i3O26Z97Op0RkwkNSCChw0/img_640x640.jpg',
+    nickname: 'zerojun',
+    profileOpen: true,
+    totalExp: 0,
+  });
   useEffect(() => {
-    getQuestPoints(
-      (res: any) => {
-        let d = [
-          {type: '색깔', count: res.data.exp.C.dailyCnt, fill: '#592CB8'},
-          {type: '일상', count: res.data.exp.D.dailyCnt, fill: '#ECB21D'},
-          {type: '환경', count: res.data.exp.E.dailyCnt, fill: '#70A348'},
-          {type: '건강', count: res.data.exp.H.dailyCnt, fill: '#C25445'},
-          {type: '이색', count: res.data.exp.S.dailyCnt, fill: '#2271CE'},
-        ];
-        let w = [
-          {type: '색깔', count: res.data.exp.C.weeklyCnt, fill: '#592CB8'},
-          {type: '일상', count: res.data.exp.D.weeklyCnt, fill: '#ECB21D'},
-          {type: '환경', count: res.data.exp.E.weeklyCnt, fill: '#70A348'},
-          {type: '건강', count: res.data.exp.H.weeklyCnt, fill: '#C25445'},
-          {type: '이색', count: res.data.exp.S.weeklyCnt, fill: '#2271CE'},
-        ];
-        let m = [
-          {type: '색깔', count: res.data.exp.C.monthlyCnt, fill: '#592CB8'},
-          {type: '일상', count: res.data.exp.D.monthlyCnt, fill: '#ECB21D'},
-          {type: '환경', count: res.data.exp.E.monthlyCnt, fill: '#70A348'},
-          {type: '건강', count: res.data.exp.H.monthlyCnt, fill: '#C25445'},
-          {type: '이색', count: res.data.exp.S.monthlyCnt, fill: '#2271CE'},
-        ];
-        let allData = [];
-        allData.push(d);
-        allData.push(w);
-        allData.push(m);
-        setData(allData);
-        console.log('----------------------');
-        console.log(data);
-        let pentagonData = [
-          {
-            색깔: 10,
-            일상: 10,
-            환경: 10,
-            건강: 10,
-            이색: 10,
-          },
-          {
-            색깔: res.data.exp.C.totalCnt,
-            일상: res.data.exp.D.totalCnt,
-            환경: res.data.exp.E.totalCnt,
-            건강: res.data.exp.H.totalCnt,
-            이색: res.data.exp.S.totalCnt,
-          },
-        ];
-        setPentagon(pentagonData);
-      },
-      (err: any) => {
-        console.log(err.response);
-      },
-    );
-  }, []);
+    if (route.params?.friendId != null) {
+      setFriendInfo(route.params.otherInfo);
+
+      getFriendQuestPoints(
+        route.params.friendId,
+        (res: any) => {
+          let d = [
+            {type: '색깔', count: res.data.exp.C.dailyCnt, fill: '#592CB8'},
+            {type: '일상', count: res.data.exp.D.dailyCnt, fill: '#ECB21D'},
+            {type: '환경', count: res.data.exp.E.dailyCnt, fill: '#70A348'},
+            {type: '건강', count: res.data.exp.H.dailyCnt, fill: '#C25445'},
+            {type: '이색', count: res.data.exp.S.dailyCnt, fill: '#2271CE'},
+          ];
+          let w = [
+            {type: '색깔', count: res.data.exp.C.weeklyCnt, fill: '#592CB8'},
+            {type: '일상', count: res.data.exp.D.weeklyCnt, fill: '#ECB21D'},
+            {type: '환경', count: res.data.exp.E.weeklyCnt, fill: '#70A348'},
+            {type: '건강', count: res.data.exp.H.weeklyCnt, fill: '#C25445'},
+            {type: '이색', count: res.data.exp.S.weeklyCnt, fill: '#2271CE'},
+          ];
+          let m = [
+            {type: '색깔', count: res.data.exp.C.monthlyCnt, fill: '#592CB8'},
+            {type: '일상', count: res.data.exp.D.monthlyCnt, fill: '#ECB21D'},
+            {type: '환경', count: res.data.exp.E.monthlyCnt, fill: '#70A348'},
+            {type: '건강', count: res.data.exp.H.monthlyCnt, fill: '#C25445'},
+            {type: '이색', count: res.data.exp.S.monthlyCnt, fill: '#2271CE'},
+          ];
+          let allData = [];
+          allData.push(d);
+          allData.push(w);
+          allData.push(m);
+          setData(allData);
+
+          let findMax = [
+            res.data.exp.C.totalCnt,
+            res.data.exp.D.totalCnt,
+            res.data.exp.E.totalCnt,
+            res.data.exp.H.totalCnt,
+            res.data.exp.S.totalCnt,
+          ];
+          let max = 0;
+          findMax.forEach(expCnt => {
+            if (expCnt > max) {
+              max = expCnt;
+            }
+          });
+          setMaxValue(max);
+          let pentagonData = [
+            {
+              색깔: max,
+              일상: max,
+              환경: max,
+              건강: max,
+              이색: max,
+            },
+            {
+              색깔: res.data.exp.C.totalCnt,
+              일상: res.data.exp.D.totalCnt,
+              환경: res.data.exp.E.totalCnt,
+              건강: res.data.exp.H.totalCnt,
+              이색: res.data.exp.S.totalCnt,
+            },
+          ];
+          setPentagon(pentagonData);
+        },
+        (err: any) => {
+          console.log(err.response);
+        },
+      );
+    } else {
+      getQuestPoints(
+        (res: any) => {
+          let d = [
+            {type: '색깔', count: res.data.exp.C.dailyCnt, fill: '#592CB8'},
+            {type: '일상', count: res.data.exp.D.dailyCnt, fill: '#ECB21D'},
+            {type: '환경', count: res.data.exp.E.dailyCnt, fill: '#70A348'},
+            {type: '건강', count: res.data.exp.H.dailyCnt, fill: '#C25445'},
+            {type: '이색', count: res.data.exp.S.dailyCnt, fill: '#2271CE'},
+          ];
+          let w = [
+            {type: '색깔', count: res.data.exp.C.weeklyCnt, fill: '#592CB8'},
+            {type: '일상', count: res.data.exp.D.weeklyCnt, fill: '#ECB21D'},
+            {type: '환경', count: res.data.exp.E.weeklyCnt, fill: '#70A348'},
+            {type: '건강', count: res.data.exp.H.weeklyCnt, fill: '#C25445'},
+            {type: '이색', count: res.data.exp.S.weeklyCnt, fill: '#2271CE'},
+          ];
+          let m = [
+            {type: '색깔', count: res.data.exp.C.monthlyCnt, fill: '#592CB8'},
+            {type: '일상', count: res.data.exp.D.monthlyCnt, fill: '#ECB21D'},
+            {type: '환경', count: res.data.exp.E.monthlyCnt, fill: '#70A348'},
+            {type: '건강', count: res.data.exp.H.monthlyCnt, fill: '#C25445'},
+            {type: '이색', count: res.data.exp.S.monthlyCnt, fill: '#2271CE'},
+          ];
+          let allData = [];
+          allData.push(d);
+          allData.push(w);
+          allData.push(m);
+          setData(allData);
+
+          let findMax = [
+            res.data.exp.C.totalCnt,
+            res.data.exp.D.totalCnt,
+            res.data.exp.E.totalCnt,
+            res.data.exp.H.totalCnt,
+            res.data.exp.S.totalCnt,
+          ];
+          let max = 0;
+          findMax.forEach(expCnt => {
+            if (expCnt > max) {
+              max = expCnt;
+            }
+          });
+          setMaxValue(max);
+          let pentagonData = [
+            {
+              색깔: max,
+              일상: max,
+              환경: max,
+              건강: max,
+              이색: max,
+            },
+            {
+              색깔: res.data.exp.C.totalCnt,
+              일상: res.data.exp.D.totalCnt,
+              환경: res.data.exp.E.totalCnt,
+              건강: res.data.exp.H.totalCnt,
+              이색: res.data.exp.S.totalCnt,
+            },
+          ];
+          setPentagon(pentagonData);
+        },
+        (err: any) => {
+          console.log(err.response);
+        },
+      );
+    }
+  }, [maxValue]);
+
   const leftIcon = (
     <FontAwesome5
       name="angle-left"
@@ -150,11 +248,11 @@ function QhotoLevel({navigation}) {
 
   const processData = data => {
     const maxByGroup = {
-      색깔: 10,
-      일상: 10,
-      환경: 10,
-      건강: 10,
-      이색: 10,
+      색깔: maxValue,
+      일상: maxValue,
+      환경: maxValue,
+      건강: maxValue,
+      이색: maxValue,
     };
     const makeDataArray = d => {
       return Object.keys(d).map(key => {
@@ -198,10 +296,17 @@ function QhotoLevel({navigation}) {
                   paddingVertical: 20,
                 }}>
                 <TouchableOpacity onPress={goToLevelInfo}>
-                  <LevelBox
-                    userGrade={userInfo.expGrade}
-                    userPoint={userInfo.totalExp}
-                  />
+                  {route.params?.friendId != null ? (
+                    <LevelBox
+                      userGrade={friendInfo.expGrade}
+                      userPoint={friendInfo.totalExp}
+                    />
+                  ) : (
+                    <LevelBox
+                      userGrade={userInfo.expGrade}
+                      userPoint={userInfo.totalExp}
+                    />
+                  )}
                 </TouchableOpacity>
               </View>
             </View>

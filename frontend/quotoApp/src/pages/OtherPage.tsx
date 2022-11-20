@@ -47,7 +47,7 @@ function OtherPage({route}) {
 
   const goToLevel = () => {
     // 여기에 userId 넘겨주면 되긴 함. userId넘겨준 후, QhotoLevelPage에서 요청 보낼때 userId 같이 보내는 걸로.
-    navigation.navigate('QhotoLevel');
+    navigation.navigate('QhotoLevel', {friendId: userId, otherInfo: otherInfo});
   };
   const goToQuestLog = () => {
     navigation.navigate('QhotoLog', {logs: otherLogs});
@@ -152,7 +152,6 @@ function OtherPage({route}) {
     if (iconOrder === '친구') {
       return Alert.alert('알림', '이미 친구입니다.');
     }
-    console.log('resUserId', userId);
     addFriendApi(
       {resUserId: userId},
       async (res: any) => {
@@ -293,7 +292,7 @@ function OtherPage({route}) {
                 <View>
                   <TouchableOpacity>
                     {/* onPress={goToLevel} 삭제 해놨지만 추가 할 수도? 추가 하게 된다면 위에 goToLevel참조*/}
-                    <Text style={styles.subjectText}>
+                    <Text onPress={goToLevel} style={styles.subjectText}>
                       qhoto 레벨 &nbsp;
                       <FontAwesome5
                         name="angle-right"
