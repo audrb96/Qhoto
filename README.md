@@ -1,3 +1,14 @@
+# qhoto
+
+Quest, Photo, Daily
+
+
+🙋‍♂️팀장 박명규
+
+👨‍👩‍👦‍👦팀원 김상현, 김정아, 박영준, 유경훈, 정형진
+
+
+
 ### JIRA
 
 - STORY: 사용자 입장에서 작성하는 거
@@ -31,33 +42,39 @@
 - 형식
 
 ```java
-[태그]<space>제목<space>(Jira Issue 번호)
-ex) [FEAT] Add login [S07P21A705-21](<https://jira.ssafy.com/browse/S07P21A705-21>)
+[태그]<space>제목<space>(Jira Issue 링크)
+ex) [FEAT] Add login (https://ssafy.atlassian.net/browse/S07P31A707-9)
 ```
 
 - [template.md](http://template.md/) (MR 날릴때)
 
 ```java
-## ⛅️ 내용> 이 PR의 작업 요약 여기에 작성
+## ⛅️ 내용
 
-## 🎸 특이사항> 리뷰시 참고할만한 내용, 주의깊게 봐줬으면 하는 내용 여기에 작성
+> 이 PR의 작업 요약 여기에 작성
 
-## 🎸 테스트> 어떻게 테스트 할 수 있을까요? 여기에 작성
+## 🎸 특이사항
+
+> 리뷰시 참고할만한 내용, 주의깊게 봐줬으면 하는 내용 여기에 작성
+
+## 🎸 테스트
+
+> 어떻게 테스트 할 수 있을까요? 여기에 작성
 ```
 
 - Branch
 
 ```java
 master
-ㄴdev
-		ㄴbackend
-			ㄴbe_feat/login
-		ㄴfrontend
-			ㄴfe_feat/register
+ㄴdevelop
+		ㄴbackend_dev
+			ㄴfeature/api/login
+		ㄴfrontend_dev
+			ㄴfeature/fe/register
 ```
 
-- fe_feature/login
-- be_feature/
+- feature/api/login
+- feature/fe/register
 
 ### **BE**
 
