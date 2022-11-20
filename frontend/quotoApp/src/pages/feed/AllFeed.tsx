@@ -396,7 +396,9 @@ function AllFeed() {
                     />
                     &nbsp;&nbsp;
                     {questTypes[selectedFeed.questType].typeName}퀘스트{' : '}
-                    {selectedFeed.questName}
+                    {selectedFeed.questName
+                      .split('<br>')
+                      .map(item => `${item} `)}
                   </Text>
                 </View>
                 {selectedFeed.feedType === 'IMAGE' ? (

@@ -175,9 +175,17 @@ const FeedItem: React.FC<Props> = props => {
           arrowSize={{width: 10, height: 5}}
           isVisible={tooltipVisible}
           content={
-            <View>
-              <Text style={{color: 'white', textAlign: 'center'}}>
-                {questName}
+            <View style={{padding: 10}}>
+              <Text
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                  fontFamily: 'esamanru-Medium',
+                  fontSize: 16,
+                }}>
+                <Icon name={iconName} color="white" size={16} /> {typeName}
+                &nbsp; 퀘스트 :&nbsp;
+                {questName.split('<br>').map(item => `${item} `)}
               </Text>
             </View>
           }

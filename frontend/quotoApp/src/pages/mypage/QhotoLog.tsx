@@ -1211,8 +1211,9 @@ function QhotoLog({route}) {
                       </Text>
                     </View>
                     <View style={{paddingHorizontal: 10, marginBottom: 30}}>
-                      {item.commentList.content.map(comment => (
+                      {item.commentList.content.map((comment, index) => (
                         <Text
+                          key={index}
                           style={{
                             color: 'black',
                             fontSize: 16,
