@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   subjectText: {
     color: '#3B28B1',
     fontSize: 20,
-    fontFamily: 'MICEGothic-Bold',
+    fontFamily: 'esamanru-Medium',
     marginBottom: 3,
   },
   profileContainer: {marginTop: height * 0.015, alignItems: 'center'},

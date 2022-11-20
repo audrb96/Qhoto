@@ -26,6 +26,7 @@ import {getUserInfoApi} from '../api/mypage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const questTypes = ['DAILY', 'WEEKLY', 'MONTHLY'];
+// const questTypes = ['MONTHLY', 'DAILY', 'WEEKLY'];
 
 interface Quest {
   activeId: number;
@@ -95,7 +96,6 @@ function MyQuest() {
     getQuestList(
       (res: any) => {
         const {daily, weekly, monthly} = res.data.questList;
-        console.log(daily);
         setDailyQuestList(daily);
         setWeeklyQuestList(weekly);
         setMonthlyQuestList(monthly);

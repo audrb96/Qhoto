@@ -8,8 +8,11 @@ import {
   FlatList,
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
+  ImageBackground,
 } from 'react-native';
+import {Avatar} from 'react-native-paper';
 import Video from 'react-native-video';
 import Modal from 'react-native-modal';
 import CheckBox from '@react-native-community/checkbox';
@@ -20,11 +23,13 @@ import {RootState} from '../../store/reducer';
 
 import info from '../../components/info';
 
-import {setFeedMission, getAllFeeds} from '../../api/feed';
+import {setFeedMission, getAllFeeds, getSelectedFeed} from '../../api/feed';
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FeedDetail from '../../components/feed/FeedDetail';
 import AllFeedStackScreen from './AllFeedStackScreen';
+
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface Quest {
   questId: number;
@@ -53,6 +58,7 @@ interface Feed {
 
 interface Comment {
   userId: number;
+  nickname: string;
   commentContext: string;
   commentTime: string;
 }
@@ -66,6 +72,21 @@ const questTypes: {
   };
 } = info.questTypes;
 
+const levelInfo: {
+  [key: string]: {
+    gradeColorCode: string;
+    colorName: string;
+    nextColor: string;
+    minPoint: number;
+    maxPoint: number;
+  };
+} = info.levelInfo;
+
+const timeToString = (time: string) => {
+  let strArr = time.split('-');
+  return `${strArr[0]}년 ${strArr[1]}월 ${strArr[2]}일`;
+};
+
 const tabMenu = ['DAY', 'WEEK', 'MONTH'];
 const {width, height} = Dimensions.get('window');
 const columnNum = 3;
@@ -76,7 +97,19 @@ function AllFeed({navigation}) {
   const [allFeeds, setAllFeeds] = useState<Feed[]>();
   const [selectedTab, setSelectedTab] = useState('');
   const [selectedQuests, setSelectedQuests] = useState([true, true, true]);
+  const [selectedFeed, setSelectedFeed] = useState<Feed>();
   const [questLists, setQuestLists] = useState<{[key: string]: Quest[]}>();
+  const [isAccessable, setIsAccessable] = useState(false);
+
+  const {userDailyState, userWeeklyState, userMonthlyState} = useSelector(
+    (state: RootState) => state.user,
+  );
+
+  const accessState: {[key: string]: boolean} = {
+    DAY: userDailyState,
+    WEEK: userWeeklyState,
+    MONTH: userMonthlyState,
+  };
 
   useEffect(() => {
     setFeedMission(
@@ -97,12 +130,21 @@ function AllFeed({navigation}) {
 
   useEffect(() => {
     if (questLists !== undefined) {
+      setIsAccessable(userDailyState);
       setSelectedTab('DAY');
     }
   }, [questLists]);
 
   useEffect(() => {
+    setAllFeeds(undefined);
     if (selectedTab !== '') {
+      setIsAccessable(
+        selectedTab === 'DAY'
+          ? userDailyState
+          : selectedTab === 'WEEK'
+          ? userWeeklyState
+          : userMonthlyState,
+      );
       setSelectedQuests([true, true, true]);
     }
   }, [selectedTab]);
@@ -129,6 +171,26 @@ function AllFeed({navigation}) {
     }
   }, [selectedQuests]);
 
+  useEffect(() => {
+    if (selectedFeed === undefined) setDetailModalVisible(false);
+    else setDetailModalVisible(true);
+  }, [selectedFeed]);
+
+  const handleItemClick = (feedId: number) => {
+    getSelectedFeed(
+      feedId,
+      (res: any) => {
+        console.log(res.data);
+        setSelectedFeed(res.data);
+      },
+      (err: any) => {
+        console.log(err.response);
+      },
+    );
+  };
+
+  const handleCheckQuestClick = () => {};
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.tabMenuContainer}>
@@ -151,7 +213,32 @@ function AllFeed({navigation}) {
         ))}
       </View>
       <View style={{flex: 1}}>
-        {allFeeds?.length === 0 ? (
+        {!accessState[selectedTab] ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Icon
+              name="eye-slash"
+              size={50}
+              color="#3B28B1"
+              style={{marginBottom: 10}}
+            />
+            <Text style={styles.noAccessText}>퀘스트를 완료하고</Text>
+            <Text style={styles.noAccessText}>
+              다른 친구들의 피드를 확인하세요
+            </Text>
+            <TouchableOpacity
+              style={styles.noAccessButton}
+              onPress={handleCheckQuestClick}>
+              <Text style={styles.noAccessButtonText}>
+                퀘스트 완료하러 가기
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : allFeeds?.length === 0 ? (
           <View
             style={{
               flex: 1,
@@ -176,16 +263,14 @@ function AllFeed({navigation}) {
             renderItem={({item}) => (
               <TouchableOpacity
                 style={styles.allFeedItem}
-                onPress={() => setDetailModalVisible(!detailModalVisible)}>
+                onPress={() => handleItemClick(item.feedId)}>
                 {item.feedType === 'IMAGE' ? (
-                  <Image
-                    style={[
-                      {width: '100%', height: '100%', resizeMode: 'cover'},
-                    ]}
+                  <ImageBackground
+                    style={{width: '100%', height: '100%', resizeMode: 'cover'}}
                     source={{
                       uri: item.feedImage,
                     }}
-                  />
+                    blurRadius={isAccessable ? 0 : 30}></ImageBackground>
                 ) : (
                   <Video
                     source={{
@@ -206,20 +291,186 @@ function AllFeed({navigation}) {
 
       <Modal
         isVisible={detailModalVisible}
-        onBackdropPress={() => setDetailModalVisible(!detailModalVisible)}
-        onBackButtonPress={() => setDetailModalVisible(!detailModalVisible)}
-        backdropOpacity={0.1}
+        onBackdropPress={() => setSelectedFeed(undefined)}
+        onBackButtonPress={() => setSelectedFeed(undefined)}
+        backdropOpacity={0.2}
         deviceWidth={width}
         deviceHeight={height}
         backdropTransitionInTiming={100}
         backdropTransitionOutTiming={100}
-        animationIn="bounceIn"
-        animationOut="bounceOut"
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        animationInTiming={200}
+        animationOutTiming={200}
         style={{margin: 15}}>
         <View style={styles.detailContainer}>
-          <View style={{}}>
-            <FontAwesome name="close" />
-          </View>
+          {selectedFeed === undefined ? null : (
+            <>
+              <View style={styles.detailTopBar}>
+                <View style={styles.userInfo}>
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate('OtherPage', {
+                        userId: selectedFeed.userId,
+                      })
+                    }>
+                    <Avatar.Image
+                      size={50}
+                      source={{uri: selectedFeed.userImage}}
+                    />
+                  </Pressable>
+                  <View
+                    style={{justifyContent: 'center', paddingHorizontal: 12}}>
+                    <Text
+                      style={[
+                        styles.gradeText,
+                        {
+                          color:
+                            levelInfo[selectedFeed.expGrade].gradeColorCode,
+                        },
+                      ]}>
+                      {levelInfo[selectedFeed.expGrade].colorName}
+                    </Text>
+                    <Text style={styles.userNameText}>
+                      {selectedFeed.nickname}
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setDetailModalVisible(!detailModalVisible)}>
+                  <FontAwesome name="close" color="#BDBDBD" size={30} />
+                </TouchableOpacity>
+              </View>
+              <ScrollView style={{paddingHorizontal: 20}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 10,
+                  }}>
+                  <Text
+                    style={{
+                      backgroundColor: '#525252',
+                      color: 'white',
+                      paddingHorizontal: 10,
+                      fontSize: 15,
+                      marginRight: 10,
+                    }}>
+                    {selectedTab}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: 'esamanru-Medium',
+                      color: '#525252',
+                    }}>
+                    {timeToString(selectedFeed.feedTime.split(' ')[0]) +
+                      selectedFeed.feedTime.slice(10)}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    borderRadius: 12,
+                    paddingVertical: 12,
+                    marginBottom: 10,
+                    backgroundColor:
+                      questTypes[selectedFeed.questType].questColorCode,
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: 15,
+                      fontFamily: 'esamanru-Medium',
+                      textAlign: 'center',
+                    }}>
+                    <Icon
+                      name={questTypes[selectedFeed.questType].iconName}
+                      color="white"
+                      size={15}
+                    />
+                    &nbsp;&nbsp;
+                    {questTypes[selectedFeed.questType].typeName}퀘스트{' : '}
+                    {selectedFeed.questName}
+                  </Text>
+                </View>
+                {selectedFeed.feedType === 'IMAGE' ? (
+                  <Image
+                    source={{uri: selectedFeed.feedImage}}
+                    style={{width: '100%', aspectRatio: 1, borderRadius: 20}}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Video
+                    source={{
+                      uri: selectedFeed.feedImage,
+                    }}
+                    style={{width: '100%', aspectRatio: 1, borderRadius: 20}}
+                    resizeMode="cover"
+                    repeat={true}
+                  />
+                )}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 10,
+                    marginBottom: 20,
+                    paddingLeft: 10,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontFamily: 'MICEGothic-Bold',
+                      color: questTypes[selectedFeed.questType].questColorCode,
+                      marginRight: 10,
+                    }}>
+                    <FontAwesome
+                      name="heart"
+                      size={20}
+                      color={questTypes[selectedFeed.questType].questColorCode}
+                    />
+                    &nbsp;
+                    {selectedFeed.likeCount}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontFamily: 'MICEGothic-Bold',
+                      color: questTypes[selectedFeed.questType].questColorCode,
+                    }}>
+                    <FontAwesome
+                      name="comment"
+                      size={20}
+                      color={questTypes[selectedFeed.questType].questColorCode}
+                    />
+                    &nbsp;
+                    {selectedFeed.commentList.content.length}
+                  </Text>
+                </View>
+                <View style={{paddingHorizontal: 10, marginBottom: 30}}>
+                  {selectedFeed.commentList.content.map((item, index) => (
+                    <Text
+                      key={index}
+                      style={{
+                        color: 'black',
+                        fontSize: 16,
+                        marginBottom: 5,
+                      }}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: 17,
+                        }}>
+                        {item.nickname}
+                      </Text>
+                      &nbsp;&nbsp;
+                      {item.commentContext}
+                    </Text>
+                  ))}
+                </View>
+              </ScrollView>
+            </>
+          )}
         </View>
       </Modal>
 
@@ -261,14 +512,7 @@ function AllFeed({navigation}) {
               {questLists[selectedTab].map((item, index) => (
                 <TouchableOpacity
                   key={index}
-                  style={[
-                    styles.filterOptionItem,
-                    {
-                      backgroundColor: selectedQuests[index]
-                        ? 'white'
-                        : 'white',
-                    },
-                  ]}
+                  style={styles.filterOptionItem}
                   onPress={() => {
                     const newSelectBox = [...selectedQuests];
                     newSelectBox[index] = !newSelectBox[index];
@@ -321,6 +565,30 @@ const styles = StyleSheet.create({
     fontFamily: 'Comfortaa-Bold',
     textAlign: 'center',
   },
+  userInfo: {flexDirection: 'row'},
+  gradeText: {fontFamily: 'esamanru-Bold', fontSize: 14},
+  userNameText: {
+    fontWeight: '600',
+    fontSize: 20,
+    color: 'black',
+  },
+  noAccessText: {
+    color: '#3B28B1',
+    fontSize: 22,
+    fontFamily: 'esamanru-Medium',
+    marginBottom: 9,
+  },
+  noAccessButton: {
+    padding: 16,
+    backgroundColor: '#3B28B1',
+    elevation: 3,
+    borderRadius: 15,
+  },
+  noAccessButtonText: {
+    color: 'white',
+    fontFamily: 'esamanru-Medium',
+    fontSize: 16,
+  },
   filterButton: {
     position: 'absolute',
     bottom: 30,
@@ -345,7 +613,12 @@ const styles = StyleSheet.create({
     width: width / columnNum,
     height: width / columnNum,
   },
-  detailContainer: {flex: 1, backgroundColor: 'red'},
+  detailContainer: {flex: 0.8, borderRadius: 20, backgroundColor: 'white'},
+  detailTopBar: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    padding: 20,
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
