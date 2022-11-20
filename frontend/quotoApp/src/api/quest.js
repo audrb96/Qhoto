@@ -128,4 +128,14 @@ async function getQuestPoints(success, fail) {
   await api.get('/api/quest/point').then(success).catch(fail);
 }
 
-export {getQuestList, uploadPhoto, uploadVideo, getQuestPoints};
+async function getFriendQuestPoints(userId, success, fail) {
+  await api.get(`/api/quest/point/${userId}`).then(success).catch(fail);
+}
+
+export {
+  getQuestList,
+  uploadPhoto,
+  uploadVideo,
+  getQuestPoints,
+  getFriendQuestPoints,
+};
