@@ -1,13 +1,18 @@
 package com.qhoto.qhoto_api;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+
 
 @SpringBootTest
+@Rollback(value = false)
 class QhotoApiApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+//    @Autowired
+//    private UserRepository userRepository;
+//    @Test
+//    @Transactional
+//    void test() {
+//        userRepository.contactByCon()
+//    }
 }
