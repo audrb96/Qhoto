@@ -59,7 +59,7 @@ const ContactsPage: React.FC<props> = props => {
         <View
           key={index}
           style={{
-            width: width * 0.54,
+            width: width * 0.46,
             height: height * 0.38,
             marginRight: -12,
             // padding: 0,
@@ -73,10 +73,10 @@ const ContactsPage: React.FC<props> = props => {
               <Card.Image
                 style={{
                   borderRadius: 100,
-                  width: '100%',
+                  // width: '100%',
                   aspectRatio: 1,
-                  // width: 158,
-                  // height: 158,
+                  width: width * 0.3,
+                  height: width * 0.3,
                   // padding: 0,
                   // margin: 0,
                 }}
@@ -85,7 +85,8 @@ const ContactsPage: React.FC<props> = props => {
               <Card.Title
                 style={{
                   // backgroundColor: 'yellow',
-                  marginBottom: 0,
+                  fontFamily: 'esamanru-Medium',
+                  marginVertical: height * 0.0125,
                 }}>
                 {myContact.name}
               </Card.Title>
@@ -116,8 +117,9 @@ const ContactsPage: React.FC<props> = props => {
     ) {
       return (
         <Button
-          buttonStyle={(styles.button, {backgroundColor: tmpColor})}
+          buttonStyle={styles.button}
           title={tmpTitle}
+          titleStyle={styles.buttonTitle}
           onPress={() => changeFriendState(myContact)}
         />
       );
@@ -129,6 +131,7 @@ const ContactsPage: React.FC<props> = props => {
           // }
           buttonStyle={styles.button}
           title="친구요청 수락"
+          titleStyle={styles.buttonTitle}
           onPress={() => changeFriendState(myContact)}
         />
       );
@@ -137,6 +140,7 @@ const ContactsPage: React.FC<props> = props => {
         <Button
           buttonStyle={styles.buttonSilver}
           title="친구수락 대기중"
+          titleStyle={styles.buttonTitle}
           onPress={() => {}}
         />
       );
@@ -151,6 +155,7 @@ const ContactsPage: React.FC<props> = props => {
           flexDirection: 'row',
           // flexWrap: 'wrap',
           marginRight: 12,
+          marginBottom: -height * 0.025,
         }}>
         {renderSectionOne()}
       </View>
@@ -159,8 +164,38 @@ const ContactsPage: React.FC<props> = props => {
 };
 
 const styles = StyleSheet.create({
-  button: {},
-  buttonSilver: {backgroundColor: 'silver'},
+  buttonSilver: {
+    width: width * 0.3,
+    alignSelf: 'center',
+    // marginBottom: height * 0.0125,
+    backgroundColor: 'silver',
+    // backgroundColor: '#3B28B1',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  button: {
+    width: width * 0.3,
+    alignSelf: 'center',
+    // marginBottom: height * 0.0125,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  buttonUndefined: {
+    width: width * 0.3,
+    alignSelf: 'center',
+    // marginBottom: height * 0.0125,
+    backgroundColor: 'white',
+    // backgroundColor: '#3B28B1',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  buttonTitle: {
+    fontFamily: 'esamanru-Medium',
+    fontSize: 12,
+  },
 });
 
 export default ContactsPage;

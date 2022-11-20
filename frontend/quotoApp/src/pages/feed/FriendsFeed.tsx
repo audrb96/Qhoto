@@ -142,8 +142,9 @@ function FriendsFeed() {
     }
   }, [selectedQuests]);
 
-  const handleCheckQuestClick = () => {};
-
+  const handleCheckQuestClick = () => {
+    navigation.navigate('MyQuest');
+  };
   const handleCommentClick = (feedId: number) => {
     navigation.navigate('CommentPage', {feedId});
   };
@@ -189,7 +190,7 @@ function FriendsFeed() {
             </Text>
             <TouchableOpacity
               style={styles.noAccessButton}
-              onPress={handleCheckQuestClick}>
+              onPress={() => handleCheckQuestClick()}>
               <Text style={styles.noAccessButtonText}>
                 퀘스트 완료하러 가기
               </Text>
