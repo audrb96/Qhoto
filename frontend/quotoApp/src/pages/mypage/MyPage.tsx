@@ -355,7 +355,7 @@ function MyPage() {
           animationIn="fadeIn" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
           animationOut="fadeOut" // 트랜지션 효과 유형(slide - 위로 슬라이드,  fade - 서서히 나타남, none - 없음)
           animationOutTiming={10}
-          backdropOpacity={0.1}
+          backdropOpacity={0.2}
           onBackdropPress={() => setChangeModalVisible(false)}
           onBackButtonPress={() => setChangeModalVisible(false)}>
           <Pressable
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   subjectText: {
     color: '#3B28B1',
     fontSize: 20,
-    fontFamily: 'MICEGothic-Bold',
+    fontFamily: 'esamanru-Medium',
     marginBottom: 3,
   },
   profileContainer: {marginTop: height * 0.015, alignItems: 'center'},

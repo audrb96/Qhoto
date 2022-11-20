@@ -79,6 +79,10 @@ async function getSelectedFeed(feedId, success, fail) {
   await api.get(`/api/feed/all/${feedId}`).then(success).catch(fail);
 }
 
+async function getFeedsByDate(date, success, fail) {
+  await api.get(`/api/feed/date/${date}`).then(success).catch(fail);
+}
+
 async function getCommentList(feedId, success, fail) {
   await api.get(`/api/feed/comment/${feedId}`).then(success).catch(fail);
 }
@@ -104,6 +108,7 @@ async function setFeedMission(success, fail) {
 export {
   getAllFeeds,
   getSelectedFeed,
+  getFeedsByDate,
   getFriendsFeeds,
   getCommentList,
   setFeedLike,

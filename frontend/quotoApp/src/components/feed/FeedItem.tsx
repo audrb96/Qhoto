@@ -8,6 +8,8 @@ import {
   Pressable,
   ImageBackground,
   TouchableOpacity,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
 import Video from 'react-native-video';
@@ -20,11 +22,16 @@ import {setFeedLike, setFeedDislike} from '../../api/feed';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+import Tooltip from 'react-native-walkthrough-tooltip';
+
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../store/reducer';
 
 interface Props {
   feed: Feed;
   handleCommentClick: Function;
+  isAccessable: boolean;
 }
 
 interface Feed {
@@ -72,6 +79,11 @@ const levelInfo: {
   };
 } = info.levelInfo;
 
+const timeToString = (time: string) => {
+  let strArr = time.split('-');
+  return `${strArr[0]}년 ${strArr[1]}월 ${strArr[2]}일`;
+};
+
 const FeedItem: React.FC<Props> = props => {
   const {
     feedId,
@@ -91,14 +103,24 @@ const FeedItem: React.FC<Props> = props => {
     feedType,
   } = props.feed;
 
-  const {handleCommentClick} = props;
+  const {handleCommentClick, isAccessable} = props;
 
   const {typeName, iconName, questColorCode} = questTypes[questType];
   const {colorName, gradeColorCode} = levelInfo[expGrade];
 
   const [isLike, setIsLike] = useState(likeStatus === 'LIKE' ? true : false);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
-  const isAccessable = true;
+  const myNickname = useSelector((state: RootState) => state.user.nickname);
+  const navigation = useNavigation();
+
+  const goToOtherPage = () => {
+    if (nickname === myNickname) {
+      navigation.navigate('MyPage');
+    } else {
+      navigation.navigate('OtherPage', {userId: userId});
+    }
+  };
 
   const handleLikeClick = () => {
     if (isLike) {
@@ -124,7 +146,7 @@ const FeedItem: React.FC<Props> = props => {
     }
   };
 
-  const navigation = useNavigation();
+  const handleCheckQuestClick = () => {};
 
   // const moveProfile = () => {
   //   navigate('OtherPage');
@@ -134,8 +156,7 @@ const FeedItem: React.FC<Props> = props => {
     <View style={styles.feedContainer}>
       <View style={styles.profileBar}>
         <View style={styles.userInfo}>
-          <Pressable
-            onPress={() => navigation.navigate('OtherPage', {userId: userId})}>
+          <Pressable onPress={() => goToOtherPage()}>
             <Avatar.Image size={50} source={{uri: userImage}} />
           </Pressable>
           <View style={{justifyContent: 'center', paddingHorizontal: 12}}>
@@ -145,11 +166,37 @@ const FeedItem: React.FC<Props> = props => {
             <Text style={styles.userNameText}>{nickname}</Text>
           </View>
         </View>
-        <Icon
-          name={iconName}
-          color={questColorCode}
-          style={{fontSize: 32, marginRight: 10}}
-        />
+
+        <Tooltip
+          tooltipStyle={{marginTop: -5}}
+          contentStyle={{backgroundColor: questColorCode}}
+          arrowSize={{width: 10, height: 5}}
+          isVisible={tooltipVisible}
+          content={
+            <View>
+              <Text style={{color: 'white', textAlign: 'center'}}>
+                {questName}
+              </Text>
+            </View>
+          }
+          onClose={() => setTooltipVisible(false)}
+          placement="bottom"
+          backgroundColor="rgba(0,0,0,0)">
+          <TouchableOpacity
+            style={{width: 40, height: 40, marginRight: 5}}
+            onPress={() => {
+              setTooltipVisible(true);
+              // setTimeout(() => {
+              //   setTooltipVisible(false), console.log('2초 후에 실행됨');
+              // }, 2000);
+            }}>
+            <Icon
+              name={iconName}
+              color={questColorCode}
+              style={{fontSize: 32}}
+            />
+          </TouchableOpacity>
+        </Tooltip>
       </View>
       <View style={styles.mediaContainer}>
         <Pressable>
@@ -180,7 +227,9 @@ const FeedItem: React.FC<Props> = props => {
                   <Text style={styles.noAccessText}>
                     다른 친구들의 피드를 확인하세요
                   </Text>
-                  <TouchableOpacity style={styles.noAccessButton}>
+                  <TouchableOpacity
+                    style={styles.noAccessButton}
+                    onPress={handleCheckQuestClick}>
                     <Text style={styles.noAccessButtonText}>
                       퀘스트 완료하러 가기
                     </Text>
@@ -190,24 +239,43 @@ const FeedItem: React.FC<Props> = props => {
             </ImageBackground>
           ) : (
             <View>
-              <Video
-                source={{
-                  uri: feedImage,
-                }}
-                style={styles.video}
-                resizeMode="stretch"
-                repeat={true}
-                paused={!isAccessable}
-              />
-              <View
-                style={{
-                  width: width,
-                  height: width,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text>Hello</Text>
-              </View>
+              {isAccessable ? (
+                <Video
+                  source={{
+                    uri: feedImage,
+                  }}
+                  style={styles.video}
+                  resizeMode="stretch"
+                  repeat={true}
+                  paused={!isAccessable}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: width,
+                    height: width,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Icon
+                    name="eye-slash"
+                    size={50}
+                    color="#3B28B1"
+                    style={{marginBottom: 10}}
+                  />
+                  <Text style={styles.noAccessText}>퀘스트를 완료하고</Text>
+                  <Text style={styles.noAccessText}>
+                    다른 친구들의 피드를 확인하세요
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.noAccessButton}
+                    onPress={handleCheckQuestClick}>
+                    <Text style={styles.noAccessButtonText}>
+                      퀘스트 완료하러 가기
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           )}
         </Pressable>
@@ -229,7 +297,9 @@ const FeedItem: React.FC<Props> = props => {
         </View>
 
         <View>
-          <Text style={styles.feedTimeText}>{feedTime}</Text>
+          <Text style={styles.feedTimeText}>
+            {timeToString(feedTime.split(' ')[0]) + feedTime.slice(10)}
+          </Text>
         </View>
       </View>
       <View style={styles.commentBar}>
@@ -288,7 +358,8 @@ const styles = StyleSheet.create({
   },
   feedTimeText: {
     color: '#A7A7A7',
-    fontSize: 18,
+    fontFamily: 'esamanru-Medium',
+    fontSize: 15,
   },
   commentBar: {},
 });

@@ -29,6 +29,11 @@ const questTypes: {
 
 const {width, height} = Dimensions.get('window');
 
+const timeToString = (time: string) => {
+  let strArr = time.split('-');
+  return `${strArr[0]}년 ${strArr[1]}월 ${strArr[2]}일`;
+};
+
 const LogItem: React.FC<Props> = props => {
   const {typeCode, questName, feedTime, feedImage, feedType} = props.log;
   const {typeName, iconName, questColorCode} = questTypes[typeCode];
@@ -46,7 +51,9 @@ const LogItem: React.FC<Props> = props => {
       )}
 
       <View style={styles.contentContainer}>
-        <Text style={styles.logTime}>{feedTime}</Text>
+        <Text style={styles.logTime}>
+          {timeToString(feedTime.split(' ')[0]) + feedTime.slice(10)}
+        </Text>
         <Text style={[styles.questType, {color: questColorCode}]}>
           <Icon name={iconName} color={questColorCode} size={16} />
           &nbsp;
