@@ -105,7 +105,7 @@ function FindFriend({route}) {
 
           buttonStyle={styles.buttonPurple}
           title="  Me"
-          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 20}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 16}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'GET') {
@@ -116,7 +116,7 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.button}
           title="친구요청 수락"
-          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 20}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 16}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'REQUEST') {
@@ -127,7 +127,7 @@ function FindFriend({route}) {
         <Button
           buttonStyle={styles.buttonSilver}
           title="친구수락 대기중"
-          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 20}}
+          titleStyle={{fontFamily: 'esamanru-Medium', fontSize: 16}}
           onPress={() => addFriend(searchResult)}></Button>
       );
     } else if (searchResult.isFriend === 'FRIEND') {
@@ -236,7 +236,12 @@ function FindFriend({route}) {
         padding: 15,
       }}
       onPress={() => navigation.navigate('OtherPage', {userId: item.userId})}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Avatar.Image size={50} source={{uri: item.userImage}} />
           <Text
@@ -244,7 +249,7 @@ function FindFriend({route}) {
               marginLeft: 20,
               color: '#535353',
               fontFamily: 'esamanru-Medium',
-              fontSize: 20,
+              fontSize: 16,
             }}>
             {item.nickname}
           </Text>
@@ -258,7 +263,12 @@ function FindFriend({route}) {
                 borderRadius: 10,
                 padding: 10,
               }}>
-              <Text style={{color: 'white', fontFamily: 'esamanru-Medium'}}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'esamanru-Medium',
+                  fontSize: 12,
+                }}>
                 <FontAwesome5 name="user-plus" color="white" />
                 요청 수락
               </Text>
@@ -316,7 +326,7 @@ function FindFriend({route}) {
           expanded={openSearchFriend}
           onPress={() => setOpenSearchFriend(!openSearchFriend)}
           titleStyle={{
-            fontSize: 25,
+            fontSize: 20,
             fontFamily: 'esamanru-Medium',
             marginVertical: 3,
           }}>
@@ -348,7 +358,7 @@ function FindFriend({route}) {
                 style={{
                   color: 'white',
                   fontFamily: 'esamanru-Medium',
-                  fontSize: 18,
+                  fontSize: 14,
                 }}>
                 검색
               </Text>
@@ -418,7 +428,7 @@ function FindFriend({route}) {
           // style={{flex: 1}}
           onPress={() => setOpenReceiveList(!openReceiveList)}
           titleStyle={{
-            fontSize: 25,
+            fontSize: 20,
             fontFamily: 'esamanru-Medium',
             marginVertical: 3,
           }}>
@@ -440,7 +450,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 15,
     flexGrow: 1,
-    fontSize: 18,
+    fontSize: 14,
     fontFamily: 'esamanru-Medium',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: '#3B28B1',

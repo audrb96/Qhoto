@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   Text,
   View,
@@ -9,6 +9,7 @@ import {
   FlatList,
   SafeAreaView,
   StyleSheet,
+  StatusBar,
 } from 'react-native';
 import {RootState} from '../../store/reducer';
 import {useSelector} from 'react-redux';
@@ -36,7 +37,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 function LevelInfo({route}) {
   const navigation = useNavigation();
   const userInfo = useSelector((state: RootState) => state.user);
-
+  const isScrollEnabled = true;
   const goToMyPage = () => {
     navigation.navigate('MyPage');
   };
@@ -82,9 +83,10 @@ function LevelInfo({route}) {
     />
   );
   console.log(levelKey.indexOf(expGrade));
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
     return (
-      <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
+      // <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Image
           source={levelInfo[item].badge}
           style={{maxWidth: 100, maxHeight: 100}}
@@ -102,146 +104,97 @@ function LevelInfo({route}) {
             {levelInfo[item].minPoint}~{levelInfo[item].maxPoint} Point
           </Text>
         </View>
-      </TouchableOpacity>
+      </View>
+
+      // </TouchableOpacity>
     );
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <QhotoHeader leftIcon={leftIcon} />
-      <View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <QhotoHeader leftIcon={leftIcon} />
         <View>
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Image
-              source={levelInfo[expGrade].badge}
-              style={{maxWidth: 200, maxHeight: 200, marginRight: 5}}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}>
-            <View style={{width: 330, height: 35, alignItems: 'flex-end'}}>
+          <View>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
               <Image
-                source={
-                  levelInfo[levelKey[levelKey.indexOf(expGrade) + 1]].badge
-                }
-                style={{
-                  flex: 1,
-                  maxWidth: 35,
-                  maxHeight: 35,
-                }}
+                source={levelInfo[expGrade].badge}
+                style={{maxWidth: 200, maxHeight: 200, marginRight: 5}}
               />
             </View>
             <View
               style={{
-                flexDirection: 'row',
-                marginVertical: 3,
+                flexDirection: 'column',
+                alignItems: 'center',
               }}>
+              <View style={{width: 330, height: 35, alignItems: 'flex-end'}}>
+                <Image
+                  source={
+                    levelInfo[levelKey[levelKey.indexOf(expGrade) + 1]].badge
+                  }
+                  style={{
+                    flex: 1,
+                    maxWidth: 35,
+                    maxHeight: 35,
+                  }}
+                />
+              </View>
               <View
                 style={{
-                  width: 300,
-                  height: 5,
-                  borderRadius: 3,
-                  backgroundColor: 'silver',
-                }}
-              />
-              <View
-                style={{
-                  width:
-                    300 *
-                    ((userPoint - levelInfo[expGrade].minPoint) /
-                      (levelInfo[expGrade].maxPoint -
-                        levelInfo[expGrade].minPoint)),
-                  height: 5,
-                  borderRadius: 3,
-                  backgroundColor: 'black',
-                  position: 'absolute',
-                }}
-              />
+                  flexDirection: 'row',
+                  marginVertical: 3,
+                }}>
+                <View
+                  style={{
+                    width: 300,
+                    height: 5,
+                    borderRadius: 3,
+                    backgroundColor: 'silver',
+                  }}
+                />
+                <View
+                  style={{
+                    width:
+                      300 *
+                      ((userPoint - levelInfo[expGrade].minPoint) /
+                        (levelInfo[expGrade].maxPoint -
+                          levelInfo[expGrade].minPoint)),
+                    height: 5,
+                    borderRadius: 3,
+                    backgroundColor: 'black',
+                    position: 'absolute',
+                  }}
+                />
+              </View>
+              <Text style={{color: '#000000', textAlign: 'center'}}>
+                {levelInfo[expGrade].nextColor}
+                레벨까지{' '}
+                {levelInfo[levelKey[levelKey.indexOf(expGrade) + 1]].minPoint -
+                  userPoint}
+                point 남음
+              </Text>
             </View>
-            <Text style={{color: '#000000', textAlign: 'center'}}>
-              {levelInfo[expGrade].nextColor}
-              레벨까지{' '}
-              {levelInfo[levelKey[levelKey.indexOf(expGrade) + 1]].minPoint -
-                userPoint}
-              point 남음
-            </Text>
+          </View>
+          <View style={{alignItems: 'center'}}>
+            <FlatList
+              data={levelKey}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              style={{marginLeft: 30, marginTop: 10}}
+              scrollEnabled={false}
+            />
           </View>
         </View>
-        <View style={{alignItems: 'center'}}>
-          <FlatList
-            data={levelKey}
-            renderItem={renderItem}
-            keyExtractor={item => String(levelInfo[item])}
-            style={{marginLeft: 30, marginTop: 10}}
-          />
-
-          {/* <TouchableOpacity>
-          <Image
-            source={badge}
-            style={{width: 100, height: 100, resizeMode: 'cover'}} // Todo: 사진 큰거로 교체해야함, 이거는 화질깨짐
-          />
-        </TouchableOpacity>
-        <View style={{alignSelf: 'flex-end', right: 35}}>
-          <Image
-            source={nextBadge}
-            style={{
-              width: 20,
-              height: 20,
-              resizeMode: 'cover',
-            }}
-          />
-        </View>
-        <View style={{marginHorizontal: 15, marginVertical: 5}}>
-          <View
-            style={{
-              width: 270,
-              height: 3,
-              backgroundColor: 'silver',
-            }}
-          />
-          <View
-            style={{
-              width: 270 * ((userPoint - minPoint) / (maxPoint - minPoint)),
-              height: 3,
-              backgroundColor: 'black',
-              position: 'absolute',
-            }}
-          />
-        </View>
-        {userPoint < 5000 ? (
-          <Text style={{color: 'black', fontSize: 12, marginHorizontal: 15}}>
-            {nextColorName} 레벨까지 {maxPoint - userPoint} Points 남음
-          </Text>
-        ) : (
-          <></>
-        )}
-      </View>
-      <View style={{flexDirection: 'column', flex: 0.7}}>
-        <View style={{alignItems: 'center', marginTop: 25}}>
-          <View
-            style={{
-              width: 320,
-              height: 1,
-              backgroundColor: 'black',
-            }}
-          />
-        </View>
-        <FlatList
-          data={levelData}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          style={{marginLeft: 30, marginTop: 10}}
-        /> */}
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
   badgeForm: {
     flex: 1,
     justifyContent: 'flex-end',
