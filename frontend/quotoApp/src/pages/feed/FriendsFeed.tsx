@@ -115,6 +115,7 @@ function FriendsFeed() {
   }, [questLists]);
 
   useEffect(() => {
+    setFriendFeeds(undefined);
     if (selectedTab !== '') {
       setSelectedQuests([true, true, true]);
     }

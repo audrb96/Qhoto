@@ -232,7 +232,7 @@ function FriendList() {
               <FlatList
                 data={friendList}
                 renderItem={renderFriendList}
-                keyExtractor={item => item.id}
+                // keyExtractor={item => item.id}
               />
               {/* <View style={{marginBottom: 100}}>
           <FlatList
