@@ -15,7 +15,11 @@ public class AbstractLegacyEnumAttributeConverter<E extends Enum<E> & LegacyComm
     private boolean nullable;
     private String enumName;
 
-
+    /**
+     * Enum 에서 DB 타입으로 변환
+     * @param attribute  the entity attribute value to be converted
+     * @return {@link String}
+     */
     @Override
     public String convertToDatabaseColumn(E attribute) {
         if(!nullable && attribute == null) {
@@ -24,6 +28,12 @@ public class AbstractLegacyEnumAttributeConverter<E extends Enum<E> & LegacyComm
         return LegacyEnumValueConvertUtils.toLegacyCode(attribute);
     }
 
+    /**
+     * DB에서 Enum 으로 변환
+     * @param dbData  the data from the database column to be
+     *                converted
+     * @return {@link E}
+     */
     @Override
     public E convertToEntityAttribute(String dbData) {
         if(!nullable && !StringUtils.hasText(dbData)) {
