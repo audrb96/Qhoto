@@ -1,8 +1,4 @@
-# 📷 qhoto
-
-## 💝 Quest, Photo, Daily 💝
-
-![qhoto-logo](/uploads/a7e4d7a0f9e4f7ab200f83224ef65b30/qhoto-logo.png)
+<img src="assets/qhoto.png" height="200" />
 
 ### 매일 똑같은 하루를 보내는 당신!
 
@@ -10,12 +6,146 @@
 
 ### 이제 똑같은 하루는 그만멈추고 재미와 함께 갓생을 살아보세요. 🤩
 
-> **저희 앱 Qhoto에서는 매일, 매주, 매달**<br>**건강, 환경, 이색등 다양한 테마의 퀘스트를 제공하여 매일 똑같은 하루가 아닌 즐거운 추억을 제공해줍니다.**<br>**본인의 퀘스트 클리어 사진과 영상을 다른 사람과 공유해보세요!** <br>**서로 공유하다보면 당신의 인생은 ✨갓생✨ 이 되어있을겁니다.**
-> <br>
+> **저희 앱 Qhoto에서는 매일, 매주, 매달**<br>**건강, 환경, 이색등 다양한 테마의 퀘스트를 제공하여 매일 똑같은 하루가 아닌 즐거운 추억을 제공해줍니다.**<br>**본인의 퀘스트 클리어 사진과 영상을 다른 사람과 공유해보세요!** <br>**서로 공유하다보면 당신의 인생은 ✨갓생✨ 이 되어있을겁니다.** > <br>
 
-🙋‍♂️팀장 박명규
+<br/>
 
-👨‍👩‍👦‍👦팀원 김상현, 김정아, 박영준, 유경훈, 정형진
+## 🛠 기술 스택
+
+#### Communication Tool
+
+> <img src="https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white">
+> <img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white">
+> <img src="https://img.shields.io/badge/mattermost-0058CC?style=for-the-badge&logo=mattermost&logoColor=white">
+> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+
+#### Development Tool
+
+> <img src="https://img.shields.io/badge/vscode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white">
+> <img src="https://img.shields.io/badge/intellij-000000?style=for-the-badge&logo=intellijidea&logoColor=white">
+> <img src="https://img.shields.io/badge/Android_Studio-3DDC84?style=for-the-badge&logo=android-studio&logoColor=white">
+> <img src="https://img.shields.io/badge/mysql_workbench-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+
+#### FrontEnd
+
+> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white">
+> <img src="https://img.shields.io/badge/Android_Studio-3DDC84?style=for-the-badge&logo=android-studio&logoColor=white">
+> <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
+> <img src="https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white">
+
+#### BackEnd
+
+> <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white">
+> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+> <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=Spring-Security&logoColor=white">
+> <img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white">
+> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+
+#### Server
+
+> <img src="https://img.shields.io/badge/aws-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white">
+> <img src="https://img.shields.io/badge/ec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
+> <img src="https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white">
+> <img src="https://img.shields.io/badge/s3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
+> <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
+> <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
+> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+
+<br/>
+<br/>
+
+## 💡 기능 소개
+
+</br>
+
+### 1. 메인 페이지(퀘스트)
+
+</br>
+
+<img src="assets/gif/main_page.gif"  width="250" />
+<br/>
+<br/>
+
+- 로그인 시 맨 처음 나타나는 화면
+- Daily, Weekly, Monthly 퀘스트 정보 확인 가능
+- 카드 우측 상단의 리롤버튼을 통해 퀘스트 선택 가능
+  <br/>
+  <br/>
+
+<img src="assets/gif/camera.gif"  width="250" />
+<br/>
+<br/>
+
+- 메인페이지 하단의 카메라 버튼을 클릭해 카메라를 호출
+- 퀘스트를 인증할 수 있는 사진, 동영상 촬영 후 제출
+- photo editor 페이지에서 꾸미기 기능 제공
+- 성공적으로 사진 제출 시 퀘스트 완료 도장 표시
+  <br/>
+  <br/>
+
+### 2. 친구피드 페이지
+
+<br/>
+<img src="assets/gif/friend_feed.gif"  width="250" />
+<br/>
+<br/>
+
+- Daily, Weekly, Monthly 퀘스트별로 나와 친구인 유저들의 퀘스트 인증 피드들을 모아놓은 페이지
+- 좋아요, 댓글 작성 가능
+- 우측 하단의 필터버튼을 클릭해 원하는 퀘스트 피드들 필터링 가능
+  <br/>
+  <br/>
+
+### 3. 전체피드 페이지
+
+<br/>
+<img src="assets/gif/all_feed.gif"  width="250" />
+
+- 친구피드를 포함한 전체 유저들의 피드들을 확인할 수 있는 페이지
+  <br/>
+  <br/>
+
+### 4. 친구목록 페이지
+
+<br/>
+<img src="assets/gif/friend_list.gif"  width="250" />
+<br/>
+<br/>
+
+- 친구 목록 리스트
+- 로컬 기기의 연락처에 접근해 가입된 유저들 중 친구를 추천
+  <br/>
+  <br/>
+
+<img src="assets/gif/add_friend.gif"  width="250" />
+<br/>
+<br/>
+
+- id 검색을 통해 친구 검색 및 친구 요청 보내기
+
+<br/>
+
+### 5. 마이페이지
+
+<br/>
+<img src="assets/gif/qhoto_analytics.gif"  width="250" />
+<br/>
+<br/>
+
+- 나의 레벨 정보, 퀘스트 성향 polygon chart, 타입별 완료한 퀘스트 막대 그래프
+  <br/>
+  <br/>
+
+<img src="assets/gif/qhoto_log.gif"  width="250" />
+<br/>
+<br/>
+
+- 여태까지 완료했던 퀘스트 기록들
+- 달력에서 해당 날짜에 완료한 퀘스트를 마커로 표시
+  <br/>
+  <br/>
 
 ## 📱 Wireframe
 
@@ -134,3 +264,30 @@ master
   - **snake_case:** 소문자&스네이크케이스
   - **primary key → id (Long, auto increment)**
   - full length → **column 명**
+
+## 👪 팀원 소개
+
+<table>
+    <tr>
+        <td height="140px" align="center"> <a href="https://github.com/PowerBBear">
+            <img src="assets/member/avatar1.png" /> <br><br> 👑 박명규 <br>(Back-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/JunPark364">
+            <img src="assets/member/avatar2.png" /> <br><br> 🙂 김상현 <br>(Back-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/pch8349">
+            <img src="assets/member/avatar3.png" /> <br><br> 😆 김정아 <br>(Back-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/SilverLight96">
+            <img src="assets/member/avatar4.png" /> <br><br> 😁 박영준 <br>(Front-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/heunhanireum">
+            <img src="assets/member/avatar6.png" /> <br><br> 🙄 유경훈 <br>(Front-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/kkh9700">
+            <img src="assets/member/avatar5.png" /> <br><br> 😶 정형진 <br>(Front-End) </a> <br></td>
+    </tr>
+    <tr>
+        <td align="center">소셜 로그인<br/>서버 구축<br/>DB<br/></td>
+        <td align="center">DB설계<br/>REST API<br/>
+        <td align="center">DB설계<br/>REST API<br/>
+        <td align="center">컴포넌트 구현<br/>발표</td>
+        <td align="center">컴포넌트 구현<br/>소셜 로그인<br/></td>
+        <td align="center">친구피드<br/>전체피드<br/></td>
+    </tr>
+</table>
