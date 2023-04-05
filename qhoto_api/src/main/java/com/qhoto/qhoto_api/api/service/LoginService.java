@@ -43,7 +43,7 @@ public class LoginService {
     private final ExpRepository expRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final QuestTypeRepository questTypeRepository;
-    private final String GOOGLE_CLIENT_ID = "1091823482731-f0375q139gm9me0a4v7cg50jiamjkcq4.apps.googleusercontent.com";
+    private final String GOOGLE_CLIENT_ID = GoogleClientId;
     //구글 로그인
     public LoginRes loginGoogle(String idTokenString) throws GeneralSecurityException, IOException {
         HttpTransport transport = new NetHttpTransport();
